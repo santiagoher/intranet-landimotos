@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Inventario Contenedor</title>
+<style>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #0b1220;
+  color: white;
+  margin: 0;
+}
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+}
+.header {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+.card {
+  background: #111827;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+input {
+  width: 100%;
+  padding: 18px;
+  font-size: 20px;
+  border-radius: 10px;
+  border: none;
+}
+.success { color: #22c55e; }
+.error { color: #ef4444; }
+.tag {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+.caja { background: #1d4ed8; }
+.unidad { background: #374151; }
+.progress {
+  height: 8px;
+  background: #1f2937;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+.bar {
+  height: 8px;
+  background: #22c55e;
+}
+button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #ef4444;
+  color: white;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="header">📦 Contenedor CNT-001</div>
+
+<div class="card">
+  <strong>Escaneo automático</strong>
+  <input id="scanner" autofocus placeholder="Escanea código...">
+</div>
+
+<div class="card" id="feedback">Esperando escaneo...</div>
+
+<div class="card">
+  <strong>Resumen</strong>
+  <div id="resumen"></div>
+</div>
+
+<button onclick="reset()">Reiniciar</button>
+
+</div>
+
+<script>
+const productos = {
+  "AMO5001": { nombre: "Filtro de aire", tipo: "caja", factor: 12, esperado: 120, total: 0 },
+  "2100003303535": { nombre: "Filtro de aceite", tipo: "unidad", factor: 1, esperado: 50, total: 0 }
+};
+
+const scanner = document.getElementById("scanner");
+const feedback = document.getElementById("feedback");
+const resumen = document.getElementById("resumen");
+
+let timeout = null;
+
+// 🔥 mantener foco siempre
+document.addEventListener("click", () => scanner.focus());
+window.addEventListener("load", () => scanner.focus());
+
+// 🔥 bloquear enter/tab
+scanner.addEventListener("keydown", function(e) {
+  if (e.key === "Enter" || e.key === "Tab") {
+    e.preventDefault();
+  }
+});
+
+// 🔥 detectar fin de escaneo
+scanner.addEventListener("input", function() {
+  clearTimeout(timeout);
+
+  timeout = setTimeout(() => {
+    let codigo = scanner.value.trim();
+
+    if (codigo.length === 0) return;
+
+    procesar(codigo);
+    scanner.value = "";
+
+    scanner.focus();
+  }, 120); // 👈 tiempo clave (ajustable)
+});
+
+function procesar(codigo) {
+
+  if (!productos[codigo]) {
+    feedback.innerHTML = `<span class="error">❌ Código no válido: ${codigo}</span>`;
+    return;
+  }
+
+  let p = productos[codigo];
+  p.total += p.factor;
+
+  let tipoClase = p.tipo === "caja" ? "caja" : "unidad";
+
+  feedback.innerHTML = `
+    <div class="success">✔️ ${p.nombre}</div>
+    <span class="tag ${tipoClase}">${p.tipo.toUpperCase()} x${p.factor}</span>
+    <div>Total: ${p.total} / ${p.esperado}</div>
+  `;
+
+  actualizarResumen();
+}
+
+function actualizarResumen() {
+  resumen.innerHTML = "";
+
+  for (let codigo in productos) {
+    let p = productos[codigo];
+    let porcentaje = (p.total / p.esperado) * 100;
+
+    resumen.innerHTML += `
+      <div>
+        ${p.nombre}: ${p.total} / ${p.esperado}
+        <div class="progress">
+          <div class="bar" style="width:${porcentaje}%"></div>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function reset() {
+  for (let codigo in productos) {
+    productos[codigo].total = 0;
+  }
+  feedback.innerHTML = "Reiniciado...";
+  actualizarResumen();
+}
+</script>
+
+</body>
+</html>
