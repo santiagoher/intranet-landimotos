@@ -10,7 +10,7 @@ import { createContenedor, updateContenedor } from './actions'
 const containerSchema = z.object({
   codigo: z.string().min(3, 'El código debe tener al menos 3 caracteres'),
   descripcion: z.string().optional(),
-  estado: z.enum(['disponible', 'en_uso', 'mantenimiento']).default('disponible'),
+  estado: z.enum(['disponible', 'en_uso', 'mantenimiento']),
 })
 
 type ContainerFormData = z.infer<typeof containerSchema>

@@ -10,7 +10,7 @@ import { createMensajero, updateMensajero } from './actions'
 const messengerSchema = z.object({
   nombre: z.string().min(3, 'El nombre debe tener al menos 3 caracteres'),
   telefono: z.string().min(7, 'El teléfono debe tener al menos 7 dígitos'),
-  estado: z.enum(['disponible', 'en_ruta', 'inactivo']).default('disponible'),
+  estado: z.enum(['disponible', 'en_ruta', 'inactivo']),
 })
 
 type MessengerFormData = z.infer<typeof messengerSchema>
