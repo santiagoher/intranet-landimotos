@@ -18,7 +18,7 @@ export async function login(formData: FormData) {
   const validation = loginSchema.safeParse({ email, password })
 
   if (!validation.success) {
-    return { error: validation.error.errors[0].message }
+    return { error: validation.error.issues[0].message }
   }
 
   const supabase = await createClient()
