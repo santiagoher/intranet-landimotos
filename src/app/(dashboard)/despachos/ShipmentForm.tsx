@@ -12,7 +12,7 @@ const shipmentSchema = z.object({
   pedido_id: z.string().uuid('Pedido inválido'),
   mensajero_id: z.string().uuid('Debes seleccionar un mensajero'),
   direccion: z.string().min(5, 'La dirección es requerida'),
-  estado: z.enum(['asignado', 'en_camino', 'entregado', 'fallido']).default('asignado'),
+  estado: z.enum(['asignado', 'en_camino', 'entregado', 'fallido']),
 })
 
 type ShipmentFormData = z.infer<typeof shipmentSchema>
