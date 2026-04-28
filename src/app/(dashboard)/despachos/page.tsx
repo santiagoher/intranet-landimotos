@@ -80,79 +80,77 @@ export default function DespachosPage() {
         </button>
       </div>
 
-      <div className="bg-neutral-900/50 backdrop-blur-md border border-neutral-800 rounded-2xl overflow-hidden min-h-[400px]">
+      <div className="bg-neutral-900/50 backdrop-blur-md border border-neutral-800 rounded-2xl overflow-x-auto min-h-[400px]">
         {loading || loadingRole ? (
           <div className="flex items-center justify-center p-20 text-neutral-500">
             Cargando registros...
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-neutral-950/50">
-                  <th className="px-6 py-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Punto</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Factura(s)</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Área / Revisor</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Mesa</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Fecha y Hora</th>
-                  <th className="px-6 py-4 text-right"></th>
+          <table className="w-full text-left border-collapse min-w-[640px]">
+            <thead>
+              <tr className="bg-neutral-950/50">
+                <th className="px-6 py-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Punto</th>
+                <th className="px-6 py-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Factura(s)</th>
+                <th className="px-6 py-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Área / Revisor</th>
+                <th className="px-6 py-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Mesa</th>
+                <th className="px-6 py-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Fecha y Hora</th>
+                <th className="px-6 py-4 text-right"></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-neutral-800">
+              {pendingOrders.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-20 text-center">
+                    <div className="flex flex-col items-center justify-center text-neutral-500">
+                      <ClipboardList className="w-12 h-12 text-neutral-800 mb-4" />
+                      <p>No hay pedidos pendientes de asignar.</p>
+                    </div>
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-neutral-800">
-                {pendingOrders.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="px-6 py-20 text-center">
-                      <div className="flex flex-col items-center justify-center text-neutral-500">
-                        <ClipboardList className="w-12 h-12 text-neutral-800 mb-4" />
-                        <p>No hay pedidos pendientes de asignar.</p>
+              ) : (
+                pendingOrders.map((p) => (
+                  <tr key={p.id} className="hover:bg-neutral-800/30 transition-colors group">
+                    <td className="px-6 py-4">
+                      <span className={`text-xs px-2 py-1 rounded-md font-medium ${
+                        p.punto === 'Principal' ? 'bg-amber-500/10 text-amber-500' : 'bg-purple-500/10 text-purple-500'
+                      }`}>
+                        {p.punto}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-neutral-300 font-mono">
+                      {p.numero_factura}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm">
+                        <p className="text-white">{p.area}</p>
+                        <p className="text-xs text-neutral-500">Rev: {p.revisado_por}</p>
                       </div>
                     </td>
+                    <td className="px-6 py-4 text-sm text-neutral-400">
+                      {p.mesa}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm">
+                        <p className="text-neutral-300">{new Date(p.created_at).toLocaleDateString()}</p>
+                        <p className="text-[10px] text-neutral-500">
+                          {new Date(p.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </p>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <button 
+                        onClick={() => setViewingPedido(p)}
+                        className="p-2 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-xl transition-all"
+                        title="Ver Detalles"
+                      >
+                        <Eye className="w-5 h-5" />
+                      </button>
+                    </td>
                   </tr>
-                ) : (
-                  pendingOrders.map((p) => (
-                    <tr key={p.id} className="hover:bg-neutral-800/30 transition-colors group">
-                      <td className="px-6 py-4">
-                        <span className={`text-xs px-2 py-1 rounded-md font-medium ${
-                          p.punto === 'Principal' ? 'bg-amber-500/10 text-amber-500' : 'bg-purple-500/10 text-purple-500'
-                        }`}>
-                          {p.punto}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-neutral-300 font-mono">
-                        {p.numero_factura}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm">
-                          <p className="text-white">{p.area}</p>
-                          <p className="text-xs text-neutral-500">Rev: {p.revisado_por}</p>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-neutral-400">
-                        {p.mesa}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm">
-                          <p className="text-neutral-300">{new Date(p.created_at).toLocaleDateString()}</p>
-                          <p className="text-[10px] text-neutral-500">
-                            {new Date(p.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          </p>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <button 
-                          onClick={() => setViewingPedido(p)}
-                          className="p-2 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-xl transition-all"
-                          title="Ver Detalles"
-                        >
-                          <Eye className="w-5 h-5" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                ))
+              )}
+            </tbody>
+          </table>
         )}
       </div>
 

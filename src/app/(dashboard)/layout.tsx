@@ -2,6 +2,7 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { Navbar } from '@/components/layout/Navbar'
+import { SidebarProvider } from '@/components/layout/SidebarContext'
 
 export default async function DashboardLayout({
   children,
@@ -30,20 +31,22 @@ export default async function DashboardLayout({
   const modulosPermitidos = perfil?.modulos_permitidos || []
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-50 selection:bg-blue-500/30">
-      <Sidebar rol={rol} modulosPermitidos={modulosPermitidos} />
-      
-      <div className="p-4 sm:ml-64 relative min-h-screen flex flex-col">
-        {/* Main bg glow decorative */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/5 rounded-full mix-blend-screen filter blur-[120px] opacity-70 pointer-events-none z-0"></div>
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-600/5 rounded-full mix-blend-screen filter blur-[120px] opacity-70 pointer-events-none z-0"></div>
+    <SidebarProvider>
+      <div className="min-h-screen bg-neutral-950 text-neutral-50 selection:bg-blue-500/30">
+        <Sidebar rol={rol} modulosPermitidos={modulosPermitidos} />
 
-        <Navbar userName={nombre} rol={rol} />
-        
-        <main className="flex-1 mt-6 relative z-10">
-          {children}
-        </main>
+        <div className="p-4 lg:ml-64 relative min-h-screen flex flex-col min-w-0 overflow-x-hidden">
+          {/* Main bg glow decorative */}
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/5 rounded-full mix-blend-screen filter blur-[120px] opacity-70 pointer-events-none z-0"></div>
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-600/5 rounded-full mix-blend-screen filter blur-[120px] opacity-70 pointer-events-none z-0"></div>
+
+          <Navbar userName={nombre} rol={rol} />
+
+          <main className="flex-1 mt-6 relative z-10">
+            {children}
+          </main>
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   )
 }

@@ -78,7 +78,7 @@ export default function InventariosPage() {
         </button>
       </div>
 
-      <div className="bg-neutral-900/50 backdrop-blur-md border border-neutral-800 rounded-2xl overflow-hidden">
+      <div className="bg-neutral-900/50 backdrop-blur-md border border-neutral-800 rounded-2xl overflow-x-auto">
         <div className="p-4 border-b border-neutral-800 flex flex-col sm:flex-row gap-4 justify-between bg-neutral-900/30">
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
@@ -92,8 +92,7 @@ export default function InventariosPage() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse min-w-[600px]">
             <thead>
               <tr className="bg-neutral-950/50">
                 <th className="px-6 py-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Código</th>
@@ -157,7 +156,6 @@ export default function InventariosPage() {
               )}
             </tbody>
           </table>
-        </div>
       </div>
 
       {showForm && (
