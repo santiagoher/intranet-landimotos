@@ -206,7 +206,7 @@ export default function ConfiguracionPage() {
                       item.punto === 'Principal' ? 'bg-amber-500/10 text-amber-500' : 'bg-purple-500/10 text-purple-500'
                     }`}>
                       {item.punto === 'Principal' ? <Building2 className="w-4 h-4" /> : <MapPin className="w-4 h-4" />}
-                    </div>5
+                    </div>
                     <div>
                       <p className="text-white font-bold">{item.valor}</p>
                       <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-medium">Asignado a {item.punto}</p>
