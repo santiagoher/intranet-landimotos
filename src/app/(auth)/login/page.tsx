@@ -40,25 +40,25 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-neutral-900 items-center justify-center p-4">
+    <div className="flex min-h-screen bg-neutral-900 items-center justify-center p-4 relative overflow-hidden">
       {/* Elementos decorativos (Glassmorphism) */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full mix-blend-screen filter blur-[128px] opacity-50"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald-500/20 rounded-full mix-blend-screen filter blur-[128px] opacity-50"></div>
+      <div className="absolute top-1/4 left-1/4 w-48 h-48 sm:w-96 sm:h-96 bg-blue-500/20 rounded-full mix-blend-screen filter blur-[80px] sm:blur-[128px] opacity-50 pointer-events-none"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-48 h-48 sm:w-96 sm:h-96 bg-emerald-500/20 rounded-full mix-blend-screen filter blur-[80px] sm:blur-[128px] opacity-50 pointer-events-none"></div>
 
       <div className="relative w-full max-w-md z-10">
-        <div className="bg-neutral-800/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-neutral-700 p-8">
+        <div className="bg-neutral-800/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-neutral-700 p-5 sm:p-8">
           
-          <div className="flex flex-col items-center mb-8">
-            <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-blue-500/30">
-              <Package className="w-8 h-8 text-white" />
+          <div className="flex flex-col items-center mb-6 sm:mb-8">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 shadow-lg shadow-blue-500/30">
+              <Package className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-white tracking-tight">Portal Logístico</h1>
-            <p className="text-neutral-400 mt-2 text-sm text-center">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Portal Logístico</h1>
+            <p className="text-neutral-400 mt-1.5 text-xs sm:text-sm text-center">
               Ingresa tus credenciales para acceder a tu panel de control.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-5">
             <div>
               <label className="block text-sm font-medium text-neutral-300 mb-1" htmlFor="email">
                 Correo Electrónico
