@@ -328,7 +328,7 @@ export function DespachosAdminStats() {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'right',
+        position: 'bottom',
         labels: { color: '#737373', font: { size: 10 }, usePointStyle: true }
       }
     },
@@ -339,7 +339,7 @@ export function DespachosAdminStats() {
         pointLabels: {
           display: true,
           centerPointLabels: true,
-          font: { size: 10 },
+          font: { size: 9 },
           color: '#a3a3a3'
         },
         ticks: { display: false }
@@ -351,23 +351,23 @@ export function DespachosAdminStats() {
     <div className="space-y-8 animate-in fade-in duration-700">
       
       {/* Header de Stats */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-neutral-900/50 p-6 rounded-3xl border border-neutral-800">
-        <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 bg-neutral-900/50 p-4 sm:p-6 rounded-3xl border border-neutral-800">
+        <div className="w-full xl:w-auto">
+          <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
             Análisis de Operaciones
           </h1>
-          <p className="text-neutral-400 text-sm mt-1">Métricas de rendimiento y flujos de despacho.</p>
+          <p className="text-neutral-400 text-xs sm:text-sm mt-1">Métricas de rendimiento y flujos de despacho.</p>
         </div>
         
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3 w-full xl:w-auto">
             {/* Buscador de Factura */}
-            <form onSubmit={handleSearch} className="relative group">
+            <form onSubmit={handleSearch} className="relative group flex-1 sm:flex-initial">
               <input 
                 type="text"
                 placeholder="Buscar factura..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-neutral-950 border border-neutral-800 text-white text-sm px-10 py-2.5 rounded-2xl outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all w-[180px] sm:w-[240px]"
+                className="bg-neutral-950 border border-neutral-800 text-white text-sm px-10 py-2.5 rounded-2xl outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all w-full sm:w-[200px]"
               />
               <Search className="w-4 h-4 text-neutral-500 absolute left-4 top-1/2 -translate-y-1/2 group-focus-within:text-blue-500 transition-colors" />
               {isSearching && (
@@ -402,7 +402,7 @@ export function DespachosAdminStats() {
 
             <button 
               onClick={() => setShowReportModal(true)}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-2xl text-sm font-medium transition-all shadow-lg shadow-blue-600/20 active:scale-[0.98]"
+              className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-2xl text-sm font-medium transition-all shadow-lg shadow-blue-600/20 active:scale-[0.98] flex-1 sm:flex-none"
             >
               <FileDown className="w-4 h-4" />
               <span>Filtros y Reportes</span>

@@ -82,11 +82,11 @@ export default function ConfiguracionPage() {
         <p className="text-neutral-400">Gestiona las opciones que aparecen en el formulario de facturación.</p>
       </header>
 
-      {/* Tabs Principales de Categoría */}
-      <div className="flex p-1 bg-neutral-900 border border-neutral-800 rounded-2xl w-fit">
+      {/* Tabs Principales de Categoría - Scrolleables en móvil si es necesario */}
+      <div className="flex p-1 bg-neutral-900 border border-neutral-800 rounded-2xl w-full sm:w-fit overflow-x-auto hide-scrollbar">
         <button
           onClick={() => setActiveTab('area')}
-          className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
+          className={`px-4 sm:px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 flex-shrink-0 ${
             activeTab === 'area' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'text-neutral-400 hover:text-white'
           }`}
         >
@@ -94,7 +94,7 @@ export default function ConfiguracionPage() {
         </button>
         <button
           onClick={() => setActiveTab('revisor')}
-          className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
+          className={`px-4 sm:px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 flex-shrink-0 ${
             activeTab === 'revisor' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'text-neutral-400 hover:text-white'
           }`}
         >
@@ -102,7 +102,7 @@ export default function ConfiguracionPage() {
         </button>
         <button
           onClick={() => setActiveTab('mesa')}
-          className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
+          className={`px-4 sm:px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 flex-shrink-0 ${
             activeTab === 'mesa' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'text-neutral-400 hover:text-white'
           }`}
         >
@@ -214,7 +214,7 @@ export default function ConfiguracionPage() {
                   </div>
                   <button
                     onClick={() => handleDelete(item.id)}
-                    className="p-2 text-neutral-600 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                    className="p-2 text-neutral-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
