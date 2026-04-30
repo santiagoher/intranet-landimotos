@@ -123,7 +123,7 @@ export function Sidebar({ rol, modulosPermitidos = [] }: SidebarProps) {
           <div className="mt-auto pt-4 border-t border-neutral-800">
             <button 
               onClick={handleLogout}
-              className="flex items-center w-full p-3 text-neutral-400 rounded-xl hover:bg-red-500/10 hover:text-red-500 transition-all group"
+              className="flex items-center w-full p-3 text-neutral-400 rounded-xl hover:bg-red-500/10 hover:text-red-500 transition-all group cursor-pointer"
             >
               <LogOut className="w-5 h-5 flex-shrink-0 text-neutral-500 group-hover:text-red-500 transition-colors" />
               <span className="ms-3">Cerrar Sesión</span>
