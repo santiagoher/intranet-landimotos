@@ -27,7 +27,6 @@ export function Sidebar({ rol, modulosPermitidos = [] }: SidebarProps) {
   const { isOpen, close } = useSidebar()
 
   const links = [
-    { id: 'dashboard', name: 'Dashboard', href: '/', icon: LayoutDashboard, roles: ['Admin', 'Operativo'] },
     { id: 'despachos', name: 'Despachos', href: '/despachos', icon: Package, roles: ['Admin', 'Operativo'] },
     { id: 'mensajeros', name: 'Mensajeros', href: '/mensajeros', icon: Truck, roles: ['Admin', 'Operativo'] },
     { id: 'admin-mensajeros', name: 'Conductores', href: '/admin/mensajeros', icon: Truck, roles: ['Admin'] },

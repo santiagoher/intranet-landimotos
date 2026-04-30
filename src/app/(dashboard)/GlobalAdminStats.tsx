@@ -27,7 +27,11 @@ ChartJS.register(
   Filler
 )
 
-export function GlobalAdminStats({ pedidos }: { pedidos: any[] }) {
+interface GlobalAdminStatsProps {
+  pedidos: any[]
+}
+
+export function GlobalAdminStats({ pedidos }: GlobalAdminStatsProps) {
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -35,8 +39,15 @@ export function GlobalAdminStats({ pedidos }: { pedidos: any[] }) {
       legend: { labels: { color: 'rgba(255, 255, 255, 0.7)' } }
     },
     scales: {
-      x: { ticks: { color: 'rgba(255, 255, 255, 0.5)' }, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-      y: { ticks: { color: 'rgba(255, 255, 255, 0.5)' }, grid: { color: 'rgba(255, 255, 255, 0.05)' } }
+      x: {
+        ticks: { color: 'rgba(255, 255, 255, 0.5)', maxTicksLimit: 10 },
+        grid: { color: 'rgba(255, 255, 255, 0.05)' }
+      },
+      y: {
+        ticks: { color: 'rgba(255, 255, 255, 0.5)' },
+        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+        beginAtZero: true
+      }
     }
   }
 
@@ -44,7 +55,10 @@ export function GlobalAdminStats({ pedidos }: { pedidos: any[] }) {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { position: 'bottom' as const, labels: { color: 'rgba(255, 255, 255, 0.7)' } }
+      legend: {
+        position: 'bottom' as const,
+        labels: { color: 'rgba(255, 255, 255, 0.7)', padding: 16 }
+      }
     },
     cutout: '70%'
   }
@@ -52,28 +66,34 @@ export function GlobalAdminStats({ pedidos }: { pedidos: any[] }) {
   const lineChartData = useMemo(() => {
     const today = new Date()
     const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate()
-    const labels = Array.from({length: daysInMonth}, (_, i) => (i + 1).toString())
-    
+    const labels = Array.from({ length: daysInMonth }, (_, i) => (i + 1).toString())
     const data = Array(daysInMonth).fill(0)
-    
+
     pedidos.forEach((p: any) => {
       const d = new Date(p.created_at)
-      if (d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear()) {
+      if (
+        d.getMonth() === today.getMonth() &&
+        d.getFullYear() === today.getFullYear()
+      ) {
         const dayIdx = d.getDate() - 1
-        data[dayIdx] += (p.numero_pedidos || 1)
+        data[dayIdx] += p.numero_pedidos || 1
       }
     })
 
     return {
       labels,
-      datasets: [{
-        label: 'Volumen de Pedidos',
-        data,
-        borderColor: 'rgb(59, 130, 246)',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-        fill: true,
-        tension: 0.4,
-      }]
+      datasets: [
+        {
+          label: 'Pedidos registrados',
+          data,
+          borderColor: 'rgb(59, 130, 246)',
+          backgroundColor: 'rgba(59, 130, 246, 0.08)',
+          fill: true,
+          tension: 0.4,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+        }
+      ]
     }
   }, [pedidos])
 
@@ -92,35 +112,47 @@ export function GlobalAdminStats({ pedidos }: { pedidos: any[] }) {
 
     return {
       labels: ['Pendientes', 'Enviados', 'Entregados', 'Cancelados'],
-      datasets: [{
-        data: [pendientes, enviados, entregados, cancelados],
-        backgroundColor: [
-          'rgba(245, 158, 11, 0.8)', // amber
-          'rgba(59, 130, 246, 0.8)', // blue
-          'rgba(16, 185, 129, 0.8)', // emerald
-          'rgba(239, 68, 68, 0.8)'   // red
-        ],
-        borderWidth: 0,
-      }]
+      datasets: [
+        {
+          data: [pendientes, enviados, entregados, cancelados],
+          backgroundColor: [
+            'rgba(245, 158, 11, 0.8)',
+            'rgba(59, 130, 246, 0.8)',
+            'rgba(16, 185, 129, 0.8)',
+            'rgba(239, 68, 68, 0.8)'
+          ],
+          borderWidth: 0
+        }
+      ]
     }
   }, [pedidos])
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-2 bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 rounded-2xl p-6 min-h-[350px] flex flex-col">
-        <h3 className="text-lg font-bold text-white mb-6">Rendimiento Operativo del Mes</h3>
-        <div className="flex-1 relative w-full h-[300px]">
+      {/* Línea — Rendimiento diario */}
+      <div className="lg:col-span-2 bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 rounded-2xl p-6 flex flex-col">
+        <div className="mb-4">
+          <h3 className="text-lg font-bold text-white">Rendimiento Operativo del Mes</h3>
+          <p className="text-xs text-neutral-500 mt-0.5">Pedidos registrados por día</p>
+        </div>
+        <div className="relative flex-1 min-h-[280px]">
           <Line data={lineChartData} options={chartOptions} />
         </div>
       </div>
-      
-      <div className="bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 rounded-2xl p-6 min-h-[350px] flex flex-col">
-        <h3 className="text-lg font-bold text-white mb-6">Distribución de Estados</h3>
-        <div className="flex-1 relative w-full h-[250px] flex items-center justify-center">
+
+      {/* Dona — Distribución de estados */}
+      <div className="bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 rounded-2xl p-6 flex flex-col">
+        <div className="mb-4">
+          <h3 className="text-lg font-bold text-white">Distribución de Estados</h3>
+          <p className="text-xs text-neutral-500 mt-0.5">Pedidos del mes actual</p>
+        </div>
+        <div className="relative flex-1 min-h-[240px] flex items-center justify-center">
           {pedidos.length > 0 ? (
             <Doughnut data={doughnutData} options={doughnutOptions} />
           ) : (
-            <p className="text-neutral-500 italic text-sm">No hay datos en el mes actual</p>
+            <p className="text-neutral-500 italic text-sm text-center">
+              Sin datos este mes
+            </p>
           )}
         </div>
       </div>
