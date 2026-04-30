@@ -121,7 +121,7 @@ export function UserEditModal({ user, onSuccess, onCancel }: UserEditModalProps)
           <div className="pt-2">
             <label className="block text-sm font-bold text-neutral-400 mb-3 uppercase tracking-wider">Módulos de Acceso</label>
             <div className="grid grid-cols-1 gap-2">
-              {['despachos', 'mensajeros', 'inventarios'].map((module) => (
+              {['despachos', 'mensajeros'].map((module) => (
                 <label
                   key={module}
                   className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer ${

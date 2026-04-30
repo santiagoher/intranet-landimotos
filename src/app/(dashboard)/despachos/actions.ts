@@ -32,6 +32,7 @@ export async function getPedidos() {
   const { data, error } = await supabase
     .from('pedidos')
     .select('*')
+    .neq('estado', 'cancelado')
     .gte('created_at', startOfMonth.toISOString())
     .order('created_at', { ascending: false })
 
@@ -64,7 +65,7 @@ export async function getEnvios() {
     .select(`
       *,
       pedido:pedidos(numero_factura, detalles),
-      mensajero:mensajeros(nombre)
+      mensajero:mensajeros(nombre_conductor)
     `)
     .order('created_at', { ascending: false })
 
@@ -100,7 +101,7 @@ export async function deletePedido(id: string) {
   const supabase = await createClient()
   const { error } = await supabase
     .from('pedidos')
-    .delete()
+    .update({ estado: 'cancelado' })
     .eq('id', id)
 
   if (error) return { error: error.message }

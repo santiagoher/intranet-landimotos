@@ -6,6 +6,7 @@ import { Loader2, X, CheckCircle2, AlertCircle, Plus, Trash2, Building2, MapPin 
 import { createPedido } from './actions'
 import { getConfiguraciones } from '../admin/configuracion/actions'
 
+
 const orderSchema = z.object({
   punto: z.enum(['Principal', 'Sucursal']),
   facturas: z.array(z.object({

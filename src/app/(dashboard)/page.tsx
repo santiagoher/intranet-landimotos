@@ -1,6 +1,7 @@
-import { Package, Truck, Archive, Users, ArrowUpRight, CheckCircle2 } from 'lucide-react'
+import { Package, Truck, Users, ArrowUpRight, Clock, CheckCircle2, BarChart2 } from 'lucide-react'
 import { createClient } from '@/utils/supabase/server'
 import Link from 'next/link'
+import { GlobalAdminStats } from './GlobalAdminStats'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -18,22 +19,32 @@ export default async function DashboardPage() {
   const now = new Date()
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
 
-  // Obtener conteos reales de la base de datos
+  // Obtener conteos reales de la base de datos y toda la data del mes para las gráficas
   const [
     { count: totalPedidosMes },
     { count: totalPendientesMes },
     { count: totalMensajeros },
+    { count: totalUsuarios },
+    { data: pedidosDelMes },
+    { data: enviosRecientes }
   ] = await Promise.all([
     supabase.from('pedidos').select('*', { count: 'exact', head: true }).gte('created_at', startOfMonth),
     supabase.from('pedidos').select('*', { count: 'exact', head: true }).gte('created_at', startOfMonth).eq('estado', 'pendiente'),
-    supabase.from('perfiles').select('*', { count: 'exact', head: true }).eq('rol', 'Operativo')
+    supabase.from('mensajeros').select('*', { count: 'exact', head: true }).neq('estado', 'inactivo'),
+    supabase.from('perfiles').select('*', { count: 'exact', head: true }),
+    supabase.from('pedidos').select('created_at, estado, numero_pedidos').gte('created_at', startOfMonth),
+    supabase.from('envios')
+      .select('id, created_at, estado, mensajero:mensajeros(nombre_conductor), pedido:pedidos(numero_factura)')
+      .gte('created_at', startOfMonth)
+      .order('created_at', { ascending: false })
+      .limit(6)
   ])
 
   const stats = [
     { name: 'Pedidos del Mes', value: (totalPedidosMes || 0).toString(), change: 'Actualizado', icon: Package, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-    { name: 'Mensajeros Registrados', value: (totalMensajeros || 0).toString(), change: 'Sistema', icon: Truck, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-    { name: 'Pendientes por Enviar', value: (totalPendientesMes || 0).toString(), change: 'Urgente', icon: Archive, color: 'text-amber-500', bg: 'bg-amber-500/10' },
-    { name: 'Usuarios del Sistema', value: '4', change: 'Estable', icon: Users, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+    { name: 'Mensajeros Activos', value: (totalMensajeros || 0).toString(), change: 'Sistema', icon: Truck, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+    { name: 'Pendientes por Enviar', value: (totalPendientesMes || 0).toString(), change: 'Urgente', icon: Package, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+    { name: 'Usuarios del Sistema', value: (totalUsuarios || 0).toString(), change: 'Estable', icon: Users, color: 'text-purple-500', bg: 'bg-purple-500/10' },
   ]
   
   if (!isAdmin) {
@@ -63,13 +74,7 @@ export default async function DashboardPage() {
             <p className="text-sm text-neutral-500 mt-1">Consulta la disponibilidad de los domiciliarios.</p>
           </Link>
 
-          <Link href="/inventarios" className="group bg-neutral-900 border border-neutral-800 p-6 rounded-2xl hover:border-amber-500/50 transition-all shadow-sm">
-            <div className="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center text-amber-500 mb-4 group-hover:scale-110 transition-transform">
-              <Archive className="w-6 h-6" />
-            </div>
-            <h3 className="text-lg font-bold text-white">Inventario</h3>
-            <p className="text-sm text-neutral-500 mt-1">Control de entrada y salida de contenedores.</p>
-          </Link>
+
         </div>
 
         <div className="bg-neutral-900/50 border border-neutral-800 rounded-2xl p-6">
@@ -127,28 +132,57 @@ export default async function DashboardPage() {
         })}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 rounded-2xl p-6 min-h-[300px] flex items-center justify-center text-center">
-          <div>
-            <Package className="w-12 h-12 text-neutral-800 mx-auto mb-4" />
-            <p className="text-neutral-500 text-sm">Próximamente: Gráfico de rendimiento de {new Date().toLocaleDateString('es-ES', { month: 'long' })}</p>
-          </div>
+      <GlobalAdminStats pedidos={pedidosDelMes || []} />
+
+      {/* Actividad Reciente */}
+      <div className="bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 rounded-2xl p-6">
+        <div className="flex items-center gap-2 mb-6">
+          <BarChart2 className="w-5 h-5 text-blue-500" />
+          <h3 className="text-lg font-bold text-white">Actividad Reciente de Envíos</h3>
+          <span className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold ml-2">Este mes</span>
         </div>
-        
-        <div className="bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 rounded-2xl p-6">
-          <h3 className="text-lg font-medium text-white mb-4">Actividad del Mes</h3>
-          <div className="space-y-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="flex gap-4">
-                <div className="w-2 h-2 mt-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div>
-                <div>
-                  <p className="text-sm text-white">Actividad registrada en {new Date().toLocaleDateString('es-ES', { month: 'long' })}</p>
-                  <p className="text-xs text-neutral-500 mt-0.5">Métrica actualizada recientemente</p>
-                </div>
-              </div>
-            ))}
+        {!enviosRecientes || enviosRecientes.length === 0 ? (
+          <p className="text-neutral-500 italic text-sm text-center py-8">No hay envíos registrados este mes.</p>
+        ) : (
+          <div className="relative">
+            <div className="absolute left-[7px] top-2 bottom-2 w-px bg-neutral-800"></div>
+            <div className="space-y-5 pl-6">
+              {enviosRecientes.map((envio: any) => {
+                const isFinalizado = envio.estado === 'entregado'
+                return (
+                  <div key={envio.id} className="relative flex items-start gap-4">
+                    <div className={`absolute -left-6 w-3.5 h-3.5 rounded-full border-2 mt-1 ${
+                      isFinalizado
+                        ? 'bg-emerald-500 border-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]'
+                        : 'bg-blue-500 border-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]'
+                    }`}></div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-sm font-semibold text-white truncate">
+                          {(envio.mensajero as any)?.nombre_conductor || 'Mensajero'}
+                        </p>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex-shrink-0 ${
+                          isFinalizado
+                            ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
+                            : 'bg-blue-500/10 text-blue-500 border-blue-500/20'
+                        }`}>
+                          {isFinalizado ? 'Entregado' : 'En camino'}
+                        </span>
+                      </div>
+                      <p className="text-xs text-neutral-500 mt-0.5 truncate">
+                        Fact: {(envio.pedido as any)?.numero_factura || 'N/A'}
+                      </p>
+                      <p className="text-[10px] text-neutral-600 mt-0.5 flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {new Date(envio.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })} — {new Date(envio.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}
+                      </p>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
     </div>

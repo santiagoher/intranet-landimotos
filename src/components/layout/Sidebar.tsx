@@ -30,7 +30,7 @@ export function Sidebar({ rol, modulosPermitidos = [] }: SidebarProps) {
     { id: 'dashboard', name: 'Dashboard', href: '/', icon: LayoutDashboard, roles: ['Admin', 'Operativo'] },
     { id: 'despachos', name: 'Despachos', href: '/despachos', icon: Package, roles: ['Admin', 'Operativo'] },
     { id: 'mensajeros', name: 'Mensajeros', href: '/mensajeros', icon: Truck, roles: ['Admin', 'Operativo'] },
-    { id: 'inventarios', name: 'Inventarios', href: '/inventarios', icon: Archive, roles: ['Admin', 'Operativo'] },
+    { id: 'admin-mensajeros', name: 'Conductores', href: '/admin/mensajeros', icon: Truck, roles: ['Admin'] },
     { id: 'usuarios', name: 'Usuarios', href: '/admin/usuarios', icon: Users, roles: ['Admin'] },
     { id: 'configuracion', name: 'Campos', href: '/admin/configuracion', icon: Archive, roles: ['Admin'] },
   ]

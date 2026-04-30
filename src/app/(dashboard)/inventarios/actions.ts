@@ -15,6 +15,7 @@ export async function getContenedores() {
   const { data, error } = await supabase
     .from('contenedores')
     .select('*')
+    .neq('estado', 'mantenimiento') // Usamos mantenimiento como una forma de "sacar de circulación" sin borrar
     .order('created_at', { ascending: false })
 
   if (error) throw new Error(error.message)
@@ -64,7 +65,7 @@ export async function deleteContenedor(id: string) {
   const supabase = await createClient()
   const { error } = await supabase
     .from('contenedores')
-    .delete()
+    .update({ estado: 'mantenimiento' })
     .eq('id', id)
 
   if (error) return { error: error.message }

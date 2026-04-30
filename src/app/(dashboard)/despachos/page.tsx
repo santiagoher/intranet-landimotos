@@ -32,10 +32,8 @@ export default function DespachosPage() {
   }
 
   useEffect(() => {
-    if (!isAdmin) {
-      refreshData()
-    }
-  }, [isAdmin])
+    refreshData()
+  }, [])
 
   const pendingOrders = pedidos.filter(p => p.estado === 'pendiente')
 
@@ -49,36 +47,45 @@ export default function DespachosPage() {
     )
   }
 
-  // 1. VISTA PARA ADMINISTRADOR: Directo a estadísticas
-  if (isAdmin) {
-    return <DespachosAdminStats />
-  }
+  // 1. ELIMINADO: Bloqueo de administrador para permitir vista mixta o cambio de vista
+  // Ahora el administrador puede ver las estadísticas AND la tabla debajo.
+
 
   // VISTA PARA OPERATIVO: Todo el flujo de registro y tabla
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Package className="w-6 h-6 text-blue-500" />
-            Registro de Facturas
-          </h2>
-          <div className="flex items-center gap-2 mt-1 flex-wrap">
-            <p className="text-neutral-400 text-sm">Control operativo y revisión de facturas por punto.</p>
-            <span className="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider border border-blue-500/20">
-              Registros de {new Date().toLocaleDateString('es-ES', { month: 'long' })}
-            </span>
+        {!isAdmin && (
+          <div>
+            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+              <Package className="w-6 h-6 text-blue-500" />
+              Registro de Facturas
+            </h2>
+            <div className="flex items-center gap-2 mt-1 flex-wrap">
+              <p className="text-neutral-400 text-sm">Control operativo y revisión de facturas por punto.</p>
+              <span className="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider border border-blue-500/20">
+                Registros de {new Date().toLocaleDateString('es-ES', { month: 'long' })}
+              </span>
+            </div>
           </div>
-        </div>
+        )}
         
-        <button 
-          onClick={() => setShowOrderForm(true)}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all shadow-lg shadow-blue-600/20 active:scale-[0.98]"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Registrar Factura</span>
-        </button>
+        {!isAdmin && (
+          <button 
+            onClick={() => setShowOrderForm(true)}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all shadow-lg shadow-blue-600/20 active:scale-[0.98]"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Registrar Factura</span>
+          </button>
+        )}
       </div>
+
+      {isAdmin && (
+        <div className="mb-8">
+           <DespachosAdminStats />
+        </div>
+      )}
 
       <div className="bg-neutral-900/50 backdrop-blur-md border border-neutral-800 rounded-2xl overflow-x-auto min-h-[400px]">
         {loading || loadingRole ? (
@@ -98,17 +105,17 @@ export default function DespachosPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-800">
-              {pendingOrders.length === 0 ? (
+              {pedidos.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-20 text-center">
                     <div className="flex flex-col items-center justify-center text-neutral-500">
                       <ClipboardList className="w-12 h-12 text-neutral-800 mb-4" />
-                      <p>No hay pedidos pendientes de asignar.</p>
+                      <p>No hay registros este mes.</p>
                     </div>
                   </td>
                 </tr>
               ) : (
-                pendingOrders.map((p) => (
+                pedidos.map((p) => (
                   <tr key={p.id} className="hover:bg-neutral-800/30 transition-colors group">
                     <td className="px-6 py-4">
                       <span className={`text-xs px-2 py-1 rounded-md font-medium ${

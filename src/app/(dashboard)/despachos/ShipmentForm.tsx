@@ -32,7 +32,7 @@ export function ShipmentForm({ pedido, onSuccess, onCancel }: ShipmentFormProps)
     const fetchMensajeros = async () => {
       try {
         const data = await getMensajeros()
-        setMensajeros(data.filter(m => m.estado === 'disponible'))
+        setMensajeros(data.filter(m => m.estado === 'disponible' || !m.estado))
       } catch (err) {
         console.error(err)
       } finally {
@@ -99,7 +99,7 @@ export function ShipmentForm({ pedido, onSuccess, onCancel }: ShipmentFormProps)
             >
               <option value="">{loadingMensajeros ? 'Cargando...' : 'Seleccione un mensajero disponible'}</option>
               {mensajeros.map(m => (
-                <option key={m.id} value={m.id} className="bg-neutral-950">{m.nombre}</option>
+                <option key={m.id} value={m.id} className="bg-neutral-950">{m.nombre_conductor}</option>
               ))}
             </select>
             {errors.mensajero_id && <p className="mt-1 text-xs text-red-500">{errors.mensajero_id.message}</p>}
