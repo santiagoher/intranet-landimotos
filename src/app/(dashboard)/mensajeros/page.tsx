@@ -624,7 +624,7 @@ export default function MensajerosPage() {
             <div className="flex items-center gap-2">
               <Utensils className="w-5 h-5 text-amber-500" />
               <h3 className="text-xl font-bold text-white">Control de Almuerzos</h3>
-              <span className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Bitácora Mensual</span>
+              <span className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Bitácora Diaria</span>
             </div>
           </div>
 
@@ -644,7 +644,7 @@ export default function MensajerosPage() {
                   {lunchHistory.length === 0 ? (
                     <tr>
                       <td colSpan={5} className="px-6 py-12 text-center text-neutral-500 italic">
-                        No hay registros de almuerzo este mes.
+                        No hay registros de almuerzo el día de hoy.
                       </td>
                     </tr>
                   ) : (
@@ -699,7 +699,7 @@ export default function MensajerosPage() {
             <div className="flex items-center gap-2">
               <ClipboardList className="w-5 h-5 text-neutral-500" />
               <h3 className="text-xl font-bold text-white">Historial de Rutas</h3>
-              <span className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Resumen Mensual</span>
+              <span className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Resumen Diario</span>
             </div>
             <div className="text-[10px] text-neutral-400 bg-neutral-800 px-3 py-1 rounded-full border border-neutral-700">
               {finishedRoutes.length} Entregas Completadas
@@ -723,7 +723,7 @@ export default function MensajerosPage() {
                   {finishedRoutes.length === 0 ? (
                     <tr>
                       <td colSpan={6} className="px-6 py-12 text-center text-neutral-500 italic">
-                        No hay rutas finalizadas en el historial de este mes.
+                        No hay rutas finalizadas en el historial de hoy.
                       </td>
                     </tr>
                   ) : (

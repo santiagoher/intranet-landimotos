@@ -238,9 +238,10 @@ export async function endLunch(mensajeroId: string) {
 export async function getLunchHistory() {
   const supabase = await createClient()
 
-  // Traer los registros de los últimos 30 días para evitar problemas de zona horaria
-  const thirtyDaysAgo = new Date()
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+  // Obtener el inicio del día actual a las 00:00:00
+  const now = new Date()
+  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  startOfDay.setHours(0, 0, 0, 0)
 
   const { data, error } = await supabase
     .from('mensajeros_almuerzos')
@@ -248,7 +249,7 @@ export async function getLunchHistory() {
       *,
       mensajero:mensajeros(nombre_conductor, placa_conductor)
     `)
-    .gte('created_at', thirtyDaysAgo.toISOString())
+    .gte('created_at', startOfDay.toISOString())
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -261,8 +262,10 @@ export async function getLunchHistory() {
 export async function getFinishedRoutes() {
   const supabase = await createClient()
 
-  const thirtyDaysAgo = new Date()
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+  // Obtener el inicio del día actual a las 00:00:00
+  const now = new Date()
+  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  startOfDay.setHours(0, 0, 0, 0)
 
   const { data, error } = await supabase
     .from('mensajeros_rutas')
@@ -271,7 +274,7 @@ export async function getFinishedRoutes() {
       mensajero:mensajeros(nombre_conductor, placa_conductor, foto_url)
     `)
     .eq('estado', 'finalizado')
-    .gte('created_at', thirtyDaysAgo.toISOString())
+    .gte('created_at', startOfDay.toISOString())
     .order('hora_llegada', { ascending: false })
 
   if (error) throw new Error(error.message)

@@ -77,7 +77,7 @@ export function Sidebar({ rol, modulosPermitidos = [] }: SidebarProps) {
                 <Package className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-white tracking-tight">Logística<span className="text-blue-500">Pro</span></h2>
+                <h2 className="text-xl font-bold text-white tracking-tight">Landimotos</h2>
                 <p className="text-[10px] text-neutral-400 font-medium tracking-wider uppercase">{rol}</p>
               </div>
             </div>
