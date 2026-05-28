@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react'
 import { Users, Search, Edit2, Shield, UserX, UserCheck, ShieldPlus } from 'lucide-react'
 import { getAllUsers } from './actions'
 import { UserEditModal } from './UserEditModal'
+import { TablePagination, usePagination } from '@/components/TablePagination'
 
 export default function UsuariosPage() {
   const [users, setUsers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [editingUser, setEditingUser] = useState<any>(null)
   const [searchTerm, setSearchTerm] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
 
   const fetchUsers = async () => {
     setLoading(true)
@@ -31,6 +33,12 @@ export default function UsuariosPage() {
     u.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     u.email.toLowerCase().includes(searchTerm.toLowerCase())
   )
+
+  const { totalItems, totalPages, pageSize, paginate } = usePagination(filteredUsers, 15)
+  const paginatedUsers = paginate(currentPage)
+
+  // Reset to page 1 when filter changes
+  useEffect(() => { setCurrentPage(1) }, [searchTerm])
 
   return (
     <div className="space-y-6">
@@ -80,7 +88,7 @@ export default function UsuariosPage() {
               ) : filteredUsers.length === 0 ? (
                 <tr><td colSpan={6} className="px-6 py-12 text-center text-neutral-500">No se encontraron usuarios.</td></tr>
               ) : (
-                filteredUsers.map((u) => (
+                paginatedUsers.map((u) => (
                   <tr key={u.id} className="hover:bg-neutral-800/30 transition-colors group">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -150,6 +158,13 @@ export default function UsuariosPage() {
               )}
             </tbody>
           </table>
+          <TablePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+          />
       </div>
 
       {editingUser && (

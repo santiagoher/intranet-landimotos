@@ -5,6 +5,7 @@ import { Truck, Plus, Search, Edit2, Trash2, ShieldCheck, User2 } from 'lucide-r
 import { getMensajeros, deleteMensajero } from '../../mensajeros/actions'
 import { MessengerForm } from '../../mensajeros/MessengerForm'
 import { useRole } from '@/hooks/useRole'
+import { TablePagination, usePagination } from '@/components/TablePagination'
 
 export default function AdminMensajerosPage() {
   const [mensajeros, setMensajeros] = useState<any[]>([])
@@ -13,6 +14,7 @@ export default function AdminMensajerosPage() {
   const [editingMessenger, setEditingMessenger] = useState<any>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const { isAdmin, loading: loadingRole } = useRole()
+  const [currentPage, setCurrentPage] = useState(1)
 
   const fetchMensajeros = async () => {
     setLoading(true)
@@ -46,6 +48,12 @@ export default function AdminMensajerosPage() {
     m.nombre_conductor.toLowerCase().includes(searchTerm.toLowerCase()) ||
     m.placa_conductor.toLowerCase().includes(searchTerm.toLowerCase())
   )
+
+  const { totalItems, totalPages, pageSize, paginate } = usePagination(filteredMensajeros, 15)
+  const paginatedMensajeros = paginate(currentPage)
+
+  // Reset to page 1 when filter changes
+  useEffect(() => { setCurrentPage(1) }, [searchTerm])
 
   if (!isAdmin && !loadingRole) {
     return (
@@ -125,7 +133,7 @@ export default function AdminMensajerosPage() {
                   </td>
                 </tr>
               ) : (
-                filteredMensajeros.map((m) => (
+                paginatedMensajeros.map((m) => (
                   <tr key={m.id} className="hover:bg-neutral-800/20 transition-colors group border-b border-neutral-800/50 last:border-0">
                     <td className="px-6 py-3">
                       <div className="flex items-center gap-3">
@@ -176,6 +184,13 @@ export default function AdminMensajerosPage() {
             </tbody>
           </table>
         </div>
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
       {showForm && (

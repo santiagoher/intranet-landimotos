@@ -5,6 +5,7 @@ import { Archive, Plus, Search, Edit2, Trash2 } from 'lucide-react'
 import { getContenedores, deleteContenedor } from './actions'
 import { ContainerForm } from './ContainerForm'
 import { useRole } from '@/hooks/useRole'
+import { TablePagination, usePagination } from '@/components/TablePagination'
 
 export default function InventariosPage() {
   const [contenedores, setContenedores] = useState<any[]>([])
@@ -13,6 +14,7 @@ export default function InventariosPage() {
   const [editingContainer, setEditingContainer] = useState<any>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const { isAdmin, loading: loadingRole } = useRole()
+  const [currentPage, setCurrentPage] = useState(1)
 
   const fetchContenedores = async () => {
     setLoading(true)
@@ -46,6 +48,12 @@ export default function InventariosPage() {
     c.codigo.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (c.descripcion && c.descripcion.toLowerCase().includes(searchTerm.toLowerCase()))
   )
+
+  const { totalItems, totalPages, pageSize, paginate } = usePagination(filteredContenedores, 15)
+  const paginatedContenedores = paginate(currentPage)
+
+  // Reset to page 1 when filter changes
+  useEffect(() => { setCurrentPage(1) }, [searchTerm])
 
   const getStatusColor = (estado: string) => {
     switch (estado) {
@@ -116,7 +124,7 @@ export default function InventariosPage() {
                   </td>
                 </tr>
               ) : (
-                filteredContenedores.map((c) => (
+                paginatedContenedores.map((c) => (
                   <tr key={c.id} className="hover:bg-neutral-800/30 transition-colors group">
                     <td className="px-6 py-4 font-medium text-white">{c.codigo}</td>
                     <td className="px-6 py-4 text-neutral-400 text-sm max-w-xs truncate">
@@ -156,6 +164,13 @@ export default function InventariosPage() {
               )}
             </tbody>
           </table>
+          <TablePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+          />
       </div>
 
       {showForm && (

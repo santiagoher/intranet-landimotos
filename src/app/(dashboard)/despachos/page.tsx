@@ -8,6 +8,7 @@ import { ShipmentForm } from './ShipmentForm'
 import { OrderDetailsModal } from './OrderDetailsModal'
 import { DespachosAdminStats } from './DespachosAdminStats'
 import { useRole } from '@/hooks/useRole'
+import { TablePagination, usePagination } from '@/components/TablePagination'
 
 export default function DespachosPage() {
   const [pedidos, setPedidos] = useState<any[]>([])
@@ -17,6 +18,7 @@ export default function DespachosPage() {
   const [selectedPedido, setSelectedPedido] = useState<any>(null)
   const [viewingPedido, setViewingPedido] = useState<any>(null)
   const { isAdmin, loading: loadingRole } = useRole()
+  const [currentPage, setCurrentPage] = useState(1)
   
   const refreshData = async () => {
     setLoading(true)
@@ -36,6 +38,12 @@ export default function DespachosPage() {
   }, [])
 
   const pendingOrders = pedidos.filter(p => p.estado === 'pendiente')
+
+  const { totalItems, totalPages, pageSize, paginate } = usePagination(pedidos, 15)
+  const paginatedPedidos = paginate(currentPage)
+
+  // Reset to page 1 when data changes
+  useEffect(() => { setCurrentPage(1) }, [pedidos])
 
   // 0. BLOQUEO DE CARGA: Mientras verificamos el rol, no mostramos nada
   if (loadingRole) {
@@ -93,6 +101,7 @@ export default function DespachosPage() {
             Cargando registros...
           </div>
         ) : (
+          <>
           <table className="w-full text-left border-collapse min-w-[640px]">
             <thead>
               <tr className="bg-neutral-950/50">
@@ -115,7 +124,7 @@ export default function DespachosPage() {
                   </td>
                 </tr>
               ) : (
-                pedidos.map((p) => (
+                paginatedPedidos.map((p) => (
                   <tr key={p.id} className="hover:bg-neutral-800/30 transition-colors group">
                     <td className="px-6 py-4">
                       <span className={`text-xs px-2 py-1 rounded-md font-medium ${
@@ -158,6 +167,14 @@ export default function DespachosPage() {
               )}
             </tbody>
           </table>
+          <TablePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+          />
+          </>
         )}
       </div>
 
