@@ -1060,7 +1060,7 @@ export default function MensajerosPage() {
           </div>
         </div>
       </div>
-
+              
       {searchedRoute && (
         <RouteDetailsModal 
           route={searchedRoute} 
@@ -1071,3 +1071,4 @@ export default function MensajerosPage() {
     </div>
   )
 }
+

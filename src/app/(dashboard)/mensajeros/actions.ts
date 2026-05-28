@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
+import { fetchAllSupabaseRows } from '@/utils/supabase/pagination'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { v4 as uuidv4 } from 'uuid'
@@ -21,6 +22,17 @@ const routeSchema = z.object({
   hora_salida: z.string().optional(),
 })
 
+type MessengerStatsYearlyRow = {
+  created_at: string
+  numero_pedidos: number | null
+}
+
+type MessengerStatsRangeRow = MessengerStatsYearlyRow & {
+  numero_factura: string | null
+  lugar_entrega: string | null
+  hora_salida: string | null
+}
+
 export async function getMensajeros() {
   const supabase = await createClient()
   const { data, error } = await supabase
@@ -33,7 +45,7 @@ export async function getMensajeros() {
   return data
 }
 
-export async function createMensajero(formData: any) {
+export async function createMensajero(formData: unknown) {
   const supabase = await createClient()
 
   const validatedFields = messengerSchema.safeParse(formData)
@@ -52,7 +64,7 @@ export async function createMensajero(formData: any) {
   return { success: true }
 }
 
-export async function updateMensajero(id: string, formData: any) {
+export async function updateMensajero(id: string, formData: unknown) {
   const supabase = await createClient()
 
   const validatedFields = messengerSchema.safeParse(formData)
@@ -135,7 +147,7 @@ export async function getActiveRoutes() {
   return data
 }
 
-export async function createRoute(formData: any) {
+export async function createRoute(formData: unknown) {
   const supabase = await createClient()
   const validatedFields = routeSchema.safeParse(formData)
 
@@ -292,25 +304,27 @@ export async function getMensajerosStats(startDate: string, endDate: string) {
   const endOfYear = new Date(year, 11, 31, 23, 59, 59).toISOString()
 
   // 1. Datos anuales (Enero a Diciembre del año del rango)
-  const { data: yearlyData } = await supabase
+  const yearlyData = await fetchAllSupabaseRows<MessengerStatsYearlyRow>(() => supabase
     .from('mensajeros_rutas')
     .select('created_at, numero_pedidos')
     .eq('estado', 'finalizado')
     .gte('created_at', startOfYear)
     .lte('created_at', endOfYear)
+    .order('created_at', { ascending: true }))
 
   // 2. Datos del rango
-  const { data: rangeData } = await supabase
+  const rangeData = await fetchAllSupabaseRows<MessengerStatsRangeRow>(() => supabase
     .from('mensajeros_rutas')
     .select('created_at, numero_pedidos, numero_factura, lugar_entrega, hora_salida')
     .eq('estado', 'finalizado')
     .gte('created_at', start)
     .lte('created_at', end)
+    .order('created_at', { ascending: true }))
 
   return {
-    yearly: yearlyData || [],
-    monthly: rangeData || [], // Usamos monthly como nombre estándar para el rango
-    hourly: rangeData || []
+    yearly: yearlyData,
+    monthly: rangeData, // Usamos monthly como nombre estándar para el rango
+    hourly: rangeData
   }
 }
 

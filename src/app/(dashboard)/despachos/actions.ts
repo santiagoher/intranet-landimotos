@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
+import { fetchAllSupabaseRows } from '@/utils/supabase/pagination'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
@@ -21,6 +22,15 @@ const shipmentSchema = z.object({
   estado: z.enum(['asignado', 'en_camino', 'entregado', 'fallido']).default('asignado'),
 })
 
+type PedidoRow = z.infer<typeof orderSchema> & {
+  id: string
+  created_at: string
+}
+
+type PedidoYearlyStatsRow = Pick<PedidoRow, 'created_at'>
+type PedidoRangeStatsRow = Pick<PedidoRow, 'created_at' | 'area' | 'revisado_por' | 'punto'>
+type PedidoReportRow = Record<string, string | number | boolean | null>
+
 export async function getPedidos() {
   const supabase = await createClient()
   
@@ -29,18 +39,17 @@ export async function getPedidos() {
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
   startOfMonth.setHours(0, 0, 0, 0)
   
-  const { data, error } = await supabase
+  const data = await fetchAllSupabaseRows<PedidoRow>(() => supabase
     .from('pedidos')
     .select('*')
     .neq('estado', 'cancelado')
     .gte('created_at', startOfMonth.toISOString())
-    .order('created_at', { ascending: false })
+    .order('created_at', { ascending: false }))
 
-  if (error) throw new Error(error.message)
   return data
 }
 
-export async function createPedido(formData: any) {
+export async function createPedido(formData: unknown) {
   const supabase = await createClient()
   const validatedFields = orderSchema.safeParse(formData)
 
@@ -73,7 +82,7 @@ export async function getEnvios() {
   return data
 }
 
-export async function createEnvio(formData: any) {
+export async function createEnvio(formData: unknown) {
   const supabase = await createClient()
   const validatedFields = shipmentSchema.safeParse(formData)
 
@@ -122,43 +131,37 @@ export async function getDespachosStats(startDate: string, endDate: string) {
   const endOfYear = new Date(year, 11, 31, 23, 59, 59).toISOString()
 
   // 1. Datos anuales (Enero a Diciembre del año del rango)
-  const { data: yearlyData } = await supabase
+  const yearlyData = await fetchAllSupabaseRows<PedidoYearlyStatsRow>(() => supabase
     .from('pedidos')
     .select('created_at')
     .gte('created_at', startOfYear)
     .lte('created_at', endOfYear)
+    .order('created_at', { ascending: true }))
 
   // 2. Datos del rango para áreas y revisores
-  const { data: rangeData } = await supabase
+  const rangeData = await fetchAllSupabaseRows<PedidoRangeStatsRow>(() => supabase
     .from('pedidos')
     .select('created_at, area, revisado_por, punto')
     .gte('created_at', start)
     .lte('created_at', end)
-
-  // 3. Pico de horas para el mismo rango
-  const { data: hourlyData } = await supabase
-    .from('pedidos')
-    .select('created_at')
-    .gte('created_at', start)
-    .lte('created_at', end)
+    .order('created_at', { ascending: true }))
 
   return {
-    yearly: yearlyData || [],
-    monthly: rangeData || [], // Reutilizamos la clave 'monthly' para no romper el frontend, pero representa el rango
-    hourly: hourlyData || []
+    yearly: yearlyData,
+    monthly: rangeData, // Reutilizamos la clave 'monthly' para no romper el frontend, pero representa el rango
+    hourly: rangeData
   }
 }
 
 export async function getDetailedReportData(startDate: string, endDate: string) {
   const supabase = await createClient()
-  const { data, error } = await supabase
+  const data = await fetchAllSupabaseRows<PedidoReportRow>(() => supabase
     .from('pedidos')
     .select('*')
     .gte('created_at', new Date(startDate + 'T00:00:00').toISOString())
     .lte('created_at', new Date(endDate + 'T23:59:59').toISOString())
-    .order('created_at', { ascending: true })
+    .order('created_at', { ascending: true }))
 
-  if (error) throw new Error(error.message)
   return data
 }
 
