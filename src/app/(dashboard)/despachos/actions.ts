@@ -119,16 +119,13 @@ export async function deletePedido(id: string) {
   return { success: true }
 }
 
-export async function getDespachosStats(startDate: string, endDate: string) {
+export async function getDespachosStats(startISO: string, endISO: string) {
   const supabase = await createClient()
   
-  const start = new Date(startDate + 'T00:00:00').toISOString()
-  const end = new Date(endDate + 'T23:59:59').toISOString()
-  
-  // Para el año, tomamos el año de la fecha de inicio
-  const year = new Date(startDate).getFullYear()
-  const startOfYear = new Date(year, 0, 1).toISOString()
-  const endOfYear = new Date(year, 11, 31, 23, 59, 59).toISOString()
+  // Para el año, tomamos el año de la fecha de inicio en UTC
+  const year = new Date(startISO).getUTCFullYear()
+  const startOfYear = new Date(Date.UTC(year, 0, 1, 0, 0, 0, 0)).toISOString()
+  const endOfYear = new Date(Date.UTC(year, 11, 31, 23, 59, 59, 999)).toISOString()
 
   // 1. Datos anuales (Enero a Diciembre del año del rango)
   const yearlyData = await fetchAllSupabaseRows<PedidoYearlyStatsRow>(() => supabase
@@ -142,8 +139,8 @@ export async function getDespachosStats(startDate: string, endDate: string) {
   const rangeData = await fetchAllSupabaseRows<PedidoRangeStatsRow>(() => supabase
     .from('pedidos')
     .select('created_at, area, revisado_por, punto')
-    .gte('created_at', start)
-    .lte('created_at', end)
+    .gte('created_at', startISO)
+    .lte('created_at', endISO)
     .order('created_at', { ascending: true }))
 
   return {
@@ -153,13 +150,13 @@ export async function getDespachosStats(startDate: string, endDate: string) {
   }
 }
 
-export async function getDetailedReportData(startDate: string, endDate: string) {
+export async function getDetailedReportData(startISO: string, endISO: string) {
   const supabase = await createClient()
   const data = await fetchAllSupabaseRows<PedidoReportRow>(() => supabase
     .from('pedidos')
     .select('*')
-    .gte('created_at', new Date(startDate + 'T00:00:00').toISOString())
-    .lte('created_at', new Date(endDate + 'T23:59:59').toISOString())
+    .gte('created_at', startISO)
+    .lte('created_at', endISO)
     .order('created_at', { ascending: true }))
 
   return data

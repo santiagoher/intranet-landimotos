@@ -43,8 +43,8 @@ export function DespachosAdminStats() {
   const [stats, setStats] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [dateFilter, setDateFilter] = useState(new Date().toISOString().split('T')[0])
-  const [puntoFilter, setPuntoFilter] = useState<'Principal' | 'Sucursal'>('Principal')
-  const [revisorPuntoFilter, setRevisorPuntoFilter] = useState<'Principal' | 'Sucursal'>('Principal')
+  const [puntoFilter, setPuntoFilter] = useState<'Principal' | 'Sucursal' | 'Todos'>('Todos')
+  const [revisorPuntoFilter, setRevisorPuntoFilter] = useState<'Principal' | 'Sucursal' | 'Todos'>('Todos')
   
   // Estados para reporte personalizado
   const [isRangeMode, setIsRangeMode] = useState(false)
@@ -61,22 +61,27 @@ export function DespachosAdminStats() {
   const fetchStats = async () => {
     setLoading(true)
     try {
-      let start = dateFilter
-      let end = dateFilter
+      let startISO = ''
+      let endISO = ''
       
       if (!isRangeMode) {
         // Modo mensual: calcular inicio y fin de mes basado en el día seleccionado
         const d = new Date(dateFilter + 'T12:00:00')
         const y = d.getFullYear()
         const m = d.getMonth()
-        start = new Date(y, m, 1).toISOString().split('T')[0]
-        end = new Date(y, m + 1, 0).toISOString().split('T')[0]
+        
+        const localStart = new Date(y, m, 1, 0, 0, 0, 0)
+        const localEnd = new Date(y, m + 1, 0, 23, 59, 59, 999)
+        startISO = localStart.toISOString()
+        endISO = localEnd.toISOString()
       } else {
-        start = startDate
-        end = endDate
+        const localStart = new Date(startDate + 'T00:00:00')
+        const localEnd = new Date(endDate + 'T23:59:59')
+        startISO = localStart.toISOString()
+        endISO = localEnd.toISOString()
       }
 
-      const data = await getDespachosStats(start, end)
+      const data = await getDespachosStats(startISO, endISO)
       setStats(data)
     } catch (error) {
       console.error('Error fetching stats:', error)
@@ -92,7 +97,9 @@ export function DespachosAdminStats() {
   const handleExportCSV = async () => {
     setExporting(true)
     try {
-      const data = await getDetailedReportData(startDate, endDate)
+      const localStart = new Date(startDate + 'T00:00:00')
+      const localEnd = new Date(endDate + 'T23:59:59')
+      const data = await getDetailedReportData(localStart.toISOString(), localEnd.toISOString())
       if (!data || data.length === 0) {
         alert('No hay datos para exportar en el rango seleccionado.')
         return
@@ -201,7 +208,7 @@ export function DespachosAdminStats() {
   // 3. RANKING ÁREAS (Filtrado por Punto)
   const areaCounts: { [key: string]: number } = {}
   stats.monthly
-    .filter((p: any) => p.punto === puntoFilter)
+    .filter((p: any) => puntoFilter === 'Todos' || p.punto === puntoFilter)
     .forEach((p: any) => {
       areaCounts[p.area] = (areaCounts[p.area] || 0) + 1
     })
@@ -210,7 +217,7 @@ export function DespachosAdminStats() {
   // 4. RANKING REVISORES (Filtrado por Punto)
   const revisorCounts: { [key: string]: number } = {}
   stats.monthly
-    .filter((p: any) => p.punto === revisorPuntoFilter)
+    .filter((p: any) => revisorPuntoFilter === 'Todos' || p.punto === revisorPuntoFilter)
     .forEach((p: any) => {
       revisorCounts[p.revisado_por] = (revisorCounts[p.revisado_por] || 0) + 1
     })
@@ -268,14 +275,8 @@ export function DespachosAdminStats() {
     datasets: [{
       label: 'Registros por Área',
       data: sortedAreas.map(([, count]) => count),
-      backgroundColor: [
-        'rgba(59, 130, 246, 0.5)',
-        'rgba(16, 185, 129, 0.5)',
-        'rgba(245, 158, 11, 0.5)',
-        'rgba(168, 85, 247, 0.5)',
-        'rgba(236, 72, 153, 0.5)',
-      ],
-      borderColor: '#171717',
+      backgroundColor: sortedAreas.map((_, i) => `hsla(${(i * 360) / Math.max(sortedAreas.length, 1)}, 75%, 60%, 0.5)`),
+      borderColor: sortedAreas.map((_, i) => `hsla(${(i * 360) / Math.max(sortedAreas.length, 1)}, 75%, 60%, 1)`),
       borderWidth: 2,
     }]
   }
@@ -285,14 +286,8 @@ export function DespachosAdminStats() {
     datasets: [{
       label: 'Registros por Revisor',
       data: sortedRevisores.map(([, count]) => count),
-      backgroundColor: [
-        'rgba(168, 85, 247, 0.5)',
-        'rgba(236, 72, 153, 0.5)',
-        'rgba(59, 130, 246, 0.5)',
-        'rgba(16, 185, 129, 0.5)',
-        'rgba(245, 158, 11, 0.5)',
-      ],
-      borderColor: '#171717',
+      backgroundColor: sortedRevisores.map((_, i) => `hsla(${(i * 360) / Math.max(sortedRevisores.length, 1)}, 75%, 60%, 0.5)`),
+      borderColor: sortedRevisores.map((_, i) => `hsla(${(i * 360) / Math.max(sortedRevisores.length, 1)}, 75%, 60%, 1)`),
       borderWidth: 2,
     }]
   }
@@ -518,7 +513,7 @@ export function DespachosAdminStats() {
             </h3>
             
             <div className="flex bg-neutral-950 p-1 rounded-xl border border-neutral-800">
-              {(['Principal', 'Sucursal'] as const).map((p) => (
+              {(['Todos', 'Principal', 'Sucursal'] as const).map((p) => (
                 <button
                   key={p}
                   onClick={() => setPuntoFilter(p)}
@@ -538,7 +533,7 @@ export function DespachosAdminStats() {
                <PolarArea data={areaData} options={polarOptions} />
              ) : (
                <div className="h-full flex flex-col items-center justify-center text-neutral-600 text-sm italic">
-                  No hay registros en {puntoFilter} para {monthName}
+                  No hay registros {puntoFilter === 'Todos' ? '' : `en ${puntoFilter} `}para {monthName}
                </div>
              )}
           </div>
@@ -552,7 +547,7 @@ export function DespachosAdminStats() {
             </h3>
             
             <div className="flex bg-neutral-950 p-1 rounded-xl border border-neutral-800">
-              {(['Principal', 'Sucursal'] as const).map((p) => (
+              {(['Todos', 'Principal', 'Sucursal'] as const).map((p) => (
                 <button
                   key={p}
                   onClick={() => setRevisorPuntoFilter(p)}
@@ -572,7 +567,7 @@ export function DespachosAdminStats() {
                <PolarArea data={revisorData} options={polarOptions} />
              ) : (
                <div className="h-full flex flex-col items-center justify-center text-neutral-600 text-sm italic">
-                  No hay registros de revisores en {revisorPuntoFilter} para {monthName}
+                  No hay registros de revisores {revisorPuntoFilter === 'Todos' ? '' : `en ${revisorPuntoFilter} `}para {monthName}
                </div>
              )}
           </div>
