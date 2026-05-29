@@ -391,7 +391,7 @@ export default function MensajerosPage() {
     const byMessenger: Record<string, { pedidos: number; facturas: number }> = {}
 
     stats.monthly.forEach((r: any) => {
-      const messengerName = r?.mensajero?.nombre_conductor?.trim() || 'Sin nombre'
+      const messengerName = r?.mensajero?.[0]?.nombre_conductor?.trim() || 'Sin nombre'
       const pedidos = Number(r?.numero_pedidos || 0)
       const facturas = String(r?.numero_factura || '')
         .split(',')

@@ -31,9 +31,9 @@ type MessengerStatsRangeRow = MessengerStatsYearlyRow & {
   numero_factura: string | null
   lugar_entrega: string | null
   hora_salida: string | null
-  mensajero: {
+  mensajero: Array<{
     nombre_conductor: string | null
-  } | null
+  }> | null
 }
 
 export async function getMensajeros() {
