@@ -31,6 +31,9 @@ type MessengerStatsRangeRow = MessengerStatsYearlyRow & {
   numero_factura: string | null
   lugar_entrega: string | null
   hora_salida: string | null
+  mensajero: {
+    nombre_conductor: string | null
+  } | null
 }
 
 export async function getMensajeros() {
@@ -315,7 +318,7 @@ export async function getMensajerosStats(startDate: string, endDate: string) {
   // 2. Datos del rango
   const rangeData = await fetchAllSupabaseRows<MessengerStatsRangeRow>(() => supabase
     .from('mensajeros_rutas')
-    .select('created_at, numero_pedidos, numero_factura, lugar_entrega, hora_salida')
+    .select('created_at, numero_pedidos, numero_factura, lugar_entrega, hora_salida, mensajero:mensajeros(nombre_conductor)')
     .eq('estado', 'finalizado')
     .gte('created_at', start)
     .lte('created_at', end)

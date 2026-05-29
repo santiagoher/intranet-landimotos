@@ -174,3 +174,4 @@ export async function searchPedidoByFactura(numeroFactura: string) {
   if (error) throw new Error(error.message)
   return data ? data[0] : null
 }
+

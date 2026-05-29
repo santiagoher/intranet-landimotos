@@ -387,6 +387,89 @@ export default function MensajerosPage() {
   }, [stats.monthly])
   const totalRutas = stats.monthly.length
 
+  const messengerRanking = useMemo(() => {
+    const byMessenger: Record<string, { pedidos: number; facturas: number }> = {}
+
+    stats.monthly.forEach((r: any) => {
+      const messengerName = r?.mensajero?.nombre_conductor?.trim() || 'Sin nombre'
+      const pedidos = Number(r?.numero_pedidos || 0)
+      const facturas = String(r?.numero_factura || '')
+        .split(',')
+        .map((f: string) => f.trim())
+        .filter((f: string) => f.length > 0).length
+
+      if (!byMessenger[messengerName]) {
+        byMessenger[messengerName] = { pedidos: 0, facturas: 0 }
+      }
+
+      byMessenger[messengerName].pedidos += Number.isFinite(pedidos) ? pedidos : 0
+      byMessenger[messengerName].facturas += facturas
+    })
+
+    const base = Object.entries(byMessenger).map(([nombre, values]) => ({
+      nombre,
+      pedidos: values.pedidos,
+      facturas: values.facturas,
+    }))
+
+    const sortByName = (a: { nombre: string }, b: { nombre: string }) =>
+      a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' })
+
+    const pedidos = [...base]
+      .sort((a, b) => b.pedidos - a.pedidos || sortByName(a, b))
+      .filter((item) => item.pedidos > 0)
+
+    const facturas = [...base]
+      .sort((a, b) => b.facturas - a.facturas || sortByName(a, b))
+      .filter((item) => item.facturas > 0)
+
+    return { pedidos, facturas }
+  }, [stats.monthly])
+
+  const rankingChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    indexAxis: 'y' as const,
+    plugins: {
+      legend: { display: false },
+    },
+    scales: {
+      x: { ticks: { color: 'rgba(255, 255, 255, 0.5)' }, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+      y: { ticks: { color: 'rgba(255, 255, 255, 0.8)' }, grid: { color: 'rgba(255, 255, 255, 0.02)' } }
+    }
+  }
+
+  const pedidosRankingChartData = {
+    labels: messengerRanking.pedidos.map((item) =>
+      item.nombre.length > 26 ? `${item.nombre.slice(0, 26)}...` : item.nombre
+    ),
+    datasets: [{
+      label: 'Pedidos entregados',
+      data: messengerRanking.pedidos.map((item) => item.pedidos),
+      backgroundColor: 'rgba(59, 130, 246, 0.65)',
+      borderColor: 'rgb(59, 130, 246)',
+      borderWidth: 1,
+      borderRadius: 8,
+    }],
+  }
+
+  const facturasRankingChartData = {
+    labels: messengerRanking.facturas.map((item) =>
+      item.nombre.length > 26 ? `${item.nombre.slice(0, 26)}...` : item.nombre
+    ),
+    datasets: [{
+      label: 'Facturas entregadas',
+      data: messengerRanking.facturas.map((item) => item.facturas),
+      backgroundColor: 'rgba(16, 185, 129, 0.65)',
+      borderColor: 'rgb(16, 185, 129)',
+      borderWidth: 1,
+      borderRadius: 8,
+    }],
+  }
+
+  const pedidosRankingHeight = Math.max(320, messengerRanking.pedidos.length * 34)
+  const facturasRankingHeight = Math.max(320, messengerRanking.facturas.length * 34)
+
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -1020,7 +1103,6 @@ export default function MensajerosPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 h-[350px] shadow-sm flex flex-col">
             <div className="flex items-center gap-2 mb-6">
-              <MapPin className="w-4 h-4 text-amber-500" />
               <h3 className="text-sm font-bold text-neutral-300">Top 5: Ubicaciones Más Concurridas</h3>
             </div>
             <div className="flex-1 relative flex items-center justify-center">
@@ -1041,7 +1123,6 @@ export default function MensajerosPage() {
 
           <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 h-[350px] shadow-sm flex flex-col">
             <div className="flex items-center gap-2 mb-6">
-              <Clock className="w-4 h-4 text-purple-500" />
               <h3 className="text-sm font-bold text-neutral-300">Pico de Trabajo (Horas de Salida)</h3>
             </div>
             <div className="flex-1 relative">
@@ -1058,6 +1139,66 @@ export default function MensajerosPage() {
               )}
             </div>
           </div>
+        </div>
+
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          <article className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 shadow-sm">
+              <div className="mb-4 border-b border-neutral-800 pb-3">
+                <div className="flex items-center justify-between gap-2">
+                  <h4 className="text-sm font-bold text-white">Pedidos entregados</h4>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">{messengerRanking.pedidos.length} operadores</span>
+                </div>
+                {!loadingStats && messengerRanking.pedidos.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
+                    {messengerRanking.pedidos.slice(0, 3).map((item, index) => (
+                      <span key={`${item.nombre}-${index}`} className="rounded-full border border-neutral-700 bg-neutral-800 px-2.5 py-1 text-neutral-300">
+                        {index + 1}. {item.nombre}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {loadingStats ? (
+                <div className="w-full h-[300px] flex items-center justify-center"><span className="w-6 h-6 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></span></div>
+              ) : messengerRanking.pedidos.length === 0 ? (
+                <div className="w-full h-[300px] flex items-center justify-center text-neutral-400 text-sm text-center px-4">Sin pedidos entregados en el rango seleccionado.</div>
+              ) : (
+                <div className="max-h-[440px] overflow-y-auto pr-2">
+                  <div style={{ height: `${pedidosRankingHeight}px` }}>
+                    <Bar data={pedidosRankingChartData} options={rankingChartOptions} />
+                  </div>
+                </div>
+              )}
+          </article>
+
+          <article className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 shadow-sm">
+              <div className="mb-4 border-b border-neutral-800 pb-3">
+                <div className="flex items-center justify-between gap-2">
+                  <h4 className="text-sm font-bold text-white">Facturas entregadas</h4>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">{messengerRanking.facturas.length} operadores</span>
+                </div>
+                {!loadingStats && messengerRanking.facturas.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
+                    {messengerRanking.facturas.slice(0, 3).map((item, index) => (
+                      <span key={`${item.nombre}-${index}`} className="rounded-full border border-neutral-700 bg-neutral-800 px-2.5 py-1 text-neutral-300">
+                        {index + 1}. {item.nombre}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {loadingStats ? (
+                <div className="w-full h-[300px] flex items-center justify-center"><span className="w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></span></div>
+              ) : messengerRanking.facturas.length === 0 ? (
+                <div className="w-full h-[300px] flex items-center justify-center text-neutral-400 text-sm text-center px-4">Sin facturas entregadas en el rango seleccionado.</div>
+              ) : (
+                <div className="max-h-[440px] overflow-y-auto pr-2">
+                  <div style={{ height: `${facturasRankingHeight}px` }}>
+                    <Bar data={facturasRankingChartData} options={rankingChartOptions} />
+                  </div>
+                </div>
+              )}
+          </article>
         </div>
       </div>
               
