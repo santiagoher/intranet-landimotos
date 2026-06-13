@@ -1,17 +1,24 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Loader2, X, CheckCircle2, AlertCircle, Upload, Image as ImageIcon } from 'lucide-react'
 import { createMensajero, updateMensajero, uploadPhoto } from './actions'
+import { getVehiculos } from '../vehiculos/actions'
 
 const messengerSchema = z.object({
   nombre_conductor: z.string().min(3, 'El nombre debe tener al menos 3 caracteres'),
-  placa_conductor: z.string().min(1, 'La placa es requerida'),
+  placa_conductor: z.string(),
   foto_url: z.string().url('Ingrese una URL válida').or(z.literal('')).optional(),
-  estado: z.enum(['disponible', 'en_ruta', 'almorzando', 'inactivo']),
+  estado: z.enum(['disponible', 'en_ruta', 'en_almuerzo', 'inactivo', 'eliminado']),
+  cedula: z.string().min(3, 'La cédula es requerida'),
+  cargo: z.enum(['Conductor', 'Mensajero']),
+  soat_vencimiento: z.string().optional().nullable(),
+  tecno_vencimiento: z.string().optional().nullable(),
+  licencia_vencimiento: z.string().optional().nullable(),
+  licencia_categoria: z.string().optional().nullable(),
 })
 
 type MessengerFormData = z.infer<typeof messengerSchema>
@@ -26,7 +33,23 @@ export function MessengerForm({ initialData, onSuccess, onCancel }: MessengerFor
   const [error, setError] = useState<string | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(initialData?.foto_url || null)
   const [uploading, setUploading] = useState(false)
+  const [vehicles, setVehicles] = useState<any[]>([])
+  const [loadingVehicles, setLoadingVehicles] = useState(true)
   const isEditing = !!initialData
+
+  useEffect(() => {
+    async function loadVehicles() {
+      try {
+        const data = await getVehiculos()
+        setVehicles(data || [])
+      } catch (err) {
+        console.error('Error al cargar vehículos:', err)
+      } finally {
+        setLoadingVehicles(false)
+      }
+    }
+    loadVehicles()
+  }, [])
 
   const {
     register,
@@ -35,13 +58,25 @@ export function MessengerForm({ initialData, onSuccess, onCancel }: MessengerFor
     formState: { errors, isSubmitting },
   } = useForm<MessengerFormData>({
     resolver: zodResolver(messengerSchema),
-    defaultValues: initialData || {
-      nombre_conductor: '',
-      placa_conductor: '',
-      foto_url: '',
-      estado: 'disponible',
+    defaultValues: {
+      nombre_conductor: initialData?.nombre_conductor || '',
+      placa_conductor: initialData?.placa_conductor || '',
+      foto_url: initialData?.foto_url || '',
+      estado: initialData?.estado === 'almorzando' ? 'en_almuerzo' : (initialData?.estado || 'disponible'),
+      cedula: initialData?.cedula || '',
+      cargo: initialData?.cargo || 'Mensajero',
+      soat_vencimiento: initialData?.soat_vencimiento || '',
+      tecno_vencimiento: initialData?.tecno_vencimiento || '',
+      licencia_vencimiento: initialData?.licencia_vencimiento || '',
+      licencia_categoria: initialData?.licencia_categoria || '',
     },
   })
+
+  useEffect(() => {
+    if (initialData?.placa_conductor && vehicles.length > 0) {
+      setValue('placa_conductor', initialData.placa_conductor)
+    }
+  }, [vehicles, initialData, setValue])
 
   const onSubmit = async (data: MessengerFormData) => {
     setError(null)
@@ -107,14 +142,96 @@ export function MessengerForm({ initialData, onSuccess, onCancel }: MessengerFor
             {errors.nombre_conductor && <p className="mt-1 text-xs text-red-500">{errors.nombre_conductor.message}</p>}
           </div>
 
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-neutral-400 mb-1">Cédula</label>
+              <input
+                {...register('cedula')}
+                className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                placeholder="Ej. 10203040"
+              />
+              {errors.cedula && <p className="mt-1 text-xs text-red-500">{errors.cedula.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-neutral-400 mb-1">Cargo</label>
+              <select
+                {...register('cargo')}
+                className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all appearance-none cursor-pointer"
+              >
+                <option value="Mensajero">Mensajero</option>
+                <option value="Conductor">Conductor</option>
+              </select>
+              {errors.cargo && <p className="mt-1 text-xs text-red-500">{errors.cargo.message}</p>}
+            </div>
+          </div>
+
           <div>
-            <label className="block text-sm font-medium text-neutral-400 mb-1">Placa del Vehículo</label>
-            <input
-              {...register('placa_conductor')}
-              className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-              placeholder="Ej. ABC-123"
-            />
+            <label className="block text-sm font-medium text-neutral-400 mb-1">Vehículo Asignado</label>
+            <div className="relative">
+              <select
+                {...register('placa_conductor')}
+                className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all appearance-none cursor-pointer text-sm"
+              >
+                <option value="">-- Sin vehículo asignado / Ninguno --</option>
+                {vehicles.map((v) => (
+                  <option key={v.id} value={v.placa}>
+                    {v.placa} - {v.marca} {v.modelo} ({v.tipo})
+                  </option>
+                ))}
+              </select>
+              {loadingVehicles && (
+                <div className="absolute right-8 top-1/2 -translate-y-1/2">
+                  <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
+                </div>
+              )}
+            </div>
             {errors.placa_conductor && <p className="mt-1 text-xs text-red-500">{errors.placa_conductor.message}</p>}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-1">Vencimiento SOAT</label>
+              <input
+                type="date"
+                {...register('soat_vencimiento')}
+                className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm cursor-pointer"
+              />
+              {errors.soat_vencimiento && <p className="mt-1 text-xs text-red-500">{errors.soat_vencimiento.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-1">Vencimiento Tecno</label>
+              <input
+                type="date"
+                {...register('tecno_vencimiento')}
+                className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm cursor-pointer"
+              />
+              {errors.tecno_vencimiento && <p className="mt-1 text-xs text-red-500">{errors.tecno_vencimiento.message}</p>}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-1">Vencimiento Licencia</label>
+              <input
+                type="date"
+                {...register('licencia_vencimiento')}
+                className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm cursor-pointer"
+              />
+              {errors.licencia_vencimiento && <p className="mt-1 text-xs text-red-500">{errors.licencia_vencimiento.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-1">Categoría Licencia</label>
+              <input
+                type="text"
+                {...register('licencia_categoria')}
+                placeholder="Ej. A2, C2"
+                className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm"
+              />
+              {errors.licencia_categoria && <p className="mt-1 text-xs text-red-500">{errors.licencia_categoria.message}</p>}
+            </div>
           </div>
 
           <div>

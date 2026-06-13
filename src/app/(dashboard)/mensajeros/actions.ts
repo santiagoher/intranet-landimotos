@@ -8,9 +8,15 @@ import { v4 as uuidv4 } from 'uuid'
 
 const messengerSchema = z.object({
   nombre_conductor: z.string().min(3, 'El nombre debe tener al menos 3 caracteres'),
-  placa_conductor: z.string().min(1, 'La placa es requerida'),
+  placa_conductor: z.string(),
   foto_url: z.string().optional(),
+  cedula: z.string().optional().default(''),
+  cargo: z.string().optional().default('Mensajero'),
   estado: z.enum(['disponible', 'en_ruta', 'en_almuerzo', 'inactivo', 'eliminado']).default('disponible'),
+  soat_vencimiento: z.string().optional().transform(v => v === '' ? null : v).nullable(),
+  tecno_vencimiento: z.string().optional().transform(v => v === '' ? null : v).nullable(),
+  licencia_vencimiento: z.string().optional().transform(v => v === '' ? null : v).nullable(),
+  licencia_categoria: z.string().optional().transform(v => v === '' ? null : v).nullable(),
 })
 
 const routeSchema = z.object({
@@ -28,6 +34,7 @@ type MessengerStatsYearlyRow = {
 }
 
 type MessengerStatsRangeRow = MessengerStatsYearlyRow & {
+  mensajero_id: string | null
   numero_factura: string | null
   lugar_entrega: string | null
   hora_salida: string | null
@@ -318,7 +325,7 @@ export async function getMensajerosStats(startDate: string, endDate: string) {
   // 2. Datos del rango
   const rangeData = await fetchAllSupabaseRows<MessengerStatsRangeRow>(() => supabase
     .from('mensajeros_rutas')
-    .select('created_at, numero_pedidos, numero_factura, lugar_entrega, hora_salida, mensajero:mensajeros(nombre_conductor)')
+    .select('created_at, mensajero_id, numero_pedidos, numero_factura, lugar_entrega, hora_salida, mensajero:mensajeros(nombre_conductor)')
     .eq('estado', 'finalizado')
     .gte('created_at', start)
     .lte('created_at', end)

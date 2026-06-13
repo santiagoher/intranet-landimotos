@@ -4,12 +4,13 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { 
   Package, 
-  LayoutDashboard,
   Users, 
   Truck, 
   Archive, 
   X,
-  LogOut
+  LogOut,
+  ClipboardCheck,
+  MessageSquare
 } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client'
 import { useRouter } from 'next/navigation'
@@ -29,6 +30,14 @@ export function Sidebar({ rol, modulosPermitidos = [] }: SidebarProps) {
   const links = [
     { id: 'despachos', name: 'Despachos', href: '/despachos', icon: Package, roles: ['Admin', 'Operativo'] },
     { id: 'mensajeros', name: 'Mensajeros', href: '/mensajeros', icon: Truck, roles: ['Admin', 'Operativo'] },
+    { 
+      id: 'vehiculos', 
+      name: rol === 'Admin' ? 'Vehículos' : 'Inspecciones Preoperacionales', 
+      href: '/vehiculos', 
+      icon: ClipboardCheck, 
+      roles: ['Admin', 'Operativo'] 
+    },
+    { id: 'atencion', name: 'Atención al Cliente', href: '/admin/atencion', icon: MessageSquare, roles: ['Admin'] },
     { id: 'admin-mensajeros', name: 'Conductores', href: '/admin/mensajeros', icon: Truck, roles: ['Admin'] },
     { id: 'usuarios', name: 'Usuarios', href: '/admin/usuarios', icon: Users, roles: ['Admin'] },
     { id: 'configuracion', name: 'Campos', href: '/admin/configuracion', icon: Archive, roles: ['Admin'] },
@@ -38,6 +47,7 @@ export function Sidebar({ rol, modulosPermitidos = [] }: SidebarProps) {
     const userRole = rol?.toLowerCase()
     if (userRole === 'admin') return true
     if (link.id === 'dashboard') return true
+    if (link.id === 'vehiculos') return true // Inspección diaria obligatoria para todo el personal operativo
     return modulosPermitidos.includes(link.id)
   })
 

@@ -46,7 +46,8 @@ export default function AdminMensajerosPage() {
 
   const filteredMensajeros = mensajeros.filter(m =>
     m.nombre_conductor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    m.placa_conductor.toLowerCase().includes(searchTerm.toLowerCase())
+    m.placa_conductor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (m.cedula && m.cedula.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
   const { totalItems, totalPages, pageSize, paginate } = usePagination(filteredMensajeros, 15)
@@ -111,7 +112,9 @@ export default function AdminMensajerosPage() {
             <thead>
               <tr className="bg-neutral-950/30">
                 <th className="px-6 py-4 text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Perfil y Conductor</th>
-                <th className="px-6 py-4 text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Placa de Moto</th>
+                <th className="px-6 py-4 text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Cédula</th>
+                <th className="px-6 py-4 text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Cargo</th>
+                <th className="px-6 py-4 text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Placa de Vehículo</th>
                 <th className="px-6 py-4 text-[10px] font-bold text-neutral-500 uppercase tracking-widest text-center">Estado</th>
                 <th className="px-6 py-4 text-[10px] font-bold text-neutral-500 uppercase tracking-widest text-right">Acciones</th>
               </tr>
@@ -119,7 +122,7 @@ export default function AdminMensajerosPage() {
             <tbody className="divide-y divide-neutral-800/50">
               {loading ? (
                 <tr>
-                  <td colSpan={4} className="px-8 py-20 text-center text-neutral-500">
+                  <td colSpan={6} className="px-8 py-20 text-center text-neutral-500">
                     <div className="flex flex-col items-center gap-3">
                       <span className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></span>
                       Cargando personal...
@@ -128,7 +131,7 @@ export default function AdminMensajerosPage() {
                 </tr>
               ) : filteredMensajeros.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-8 py-20 text-center text-neutral-500 italic">
+                  <td colSpan={6} className="px-8 py-20 text-center text-neutral-500 italic">
                     No se encontraron mensajeros que coincidan con la búsqueda.
                   </td>
                 </tr>
@@ -149,6 +152,15 @@ export default function AdminMensajerosPage() {
                           <p className="text-[10px] text-neutral-500 font-medium">ID: {m.id.substring(0, 8)}</p>
                         </div>
                       </div>
+                    </td>
+                    <td className="px-6 py-3 text-neutral-350 text-sm">{m.cedula || '---'}</td>
+                    <td className="px-6 py-3">
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${m.cargo === 'Conductor'
+                          ? 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20'
+                          : 'text-purple-400 bg-purple-400/10 border-purple-400/20'
+                        }`}>
+                        {m.cargo || 'Mensajero'}
+                      </span>
                     </td>
                     <td className="px-6 py-3 text-neutral-400 font-mono text-sm uppercase tracking-wider">{m.placa_conductor}</td>
                     <td className="px-6 py-3 text-center">
@@ -206,3 +218,4 @@ export default function AdminMensajerosPage() {
     </div>
   )
 }
+
