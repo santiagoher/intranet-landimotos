@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
-import { Truck, Plus, Search, Edit2, Trash2, MapPin, Package, Clock, User, CheckCircle2, Coffee, Route, ClipboardList, Eye, Utensils, Calendar as CalendarIcon, FileText, CalendarRange, X, Download, FileDown, Calendar } from 'lucide-react'
+import { Truck, Plus, Search, Edit2, Trash2, MapPin, Package, Clock, User, CheckCircle2, Coffee, Route, ClipboardList, Eye, Utensils, Calendar as CalendarIcon, FileText, CalendarRange, X, Download, FileDown, Calendar, Shield } from 'lucide-react'
 import { 
   getMensajeros, deleteMensajero, updateMensajeroStatus, 
   getActiveRoutes, finalizeRoute, getFinishedRoutes, 
@@ -56,7 +56,7 @@ export default function MensajerosPage() {
   const [showRouteForm, setShowRouteForm] = useState(false)
   const [editingMessenger, setEditingMessenger] = useState<any>(null)
   const [searchTerm, setSearchTerm] = useState('')
-  const { isAdmin, loading: loadingRole } = useRole()
+  const { isAdmin, modulosPermitidos, loading: loadingRole } = useRole()
 
   // --- Dashboard State ---
   const [stats, setStats] = useState<any>({ yearly: [], monthly: [], hourly: [] })
@@ -487,6 +487,18 @@ export default function MensajerosPage() {
       <div className="flex items-center justify-center p-20 text-neutral-500">
         <Clock className="w-6 h-6 animate-spin mr-2" />
         Verificando nivel de acceso...
+      </div>
+    )
+  }
+
+  const hasAccess = isAdmin || modulosPermitidos.includes('mensajeros')
+
+  if (!hasAccess) {
+    return (
+      <div className="flex flex-col items-center justify-center p-20 text-center text-neutral-500 bg-neutral-900/40 border border-neutral-800 rounded-2xl">
+        <Shield className="w-12 h-12 text-rose-500/80 mb-4" />
+        <h3 className="text-lg font-bold text-white">Acceso Denegado</h3>
+        <p className="text-sm text-neutral-400 mt-1 max-w-sm">No tienes permisos para ver el módulo de Mensajeros. Solicita acceso a un administrador.</p>
       </div>
     )
   }

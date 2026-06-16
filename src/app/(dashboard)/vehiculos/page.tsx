@@ -51,9 +51,7 @@ function getFailedDetailText(c: any) {
 }
 
 export default function VehiculosPage() {
-  const { rol, isAdmin, loading: loadingRole } = useRole()
-  const [perfil, setPerfil] = useState<UserProfile | null>(null)
-  const [loadingPerfil, setLoadingPerfil] = useState(true)
+  const { rol, isAdmin, modulosPermitidos, loading: loadingRole } = useRole()
 
   // Data states
   const [vehiculos, setVehiculos] = useState<Vehicle[]>([])
@@ -86,30 +84,7 @@ export default function VehiculosPage() {
   // Pagination states for checklists history
   const [currentPage, setCurrentPage] = useState(1)
 
-  // Check access permission securely on client side
-  useEffect(() => {
-    async function fetchPerfil() {
-      if (loadingRole || !rol) return
-      setLoadingPerfil(true)
-      try {
-        const supabase = createClient()
-        const { data: { user } } = await supabase.auth.getUser()
-        if (user) {
-          const { data } = await supabase
-            .from('perfiles')
-            .select('*')
-            .eq('id', user.id)
-            .single()
-          setPerfil(data)
-        }
-      } catch (e) {
-        console.error(e)
-      } finally {
-        setLoadingPerfil(false)
-      }
-    }
-    fetchPerfil()
-  }, [rol, loadingRole])
+  // Removed manual fetchPerfil effect
 
   const refreshData = async () => {
     // We let useEffect control the loading states to avoid triggering react-hooks warnings
@@ -129,7 +104,7 @@ export default function VehiculosPage() {
 
   // Load and refresh data when page loads or filters change
   useEffect(() => {
-    if (loadingRole || loadingPerfil) return
+    if (loadingRole) return
 
     let active = true
 
@@ -164,7 +139,7 @@ export default function VehiculosPage() {
       active = false
       clearTimeout(timer)
     }
-  }, [loadingRole, loadingPerfil, startDate, endDate, selectedVehicleFilter])
+  }, [loadingRole, startDate, endDate, selectedVehicleFilter])
 
   const handleDeleteVehicle = async (id: string) => {
     if (confirm('¿Estás seguro de que deseas eliminar este vehículo permanentemente? Se eliminarán también todos sus checklists y alertas relacionadas.')) {
@@ -186,7 +161,7 @@ export default function VehiculosPage() {
   const paginatedChecklists = paginate(currentPage)
 
   // Loading states screen
-  if (loadingRole || (loadingPerfil && !isAdmin)) {
+  if (loadingRole) {
     return (
       <div className="flex flex-col items-center justify-center p-20 text-neutral-500 animate-pulse">
         <Truck className="w-8 h-8 mb-4 opacity-20 animate-bounce" />
@@ -195,7 +170,7 @@ export default function VehiculosPage() {
     )
   }
 
-  const hasAccess = isAdmin || rol === 'Operativo' || (perfil?.modulos_permitidos?.includes('vehiculos'))
+  const hasAccess = isAdmin || modulosPermitidos.includes('vehiculos')
 
   if (!hasAccess) {
     return (

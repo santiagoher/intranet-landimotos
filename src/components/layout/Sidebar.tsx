@@ -47,7 +47,6 @@ export function Sidebar({ rol, modulosPermitidos = [] }: SidebarProps) {
     const userRole = rol?.toLowerCase()
     if (userRole === 'admin') return true
     if (link.id === 'dashboard') return true
-    if (link.id === 'vehiculos') return true // Inspección diaria obligatoria para todo el personal operativo
     return modulosPermitidos.includes(link.id)
   })
 

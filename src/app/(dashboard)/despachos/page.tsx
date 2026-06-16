@@ -17,7 +17,7 @@ export default function DespachosPage() {
   const [showOrderForm, setShowOrderForm] = useState(false)
   const [selectedPedido, setSelectedPedido] = useState<any>(null)
   const [viewingPedido, setViewingPedido] = useState<any>(null)
-  const { isAdmin, loading: loadingRole } = useRole()
+  const { isAdmin, modulosPermitidos, loading: loadingRole } = useRole()
   const [currentPage, setCurrentPage] = useState(1)
   
   const refreshData = async () => {
@@ -51,6 +51,18 @@ export default function DespachosPage() {
       <div className="flex flex-col items-center justify-center p-20 text-neutral-500 animate-pulse">
         <Shield className="w-8 h-8 mb-4 opacity-20" />
         <p className="text-sm font-medium">Verificando nivel de acceso...</p>
+      </div>
+    )
+  }
+
+  const hasAccess = isAdmin || modulosPermitidos.includes('despachos')
+
+  if (!hasAccess) {
+    return (
+      <div className="flex flex-col items-center justify-center p-20 text-center text-neutral-500 bg-neutral-900/40 border border-neutral-800 rounded-2xl">
+        <Shield className="w-12 h-12 text-rose-500/80 mb-4" />
+        <h3 className="text-lg font-bold text-white">Acceso Denegado</h3>
+        <p className="text-sm text-neutral-400 mt-1 max-w-sm">No tienes permisos para ver el módulo de Despachos. Solicita acceso a un administrador.</p>
       </div>
     )
   }

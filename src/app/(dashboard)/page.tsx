@@ -26,7 +26,7 @@ export default async function DashboardPage() {
     return
   }
 
-  // Redireccionar al primer módulo que tenga permitido
+// Redireccionar al primer módulo que tenga permitido
   if (modulosPermitidos.includes('despachos')) {
     redirect('/despachos')
   } else if (modulosPermitidos.includes('mensajeros')) {

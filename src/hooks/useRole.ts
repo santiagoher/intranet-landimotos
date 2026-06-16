@@ -5,6 +5,7 @@ import { createClient } from '@/utils/supabase/client'
 
 export function useRole() {
   const [rol, setRol] = useState<'Admin' | 'Operativo' | null>(null)
+  const [modulosPermitidos, setModulosPermitidos] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -15,11 +16,12 @@ export function useRole() {
       if (user) {
         const { data: perfil } = await supabase
           .from('perfiles')
-          .select('rol')
+          .select('rol, modulos_permitidos')
           .eq('id', user.id)
           .single()
         
         setRol(perfil?.rol || 'Operativo')
+        setModulosPermitidos(perfil?.modulos_permitidos || [])
       }
       setLoading(false)
     }
@@ -27,5 +29,5 @@ export function useRole() {
     getRole()
   }, [])
 
-  return { rol, isAdmin: rol === 'Admin', loading }
+  return { rol, isAdmin: rol === 'Admin', modulosPermitidos, loading }
 }
