@@ -379,3 +379,6 @@ INSERT INTO public.atencion_etiquetas (nombre, color, activo) VALUES
 ('Quejas y Reclamos', '#8b5cf6', true),   -- Purple
 ('Otros', '#6b7280', true)            -- Gray
 ON CONFLICT (nombre) DO NOTHING;
+
+
+
