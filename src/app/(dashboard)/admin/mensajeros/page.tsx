@@ -16,7 +16,7 @@ export default function AdminMensajerosPage() {
   const { isAdmin, loading: loadingRole } = useRole()
   const [currentPage, setCurrentPage] = useState(1)
 
-  const fetchMensajeros = async () => {
+    const fetchMensajeros = async () => {
     setLoading(true)
     try {
       const data = await getMensajeros()
@@ -177,7 +177,7 @@ export default function AdminMensajerosPage() {
                           onClick={() => {
                             setEditingMessenger(m)
                             setShowForm(true)
-                          }}
+                           }}
                           className="p-2 text-neutral-400 hover:text-blue-400 hover:bg-blue-400/10 rounded-lg transition-all"
                         >
                           <Edit2 className="w-4 h-4" />
@@ -218,4 +218,3 @@ export default function AdminMensajerosPage() {
     </div>
   )
 }
-

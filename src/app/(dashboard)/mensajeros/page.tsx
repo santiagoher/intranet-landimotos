@@ -391,7 +391,9 @@ export default function MensajerosPage() {
     const byMessenger: Record<string, { pedidos: number; facturas: number }> = {}
 
     stats.monthly.forEach((r: any) => {
-      const messengerName = r?.mensajero?.[0]?.nombre_conductor?.trim() || 'Sin nombre'
+      const rawMensajero = r?.mensajero
+      const mensajeroObj = Array.isArray(rawMensajero) ? rawMensajero[0] : rawMensajero
+      const messengerName = mensajeroObj?.nombre_conductor?.trim() || 'Sin nombre'
       const pedidos = Number(r?.numero_pedidos || 0)
       const facturas = String(r?.numero_factura || '')
         .split(',')
@@ -982,6 +984,7 @@ export default function MensajerosPage() {
       {/* Modal de Reportes */}
       {showReportModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+          
           <div className="bg-neutral-900 border border-neutral-800 w-full max-w-md rounded-3xl p-8 shadow-2xl animate-in zoom-in-95 duration-300">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
@@ -1000,25 +1003,41 @@ export default function MensajerosPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-xs text-neutral-500 font-bold uppercase tracking-wider">Fecha Inicio</label>
-                  <div className="bg-neutral-950 border border-neutral-800 p-3 rounded-2xl flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-neutral-600" />
+                  <div 
+                    onClick={(e) => {
+                      const input = e.currentTarget.querySelector('input');
+                      if (input) {
+                        try { input.showPicker(); } catch (err) {}
+                      }
+                    }}
+                    className="bg-neutral-950 border border-neutral-800 p-3 rounded-2xl flex items-center gap-2 relative cursor-pointer"
+                  >
+                    <Calendar className="w-4 h-4 text-white/70 pointer-events-none" />
                     <input 
                       type="date" 
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
-                      className="bg-transparent text-white text-sm outline-none w-full [color-scheme:dark]"
+                      className="bg-transparent text-white text-sm outline-none w-full [color-scheme:dark] cursor-pointer"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs text-neutral-500 font-bold uppercase tracking-wider">Fecha Fin</label>
-                  <div className="bg-neutral-950 border border-neutral-800 p-3 rounded-2xl flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-neutral-600" />
+                  <div 
+                    onClick={(e) => {
+                      const input = e.currentTarget.querySelector('input');
+                      if (input) {
+                        try { input.showPicker(); } catch (err) {}
+                      }
+                    }}
+                    className="bg-neutral-950 border border-neutral-800 p-3 rounded-2xl flex items-center gap-2 relative cursor-pointer"
+                  >
+                    <Calendar className="w-4 h-4 text-white/70 pointer-events-none" />
                     <input 
                       type="date" 
                       value={endDate}
                       onChange={(e) => setEndDate(e.target.value)}
-                      className="bg-transparent text-white text-sm outline-none w-full [color-scheme:dark]"
+                      className="bg-transparent text-white text-sm outline-none w-full [color-scheme:dark] cursor-pointer"
                     />
                   </div>
                 </div>
@@ -1050,6 +1069,7 @@ export default function MensajerosPage() {
                 </button>
               </div>
             </div>
+
           </div>
         </div>
       )}
@@ -1224,4 +1244,3 @@ export default function MensajerosPage() {
     </div>
   )
 }
-

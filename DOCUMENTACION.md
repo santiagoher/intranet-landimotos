@@ -30,6 +30,7 @@ El proyecto está diseñado siguiendo las pautas de las aplicaciones web moderna
 
 ---
 
+  
 ## 3. Módulos del Sistema y Funcionalidades
 
 El sistema se divide en **dos grandes perspectivas**: la **Vista Operativa** (para el personal de campo y distribución) y la **Vista Administrativa** (para los gestores de recursos y directores).
@@ -134,7 +135,7 @@ La seguridad de la intranet se ha estructurado en tres capas independientes para
    - Cada página operativa (`despachos`, `mensajeros` y `vehiculos`) consulta en su carga inicial los permisos concedidos al perfil del usuario. Si un usuario intenta saltarse el menú e ingresar directamente digitando la URL, el sistema bloquea el renderizado y muestra una pantalla de **Acceso Denegado**.
 
 ---
-
+  
 ## 5. Conclusiones y Próximos Pasos
 
 La **Intranet Landimotos** se encuentra actualmente en su **versión 2.1**, completamente estable, compilada y optimizada para producción. Representa una herramienta de alto valor estratégico que centraliza la administración operativa e incrementa significativamente la eficiencia y control de la empresa.
@@ -142,3 +143,4 @@ La **Intranet Landimotos** se encuentra actualmente en su **versión 2.1**, comp
 **Futuras mejoras recomendadas:**
 - Implementación de notificaciones automáticas vía WhatsApp ante la generación de alertas mecánicas.
 - Módulo de recordatorios automáticos por correo electrónico 15 días antes del vencimiento de la licencia, SOAT o técnico-mecánica de cada conductor.
+

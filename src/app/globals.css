@@ -31,9 +31,13 @@ body {
 }
 
 /* Fix date picker indicator visibility in dark mode */
+input[type="date"] {
+  color-scheme: dark !important;
+}
 input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-  cursor: pointer;
+  display: none !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
 }
 
 /* Scrollbar utilities */

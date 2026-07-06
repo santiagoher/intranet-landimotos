@@ -426,25 +426,41 @@ export function DespachosAdminStats() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-xs text-neutral-500 font-bold uppercase tracking-wider">Fecha Inicio</label>
-                  <div className="bg-neutral-950 border border-neutral-800 p-3 rounded-2xl flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-neutral-600" />
+                  <div 
+                    onClick={(e) => {
+                      const input = e.currentTarget.querySelector('input');
+                      if (input) {
+                        try { input.showPicker(); } catch (err) {}
+                      }
+                    }}
+                    className="bg-neutral-950 border border-neutral-800 p-3 rounded-2xl flex items-center gap-2 relative cursor-pointer"
+                  >
+                    <Calendar className="w-4 h-4 text-white/70 pointer-events-none" />
                     <input 
                       type="date" 
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
-                      className="bg-transparent text-white text-sm outline-none w-full"
+                      className="bg-transparent text-white text-sm outline-none w-full [color-scheme:dark] cursor-pointer"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs text-neutral-500 font-bold uppercase tracking-wider">Fecha Fin</label>
-                  <div className="bg-neutral-950 border border-neutral-800 p-3 rounded-2xl flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-neutral-600" />
+                  <div 
+                    onClick={(e) => {
+                      const input = e.currentTarget.querySelector('input');
+                      if (input) {
+                        try { input.showPicker(); } catch (err) {}
+                      }
+                    }}
+                    className="bg-neutral-950 border border-neutral-800 p-3 rounded-2xl flex items-center gap-2 relative cursor-pointer"
+                  >
+                    <Calendar className="w-4 h-4 text-white/70 pointer-events-none" />
                     <input 
                       type="date" 
                       value={endDate}
                       onChange={(e) => setEndDate(e.target.value)}
-                      className="bg-transparent text-white text-sm outline-none w-full"
+                      className="bg-transparent text-white text-sm outline-none w-full [color-scheme:dark] cursor-pointer"
                     />
                   </div>
                 </div>

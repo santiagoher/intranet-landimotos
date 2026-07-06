@@ -32,7 +32,7 @@ export function Sidebar({ rol, modulosPermitidos = [] }: SidebarProps) {
     { id: 'mensajeros', name: 'Mensajeros', href: '/mensajeros', icon: Truck, roles: ['Admin', 'Operativo'] },
     { 
       id: 'vehiculos', 
-      name: rol === 'Admin' ? 'Vehículos' : 'Inspecciones Preoperacionales', 
+      name: rol === 'Admin' ? 'Inspecciones Preoperacionales' : 'Inspecciones Preoperacionales', 
       href: '/vehiculos', 
       icon: ClipboardCheck, 
       roles: ['Admin', 'Operativo'] 
