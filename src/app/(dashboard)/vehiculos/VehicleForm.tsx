@@ -77,19 +77,19 @@ export function VehicleForm({ vehicle, onSuccess, onCancel }: VehicleFormProps) 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-        <div className="flex items-center justify-between p-6 border-b border-neutral-800 bg-neutral-900/50">
+      <div className="w-full max-w-md bg-surface border border-border rounded-2xl shadow-sm overflow-hidden animate-in fade-in zoom-in duration-200">
+        <div className="flex items-center justify-between p-6 border-b border-border bg-surface">
           <div>
-            <h3 className="text-xl font-bold text-white">
+            <h3 className="text-xl font-bold text-foreground">
               {vehicle ? 'Editar Vehículo' : 'Registrar Nuevo Vehículo'}
             </h3>
-            <p className="text-xs text-neutral-400 mt-1">
+            <p className="text-xs text-muted mt-1">
               {vehicle ? `Modificando placa ${vehicle.placa}` : 'Completa los datos de la unidad automotriz'}
             </p>
           </div>
           <button 
             onClick={onCancel} 
-            className="p-2 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-lg transition-colors"
+            className="p-2 text-muted hover:text-foreground hover:bg-hover rounded-lg transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -98,98 +98,98 @@ export function VehicleForm({ vehicle, onSuccess, onCancel }: VehicleFormProps) 
         <form onSubmit={handleSubmit(handleFormSubmit)} className="p-6 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-neutral-400 mb-1">Placa / ID</label>
+              <label className="block text-sm font-medium text-muted mb-1">Placa / ID</label>
               <input
                 {...register('placa')}
                 disabled={!!vehicle} // No permitimos editar placa para evitar problemas de referencia
                 placeholder="ABC123"
-                className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all uppercase disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-4 py-2.5 bg-subtle border border-border rounded-xl text-foreground focus:ring-2 focus:ring-accent outline-none transition-all uppercase disabled:opacity-50 disabled:cursor-not-allowed"
               />
-              {errors.placa && <p className="mt-1 text-xs text-red-500">{errors.placa.message}</p>}
+              {errors.placa && <p className="mt-1 text-xs text-danger">{errors.placa.message}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-neutral-400 mb-1">Tipo</label>
+              <label className="block text-sm font-medium text-muted mb-1">Tipo</label>
               <select
                 {...register('tipo')}
-                className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer"
+                className="w-full px-4 py-2.5 bg-subtle border border-border rounded-xl text-foreground focus:ring-2 focus:ring-accent outline-none appearance-none cursor-pointer"
               >
                 <option value="Moto">Moto</option>
                 <option value="Carro">Carro</option>
                 <option value="Camión">Camión</option>
                 <option value="Otro">Otro</option>
               </select>
-              {errors.tipo && <p className="mt-1 text-xs text-red-500">{errors.tipo.message}</p>}
+              {errors.tipo && <p className="mt-1 text-xs text-danger">{errors.tipo.message}</p>}
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-neutral-400 mb-1">Marca</label>
+              <label className="block text-sm font-medium text-muted mb-1">Marca</label>
               <input
                 {...register('marca')}
                 placeholder="Yamaha / Chevrolet"
-                className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                className="w-full px-4 py-2.5 bg-subtle border border-border rounded-xl text-foreground focus:ring-2 focus:ring-accent outline-none transition-all"
               />
-              {errors.marca && <p className="mt-1 text-xs text-red-500">{errors.marca.message}</p>}
+              {errors.marca && <p className="mt-1 text-xs text-danger">{errors.marca.message}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-neutral-400 mb-1">Modelo / Año</label>
+              <label className="block text-sm font-medium text-muted mb-1">Modelo / Año</label>
               <input
                 {...register('modelo')}
                 placeholder="FZ-25 / 2023"
-                className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                className="w-full px-4 py-2.5 bg-subtle border border-border rounded-xl text-foreground focus:ring-2 focus:ring-accent outline-none transition-all"
               />
-              {errors.modelo && <p className="mt-1 text-xs text-red-500">{errors.modelo.message}</p>}
+              {errors.modelo && <p className="mt-1 text-xs text-danger">{errors.modelo.message}</p>}
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-neutral-400 mb-1">Kilometraje Inicial</label>
+              <label className="block text-sm font-medium text-muted mb-1">Kilometraje Inicial</label>
               <input
                 type="number"
                 {...register('kilometraje')}
                 placeholder="0"
-                className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                className="w-full px-4 py-2.5 bg-subtle border border-border rounded-xl text-foreground focus:ring-2 focus:ring-accent outline-none transition-all"
               />
-              {errors.kilometraje && <p className="mt-1 text-xs text-red-500">{errors.kilometraje.message}</p>}
+              {errors.kilometraje && <p className="mt-1 text-xs text-danger">{errors.kilometraje.message}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-neutral-400 mb-1">Estado</label>
+              <label className="block text-sm font-medium text-muted mb-1">Estado</label>
               <select
                 {...register('estado')}
-                className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer"
+                className="w-full px-4 py-2.5 bg-subtle border border-border rounded-xl text-foreground focus:ring-2 focus:ring-accent outline-none appearance-none cursor-pointer"
               >
                 <option value="activo">Activo</option>
                 <option value="mantenimiento">Mantenimiento</option>
                 <option value="inactivo">Inactivo</option>
               </select>
-              {errors.estado && <p className="mt-1 text-xs text-red-500">{errors.estado.message}</p>}
+              {errors.estado && <p className="mt-1 text-xs text-danger">{errors.estado.message}</p>}
             </div>
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm animate-pulse">
+            <div className="flex items-center gap-2 p-3 bg-danger-soft border border-danger/20 rounded-xl text-danger text-sm animate-pulse">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               <p>{error}</p>
             </div>
           )}
 
-          <div className="flex gap-3 pt-4 border-t border-neutral-800">
+          <div className="flex gap-3 pt-4 border-t border-border">
             <button 
               type="button" 
               onClick={onCancel} 
-              className="flex-1 px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-white rounded-xl font-medium transition-all"
+              className="flex-1 px-4 py-2.5 bg-subtle hover:bg-hover text-foreground rounded-xl font-medium transition-all"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-xl font-medium transition-all shadow-lg shadow-blue-600/20"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-accent hover:bg-accent-hover disabled:opacity-50 text-on-accent rounded-xl font-medium transition-all shadow-none"
             >
               {isSubmitting ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

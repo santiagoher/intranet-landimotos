@@ -135,7 +135,7 @@ CATEGORIES.forEach(cat => {
 })
 
 function getDocumentStatus(dateStr: string | null) {
-  if (!dateStr) return { status: 'missing', text: 'Pendiente', colorClass: 'text-neutral-400 bg-neutral-900 border-neutral-800' }
+  if (!dateStr) return { status: 'missing', text: 'Pendiente', colorClass: 'text-muted bg-surface border-border' }
   
   const today = new Date()
   today.setHours(0, 0, 0, 0)
@@ -147,11 +147,11 @@ function getDocumentStatus(dateStr: string | null) {
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
   
   if (diffDays < 0) {
-    return { status: 'expired', text: 'Vencido', colorClass: 'text-red-400 bg-red-400/10 border-red-500/20' }
+    return { status: 'expired', text: 'Vencido', colorClass: 'text-danger bg-danger-soft border-danger/20' }
   } else if (diffDays <= 30) {
-    return { status: 'expiring_soon', text: `Vence en ${diffDays} días`, colorClass: 'text-amber-400 bg-amber-400/10 border-amber-500/20' }
+    return { status: 'expiring_soon', text: `Vence en ${diffDays} días`, colorClass: 'text-warning bg-warning-soft border-warning/20' }
   } else {
-    return { status: 'ok', text: 'Vigente', colorClass: 'text-emerald-400 bg-emerald-400/10 border-emerald-500/20' }
+    return { status: 'ok', text: 'Vigente', colorClass: 'text-success bg-success-soft border-success/20' }
   }
 }
 
@@ -859,40 +859,40 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
-      <div className="w-full max-w-2xl bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl overflow-hidden my-8 animate-in fade-in zoom-in duration-200 flex flex-col max-h-[90vh]">
+      <div className="w-full max-w-2xl bg-surface border border-border rounded-2xl shadow-sm overflow-hidden my-8 animate-in fade-in zoom-in duration-200 flex flex-col max-h-[90vh]">
         
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-neutral-800 bg-neutral-900/50 flex-shrink-0">
+        <div className="flex items-center justify-between p-6 border-b border-border bg-surface flex-shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-600/10 rounded-xl flex items-center justify-center text-blue-500">
+            <div className="w-10 h-10 bg-accent-soft rounded-xl flex items-center justify-center text-accent-foreground">
               <ClipboardCheck className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-white">Inspección Preoperacional</h3>
-              <p className="text-xs text-neutral-400 mt-1">Inspección técnica de seguridad PESV y SST</p>
+              <h3 className="text-xl font-bold text-foreground">Inspección Preoperacional</h3>
+              <p className="text-xs text-muted mt-1">Inspección técnica de seguridad PESV y SST</p>
             </div>
           </div>
           <button 
             onClick={onCancel} 
-            className="p-2 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-lg transition-colors"
+            className="p-2 text-muted hover:text-foreground hover:bg-hover rounded-lg transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Paso / Wizard Indicator */}
-        <div className="bg-neutral-950 px-6 py-3 border-b border-neutral-800/60 flex items-center justify-between flex-shrink-0">
+        <div className="bg-subtle px-6 py-3 border-b border-border flex items-center justify-between flex-shrink-0">
           <div className="flex gap-1.5 flex-1 max-w-md">
             {[1, 2, 3, 4, 5].map((s) => (
               <div 
                 key={s} 
                 className={`h-1.5 rounded-full flex-1 transition-all ${
-                  s <= step ? 'bg-blue-600' : 'bg-neutral-800'
+                  s <= step ? 'bg-accent' : 'bg-subtle'
                 }`}
               />
             ))}
           </div>
-          <span className="text-xs font-semibold text-neutral-400 ml-4">Paso {step} de 5</span>
+          <span className="text-xs font-semibold text-muted ml-4">Paso {step} de 5</span>
         </div>
 
         {/* Form body */}
@@ -902,29 +902,29 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
           {step === 1 && (
             <div className="space-y-4">
               {/* Mensaje de bienvenida oficial de SST / PESV */}
-              <div className="p-4 bg-blue-600/5 border border-blue-600/10 rounded-xl leading-relaxed text-xs text-neutral-300">
-                <p className="font-bold text-white mb-1">Estimado colaborador,</p>
+              <div className="p-4 bg-accent-soft border border-accent/10 rounded-xl leading-relaxed text-xs text-secondary">
+                <p className="font-bold text-foreground mb-1">Estimado colaborador,</p>
                 <p>En coordinación con el área encargada de <strong>SST</strong> y <strong>PESV</strong> de la empresa <strong>LANDIMOTOS S.A.S</strong>, se implementa este formulario con el fin de registrar las inspecciones diarias del vehículo que tengas asignado.</p>
-                <p className="mt-2 font-semibold text-blue-400">¡Muchas gracias por su compromiso con la seguridad!</p>
+                <p className="mt-2 font-semibold text-accent-foreground">¡Muchas gracias por su compromiso con la seguridad!</p>
               </div>
 
-              <h4 className="text-sm font-bold text-white uppercase tracking-wider border-b border-neutral-850 pb-2">Identificación del Conductor</h4>
+              <h4 className="text-sm font-bold text-foreground uppercase tracking-wider border-b border-border pb-2">Identificación del Conductor</h4>
               
               <div>
-                <label className="block text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2">N° de Cédula</label>
+                <label className="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">N° de Cédula</label>
                 <div className="relative">
                   <input
                     {...register('conductor_cedula')}
                     placeholder="1010XXXXXX"
-                    className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm"
+                    className="w-full px-4 py-2.5 bg-subtle border border-border rounded-xl text-foreground focus:ring-2 focus:ring-accent outline-none transition-all text-sm"
                   />
                   {loadingMensajeros && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                      <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
+                      <Loader2 className="w-4 h-4 text-accent-foreground animate-spin" />
                     </div>
                   )}
                 </div>
-                {errors.conductor_cedula && <p className="mt-1 text-xs text-red-500">{errors.conductor_cedula.message}</p>}
+                {errors.conductor_cedula && <p className="mt-1 text-xs text-danger">{errors.conductor_cedula.message}</p>}
               </div>
 
               {/* Registro oculto para que react-hook-form capture los datos del conductor */}
@@ -935,9 +935,9 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
               {matchedConductor ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 transition-all duration-300 animate-in fade-in slide-in-from-top-2">
                   {/* Columna Izquierda: Perfil Conductor */}
-                  <div className="p-4 bg-neutral-950/40 border border-neutral-850 rounded-2xl flex flex-col justify-between space-y-4">
+                  <div className="p-4 bg-subtle border border-border rounded-2xl flex flex-col justify-between space-y-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl bg-neutral-800 border border-neutral-700 flex items-center justify-center overflow-hidden text-blue-500 font-bold text-lg flex-shrink-0 shadow-inner">
+                      <div className="w-12 h-12 rounded-xl bg-subtle border border-border-strong flex items-center justify-center overflow-hidden text-accent-foreground font-bold text-lg flex-shrink-0 shadow-inner">
                         {matchedConductor.foto_url ? (
                           <img src={matchedConductor.foto_url} alt={matchedConductor.nombre_conductor} className="w-full h-full object-cover" />
                         ) : (
@@ -945,17 +945,17 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h5 className="font-bold text-white text-sm truncate">{matchedConductor.nombre_conductor}</h5>
+                        <h5 className="font-bold text-foreground text-sm truncate">{matchedConductor.nombre_conductor}</h5>
                         <div className="flex items-center gap-1.5 mt-1">
                           <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border ${
                             matchedConductor.cargo === 'Conductor'
-                              ? 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20'
-                              : 'text-purple-400 bg-purple-400/10 border-purple-400/20'
+                              ? 'text-accent-foreground bg-accent-soft border-accent/20'
+                              : 'text-info bg-info-soft border-info/20'
                           }`}>
                             {matchedConductor.cargo || 'Mensajero'}
                           </span>
                           {matchedConductor.licencia_categoria && (
-                            <span className="text-[9px] font-bold text-cyan-400 bg-cyan-400/10 border border-cyan-500/20 px-1.5 py-0.5 rounded">
+                            <span className="text-[9px] font-bold text-accent-foreground bg-accent-soft border border-accent/20 px-1.5 py-0.5 rounded">
                               Cat. {matchedConductor.licencia_categoria}
                             </span>
                           )}
@@ -966,9 +966,9 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
                     {/* Estado de Documentos de Tránsito */}
                     <div className="grid grid-cols-3 gap-2">
                       {/* SOAT */}
-                      <div className="p-2 bg-neutral-950 border border-neutral-800/80 rounded-xl flex flex-col justify-between items-center text-center">
-                        <span className="text-[8px] font-bold text-neutral-500 uppercase tracking-wider">SOAT</span>
-                        <span className="text-[10px] font-semibold text-neutral-200 mt-1 font-mono">{formatDate(matchedConductor.soat_vencimiento)}</span>
+                      <div className="p-2 bg-subtle border border-border rounded-xl flex flex-col justify-between items-center text-center">
+                        <span className="text-[8px] font-bold text-muted uppercase tracking-wider">SOAT</span>
+                        <span className="text-[10px] font-semibold text-foreground mt-1 font-mono">{formatDate(matchedConductor.soat_vencimiento)}</span>
                         {(() => {
                           const info = getDocumentStatus(matchedConductor.soat_vencimiento)
                           return (
@@ -980,9 +980,9 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
                       </div>
 
                       {/* Tecno */}
-                      <div className="p-2 bg-neutral-950 border border-neutral-800/80 rounded-xl flex flex-col justify-between items-center text-center">
-                        <span className="text-[8px] font-bold text-neutral-500 uppercase tracking-wider">Tecno</span>
-                        <span className="text-[10px] font-semibold text-neutral-200 mt-1 font-mono">{formatDate(matchedConductor.tecno_vencimiento)}</span>
+                      <div className="p-2 bg-subtle border border-border rounded-xl flex flex-col justify-between items-center text-center">
+                        <span className="text-[8px] font-bold text-muted uppercase tracking-wider">Tecno</span>
+                        <span className="text-[10px] font-semibold text-foreground mt-1 font-mono">{formatDate(matchedConductor.tecno_vencimiento)}</span>
                         {(() => {
                           const info = getDocumentStatus(matchedConductor.tecno_vencimiento)
                           return (
@@ -994,9 +994,9 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
                       </div>
 
                       {/* Licencia */}
-                      <div className="p-2 bg-neutral-950 border border-neutral-800/80 rounded-xl flex flex-col justify-between items-center text-center">
-                        <span className="text-[8px] font-bold text-neutral-500 uppercase tracking-wider">Licencia</span>
-                        <span className="text-[10px] font-semibold text-neutral-200 mt-1 font-mono">{formatDate(matchedConductor.licencia_vencimiento)}</span>
+                      <div className="p-2 bg-subtle border border-border rounded-xl flex flex-col justify-between items-center text-center">
+                        <span className="text-[8px] font-bold text-muted uppercase tracking-wider">Licencia</span>
+                        <span className="text-[10px] font-semibold text-foreground mt-1 font-mono">{formatDate(matchedConductor.licencia_vencimiento)}</span>
                         {(() => {
                           const info = getDocumentStatus(matchedConductor.licencia_vencimiento)
                           return (
@@ -1010,24 +1010,24 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
                   </div>
 
                   {/* Columna Derecha: Estado e Ilustración del Vehículo */}
-                  <div className="p-4 bg-neutral-950/40 border border-neutral-850 rounded-2xl flex flex-col justify-between space-y-3 relative overflow-hidden">
+                  <div className="p-4 bg-subtle border border-border rounded-2xl flex flex-col justify-between space-y-3 relative overflow-hidden">
                     {currentVehiculo ? (
                       <>
                         <div className="flex justify-between items-start">
                           <div>
-                            <h6 className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider">Vehículo Asignado</h6>
+                            <h6 className="text-[10px] font-bold text-muted uppercase tracking-wider">Vehículo Asignado</h6>
                             <div className="flex items-center gap-2 mt-1">
-                              <span className="text-sm font-bold text-white tracking-wide font-mono bg-neutral-900 border border-neutral-800 px-2 py-0.5 rounded shadow-sm">
+                              <span className="text-sm font-bold text-foreground tracking-wide font-mono bg-surface border border-border px-2 py-0.5 rounded shadow-sm">
                                 {currentVehiculo.placa}
                               </span>
-                              <span className="text-xs text-neutral-400 truncate max-w-[100px] md:max-w-[130px]">
+                              <span className="text-xs text-muted truncate max-w-[100px] md:max-w-[130px]">
                                 {currentVehiculo.marca} {currentVehiculo.modelo}
                               </span>
                             </div>
                           </div>
                           <div className="text-right">
-                            <span className="text-[9px] font-bold text-neutral-500 uppercase tracking-wider block">Odo. Actual</span>
-                            <span className="text-xs font-semibold text-neutral-300 font-mono">
+                            <span className="text-[9px] font-bold text-muted uppercase tracking-wider block">Odo. Actual</span>
+                            <span className="text-xs font-semibold text-secondary font-mono">
                               {currentVehiculo.kilometraje.toLocaleString()} km
                             </span>
                           </div>
@@ -1036,17 +1036,17 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
                         {/* Blueprint */}
                         <div className="flex-1 flex flex-col justify-center items-center relative min-h-[180px] w-full">
                           {loadingLatestChecklist ? (
-                            <div className="flex flex-col items-center justify-center gap-1.5 text-neutral-400 py-8 bg-neutral-950/50 rounded-xl border border-neutral-800/40 w-full">
-                              <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
+                            <div className="flex flex-col items-center justify-center gap-1.5 text-muted py-8 bg-subtle rounded-xl border border-border w-full">
+                              <Loader2 className="w-4 h-4 text-accent-foreground animate-spin" />
                               <span className="text-[9px]">Cargando estado...</span>
                             </div>
                           ) : (
                             <>
                               <VehicleBlueprint tipo={currentVehiculo.tipo} checklist={latestChecklist} />
                               
-                              <div className="absolute bottom-2 right-3 flex items-center gap-1.5 bg-[#0a1d37]/90 border border-white/10 px-2.5 py-0.5 rounded-full text-[8px] backdrop-blur-sm shadow-md">
-                                <span className={`w-1.5 h-1.5 rounded-full ${latestChecklist?.tiene_novedad ? 'bg-rose-500 animate-pulse' : latestChecklist ? 'bg-emerald-500' : 'bg-neutral-600'}`} />
-                                <span className="text-neutral-300 font-medium font-mono">
+                              <div className="absolute bottom-2 right-3 flex items-center gap-1.5 bg-surface border border-border px-2.5 py-0.5 rounded-full text-[8px] backdrop-blur-sm shadow-md">
+                                <span className={`w-1.5 h-1.5 rounded-full ${latestChecklist?.tiene_novedad ? 'bg-danger-solid animate-pulse' : latestChecklist ? 'bg-success-solid' : 'bg-border-strong'}`} />
+                                <span className="text-secondary font-medium font-mono">
                                   {latestChecklist 
                                     ? `INSPECCIÓN HOY: ${latestChecklist.tiene_novedad ? 'CON FALLAS' : 'COMPLETA'}` 
                                     : 'HOY: SIN INSPECCIÓN'}
@@ -1058,9 +1058,9 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
                       </>
                     ) : (
                       <div className="flex-1 flex flex-col justify-center items-center text-center p-3">
-                        <AlertTriangle className="w-6 h-6 text-neutral-600 mb-1.5" />
-                        <p className="text-xs text-neutral-400 font-semibold">Sin vehículo asignado</p>
-                        <p className="text-[9px] text-neutral-500 mt-1 max-w-[180px]">Este colaborador no tiene una placa vinculada.</p>
+                        <AlertTriangle className="w-6 h-6 text-muted mb-1.5" />
+                        <p className="text-xs text-muted font-semibold">Sin vehículo asignado</p>
+                        <p className="text-[9px] text-muted mt-1 max-w-[180px]">Este colaborador no tiene una placa vinculada.</p>
                       </div>
                     )}
                   </div>
@@ -1079,7 +1079,7 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
                     return (
                       <div className="col-span-1 md:col-span-2 space-y-2">
                         {isAnyExpired && (
-                          <div className="flex items-start gap-2.5 p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-xs">
+                          <div className="flex items-start gap-2.5 p-3 bg-danger-soft border border-danger/20 rounded-xl text-danger text-xs">
                             <AlertTriangle className="w-4.5 h-4.5 flex-shrink-0 mt-0.5 animate-bounce" />
                             <div>
                               <span className="font-bold">¡ALERTA DE SEGURIDAD!</span> Tiene uno o más documentos de tránsito vencidos. Reporte esto al administrador inmediatamente.
@@ -1087,7 +1087,7 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
                           </div>
                         )}
                         {!isAnyExpired && isAnySoon && (
-                          <div className="flex items-start gap-2.5 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-400 text-xs">
+                          <div className="flex items-start gap-2.5 p-3 bg-warning-soft border border-warning/20 rounded-xl text-warning text-xs">
                             <AlertTriangle className="w-4.5 h-4.5 flex-shrink-0 mt-0.5" />
                             <div>
                               <span className="font-bold">Aviso preventivo:</span> Uno de sus documentos está próximo a vencer (menos de 30 días). Gestione su renovación.
@@ -1095,7 +1095,7 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
                           </div>
                         )}
                         {hasMechanicalAlert && (
-                          <div className="flex items-start gap-2.5 p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-xs">
+                          <div className="flex items-start gap-2.5 p-3 bg-danger-soft border border-danger/20 rounded-xl text-danger text-xs">
                             <AlertTriangle className="w-4.5 h-4.5 flex-shrink-0 mt-0.5 animate-pulse" />
                             <div>
                               <span className="font-bold">¡ALERTA DE VEHÍCULO!</span> La última inspección preoperacional reportó fallas críticas en este vehículo. Verifique los componentes reportados.
@@ -1108,7 +1108,7 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
                 </div>
               ) : (
                 conductorCedula && conductorCedula.trim().length >= 3 && !loadingMensajeros && (
-                  <div className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-xs flex items-center gap-2 animate-in fade-in">
+                  <div className="p-4 bg-danger-soft border border-danger/20 rounded-xl text-danger text-xs flex items-center gap-2 animate-in fade-in">
                     <AlertTriangle className="w-4 h-4 flex-shrink-0" />
                     <span>Cédula no registrada en la base de datos de personal. Por favor verifique o contacte a administración.</span>
                   </div>
@@ -1125,24 +1125,24 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
             <div className="space-y-6">
               {CATEGORIES.slice(0, 2).map((cat) => (
                 <div key={cat.id} className="space-y-3">
-                  <h4 className="text-sm font-bold text-white uppercase tracking-wider border-b border-neutral-850 pb-2">{cat.title}</h4>
+                  <h4 className="text-sm font-bold text-foreground uppercase tracking-wider border-b border-border pb-2">{cat.title}</h4>
                   <div className="space-y-2.5">
                     {cat.items.map((item) => (
                       <div 
                         key={item.id} 
-                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-neutral-950/20 border border-neutral-800/40 rounded-xl hover:bg-neutral-850/10 transition-all"
+                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-subtle border border-border rounded-xl hover:bg-hover transition-all"
                       >
-                        <span className="text-sm text-neutral-200">{item.label}</span>
+                        <span className="text-sm text-foreground">{item.label}</span>
                         <Controller
                           name={`evaluaciones.${item.id}`}
                           control={control}
                           render={({ field }) => (
-                            <div className="flex bg-neutral-950 border border-neutral-800 rounded-lg p-0.5 w-full sm:w-auto self-start sm:self-auto">
+                            <div className="flex bg-subtle border border-border rounded-lg p-0.5 w-full sm:w-auto self-start sm:self-auto">
                               <button
                                 type="button"
                                 onClick={() => field.onChange('b')}
                                 className={`flex-1 sm:flex-none px-3.5 py-1 rounded-md text-[11px] font-bold transition-all ${
-                                  field.value === 'b' ? 'bg-emerald-600 text-white' : 'text-neutral-500 hover:text-neutral-300'
+                                  field.value === 'b' ? 'bg-success-solid text-on-accent' : 'text-muted hover:text-secondary'
                                 }`}
                               >
                                 Bien
@@ -1151,7 +1151,7 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
                                 type="button"
                                 onClick={() => field.onChange('m')}
                                 className={`flex-1 sm:flex-none px-3.5 py-1 rounded-md text-[11px] font-bold transition-all ${
-                                  field.value === 'm' ? 'bg-rose-600 text-white' : 'text-neutral-500 hover:text-neutral-300'
+                                  field.value === 'm' ? 'bg-danger-solid text-on-accent' : 'text-muted hover:text-secondary'
                                 }`}
                               >
                                 Mal
@@ -1160,7 +1160,7 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
                                 type="button"
                                 onClick={() => field.onChange('na')}
                                 className={`flex-1 sm:flex-none px-3.5 py-1 rounded-md text-[11px] font-bold transition-all ${
-                                  field.value === 'na' ? 'bg-neutral-800 text-neutral-300' : 'text-neutral-500 hover:text-neutral-300'
+                                  field.value === 'na' ? 'bg-subtle text-secondary' : 'text-muted hover:text-secondary'
                                 }`}
                               >
                                 N/A
@@ -1181,24 +1181,24 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
             <div className="space-y-6">
               {CATEGORIES.slice(2, 4).map((cat) => (
                 <div key={cat.id} className="space-y-3">
-                  <h4 className="text-sm font-bold text-white uppercase tracking-wider border-b border-neutral-850 pb-2">{cat.title}</h4>
+                  <h4 className="text-sm font-bold text-foreground uppercase tracking-wider border-b border-border pb-2">{cat.title}</h4>
                   <div className="space-y-2.5">
                     {cat.items.map((item) => (
                       <div 
                         key={item.id} 
-                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-neutral-950/20 border border-neutral-800/40 rounded-xl hover:bg-neutral-850/10 transition-all"
+                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-subtle border border-border rounded-xl hover:bg-hover transition-all"
                       >
-                        <span className="text-sm text-neutral-200">{item.label}</span>
+                        <span className="text-sm text-foreground">{item.label}</span>
                         <Controller
                           name={`evaluaciones.${item.id}`}
                           control={control}
                           render={({ field }) => (
-                            <div className="flex bg-neutral-950 border border-neutral-800 rounded-lg p-0.5 w-full sm:w-auto self-start sm:self-auto">
+                            <div className="flex bg-subtle border border-border rounded-lg p-0.5 w-full sm:w-auto self-start sm:self-auto">
                               <button
                                 type="button"
                                 onClick={() => field.onChange('b')}
                                 className={`flex-1 sm:flex-none px-3.5 py-1 rounded-md text-[11px] font-bold transition-all ${
-                                  field.value === 'b' ? 'bg-emerald-600 text-white' : 'text-neutral-500 hover:text-neutral-300'
+                                  field.value === 'b' ? 'bg-success-solid text-on-accent' : 'text-muted hover:text-secondary'
                                 }`}
                               >
                                 Bien
@@ -1207,7 +1207,7 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
                                 type="button"
                                 onClick={() => field.onChange('m')}
                                 className={`flex-1 sm:flex-none px-3.5 py-1 rounded-md text-[11px] font-bold transition-all ${
-                                  field.value === 'm' ? 'bg-rose-600 text-white' : 'text-neutral-500 hover:text-neutral-300'
+                                  field.value === 'm' ? 'bg-danger-solid text-on-accent' : 'text-muted hover:text-secondary'
                                 }`}
                               >
                                 Mal
@@ -1216,7 +1216,7 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
                                 type="button"
                                 onClick={() => field.onChange('na')}
                                 className={`flex-1 sm:flex-none px-3.5 py-1 rounded-md text-[11px] font-bold transition-all ${
-                                  field.value === 'na' ? 'bg-neutral-800 text-neutral-300' : 'text-neutral-500 hover:text-neutral-300'
+                                  field.value === 'na' ? 'bg-subtle text-secondary' : 'text-muted hover:text-secondary'
                                 }`}
                               >
                                 N/A
@@ -1237,24 +1237,24 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
             <div className="space-y-6">
               {CATEGORIES.slice(4, 6).map((cat) => (
                 <div key={cat.id} className="space-y-3">
-                  <h4 className="text-sm font-bold text-white uppercase tracking-wider border-b border-neutral-850 pb-2">{cat.title}</h4>
+                  <h4 className="text-sm font-bold text-foreground uppercase tracking-wider border-b border-border pb-2">{cat.title}</h4>
                   <div className="space-y-2.5">
                     {cat.items.map((item) => (
                       <div 
                         key={item.id} 
-                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-neutral-950/20 border border-neutral-800/40 rounded-xl hover:bg-neutral-850/10 transition-all"
+                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-subtle border border-border rounded-xl hover:bg-hover transition-all"
                       >
-                        <span className="text-sm text-neutral-200">{item.label}</span>
+                        <span className="text-sm text-foreground">{item.label}</span>
                         <Controller
                           name={`evaluaciones.${item.id}`}
                           control={control}
                           render={({ field }) => (
-                            <div className="flex bg-neutral-950 border border-neutral-800 rounded-lg p-0.5 w-full sm:w-auto self-start sm:self-auto">
+                            <div className="flex bg-subtle border border-border rounded-lg p-0.5 w-full sm:w-auto self-start sm:self-auto">
                               <button
                                 type="button"
                                 onClick={() => field.onChange('b')}
                                 className={`flex-1 sm:flex-none px-3.5 py-1 rounded-md text-[11px] font-bold transition-all ${
-                                  field.value === 'b' ? 'bg-emerald-600 text-white' : 'text-neutral-500 hover:text-neutral-300'
+                                  field.value === 'b' ? 'bg-success-solid text-on-accent' : 'text-muted hover:text-secondary'
                                 }`}
                               >
                                 Bien
@@ -1263,7 +1263,7 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
                                 type="button"
                                 onClick={() => field.onChange('m')}
                                 className={`flex-1 sm:flex-none px-3.5 py-1 rounded-md text-[11px] font-bold transition-all ${
-                                  field.value === 'm' ? 'bg-rose-600 text-white' : 'text-neutral-500 hover:text-neutral-300'
+                                  field.value === 'm' ? 'bg-danger-solid text-on-accent' : 'text-muted hover:text-secondary'
                                 }`}
                               >
                                 Mal
@@ -1272,7 +1272,7 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
                                 type="button"
                                 onClick={() => field.onChange('na')}
                                 className={`flex-1 sm:flex-none px-3.5 py-1 rounded-md text-[11px] font-bold transition-all ${
-                                  field.value === 'na' ? 'bg-neutral-800 text-neutral-300' : 'text-neutral-500 hover:text-neutral-300'
+                                  field.value === 'na' ? 'bg-subtle text-secondary' : 'text-muted hover:text-secondary'
                                 }`}
                               >
                                 N/A
@@ -1294,24 +1294,24 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
               {/* Prevención y EPP */}
               {CATEGORIES.slice(6, 8).map((cat) => (
                 <div key={cat.id} className="space-y-3">
-                  <h4 className="text-sm font-bold text-white uppercase tracking-wider border-b border-neutral-850 pb-2">{cat.title}</h4>
+                  <h4 className="text-sm font-bold text-foreground uppercase tracking-wider border-b border-border pb-2">{cat.title}</h4>
                   <div className="space-y-2.5">
                     {cat.items.map((item) => (
                       <div 
                         key={item.id} 
-                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-neutral-950/20 border border-neutral-800/40 rounded-xl hover:bg-neutral-850/10 transition-all"
+                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-subtle border border-border rounded-xl hover:bg-hover transition-all"
                       >
-                        <span className="text-sm text-neutral-200">{item.label}</span>
+                        <span className="text-sm text-foreground">{item.label}</span>
                         <Controller
                           name={`evaluaciones.${item.id}`}
                           control={control}
                           render={({ field }) => (
-                            <div className="flex bg-neutral-950 border border-neutral-800 rounded-lg p-0.5 w-full sm:w-auto self-start sm:self-auto">
+                            <div className="flex bg-subtle border border-border rounded-lg p-0.5 w-full sm:w-auto self-start sm:self-auto">
                               <button
                                 type="button"
                                 onClick={() => field.onChange('b')}
                                 className={`flex-1 sm:flex-none px-3.5 py-1 rounded-md text-[11px] font-bold transition-all ${
-                                  field.value === 'b' ? 'bg-emerald-600 text-white' : 'text-neutral-500 hover:text-neutral-300'
+                                  field.value === 'b' ? 'bg-success-solid text-on-accent' : 'text-muted hover:text-secondary'
                                 }`}
                               >
                                 Bien
@@ -1323,7 +1323,7 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
                                   type="button"
                                   onClick={() => field.onChange('m')}
                                   className={`flex-1 sm:flex-none px-3.5 py-1 rounded-md text-[11px] font-bold transition-all ${
-                                    field.value === 'm' ? 'bg-rose-600 text-white' : 'text-neutral-500 hover:text-neutral-300'
+                                    field.value === 'm' ? 'bg-danger-solid text-on-accent' : 'text-muted hover:text-secondary'
                                   }`}
                                 >
                                   Mal
@@ -1334,7 +1334,7 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
                                 type="button"
                                 onClick={() => field.onChange('na')}
                                 className={`flex-1 sm:flex-none px-3.5 py-1 rounded-md text-[11px] font-bold transition-all ${
-                                  field.value === 'na' ? 'bg-neutral-800 text-neutral-300' : 'text-neutral-500 hover:text-neutral-300'
+                                  field.value === 'na' ? 'bg-subtle text-secondary' : 'text-muted hover:text-secondary'
                                 }`}
                               >
                                 N/A
@@ -1350,33 +1350,33 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
 
               {/* Observaciones */}
               <div className="space-y-2.5">
-                <h4 className="text-sm font-bold text-white uppercase tracking-wider border-b border-neutral-850 pb-2">Observaciones</h4>
+                <h4 className="text-sm font-bold text-foreground uppercase tracking-wider border-b border-border pb-2">Observaciones</h4>
                 <div>
-                  <label className="block text-xs text-neutral-400 mb-2 leading-relaxed">
+                  <label className="block text-xs text-muted mb-2 leading-relaxed">
                     Si en la inspección reporta un componente como malo debe registrar la observación detallando la falla para su corrección.
                   </label>
                   <textarea
                     {...register('observaciones')}
                     placeholder="Escribe aquí las novedades mecánicas u observaciones de la inspección..."
                     rows={4}
-                    className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none text-sm"
+                    className="w-full px-4 py-3 bg-subtle border border-border rounded-xl text-foreground focus:ring-2 focus:ring-accent outline-none transition-all resize-none text-sm"
                   />
                 </div>
               </div>
 
               {/* Alerta de fallas críticas */}
               {hasNovelty && (
-                <div className="flex items-start gap-3 p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-400 text-xs leading-relaxed animate-pulse">
+                <div className="flex items-start gap-3 p-4 bg-warning-soft border border-warning/20 rounded-xl text-warning text-xs leading-relaxed animate-pulse">
                   <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                   <div>
                     <p className="font-bold">Novedad Reportada en la Inspección</p>
-                    <p className="mt-0.5 text-neutral-400">Has calificado uno o más componentes como &quot;Mal&quot;. Al enviar, se creará una alerta inmediata al administrador y deberás describir el problema en las observaciones superiores.</p>
+                    <p className="mt-0.5 text-muted">Has calificado uno o más componentes como &quot;Mal&quot;. Al enviar, se creará una alerta inmediata al administrador y deberás describir el problema en las observaciones superiores.</p>
                   </div>
                 </div>
               )}
 
               {error && (
-                <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
+                <div className="flex items-center gap-2 p-3 bg-danger-soft border border-danger/20 rounded-xl text-danger text-sm">
                   <AlertTriangle className="w-4 h-4 flex-shrink-0" />
                   <p>{error}</p>
                 </div>
@@ -1387,12 +1387,12 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
         </div>
 
         {/* Footer */}
-        <div className="flex justify-between items-center p-6 border-t border-neutral-800 bg-neutral-900/50 flex-shrink-0 gap-3">
+        <div className="flex justify-between items-center p-6 border-t border-border bg-surface flex-shrink-0 gap-3">
           {step > 1 ? (
             <button
               type="button"
               onClick={prevStep}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-neutral-850 hover:bg-neutral-800 text-neutral-300 rounded-xl font-medium transition-all text-sm"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-subtle hover:bg-hover text-secondary rounded-xl font-medium transition-all text-sm"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Atrás</span>
@@ -1401,7 +1401,7 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
             <button 
               type="button" 
               onClick={onCancel} 
-              className="flex-1 sm:flex-none px-5 py-2.5 bg-neutral-850 hover:bg-neutral-800 text-neutral-400 rounded-xl font-medium transition-all text-sm"
+              className="flex-1 sm:flex-none px-5 py-2.5 bg-subtle hover:bg-hover text-muted rounded-xl font-medium transition-all text-sm"
             >
               Cancelar
             </button>
@@ -1412,7 +1412,7 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
               type="button"
               onClick={nextStep}
               disabled={step === 1 && !matchedConductor}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-xl font-medium transition-all shadow-lg shadow-blue-600/20 text-sm ml-auto animate-all duration-205"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-accent hover:bg-accent-hover disabled:opacity-50 text-on-accent rounded-xl font-medium transition-all shadow-none text-sm ml-auto animate-all duration-205"
             >
               <span>Continuar</span>
               <ArrowRight className="w-4 h-4" />
@@ -1422,7 +1422,7 @@ export function ChecklistForm({ vehiculos, onSuccess, onCancel }: ChecklistFormP
               type="button"
               onClick={handleSubmit(handleFormSubmit)}
               disabled={isSubmitting}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-xl font-medium transition-all shadow-lg shadow-blue-600/20 text-sm ml-auto"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-accent hover:bg-accent-hover disabled:opacity-50 text-on-accent rounded-xl font-medium transition-all shadow-none text-sm ml-auto"
             >
               {isSubmitting ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

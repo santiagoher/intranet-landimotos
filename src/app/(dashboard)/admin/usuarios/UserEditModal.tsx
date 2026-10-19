@@ -73,33 +73,33 @@ export function UserEditModal({ user, onSuccess, onCancel }: UserEditModalProps)
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-        <div className="flex items-center justify-between p-6 border-b border-neutral-800 bg-neutral-900/50">
+      <div className="w-full max-w-md bg-surface border border-border rounded-2xl shadow-sm overflow-hidden animate-in fade-in zoom-in duration-200">
+        <div className="flex items-center justify-between p-6 border-b border-border bg-surface">
           <div>
-            <h3 className="text-xl font-bold text-white">Gestionar Usuario</h3>
-            <p className="text-xs text-neutral-400 mt-1">{user.email}</p>
+            <h3 className="text-xl font-bold text-foreground">Gestionar Usuario</h3>
+            <p className="text-xs text-muted mt-1">{user.email}</p>
           </div>
-          <button onClick={onCancel} className="p-2 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-lg transition-colors">
+          <button onClick={onCancel} className="p-2 text-muted hover:text-foreground hover:bg-hover rounded-lg transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit(handleFormSubmit)} className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-neutral-400 mb-1">Nombre Completo</label>
+            <label className="block text-sm font-medium text-muted mb-1">Nombre Completo</label>
             <input
               {...register('nombre')}
-              className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+              className="w-full px-4 py-2.5 bg-subtle border border-border rounded-xl text-foreground focus:ring-2 focus:ring-accent outline-none transition-all"
             />
-            {errors.nombre && <p className="mt-1 text-xs text-red-500">{errors.nombre.message}</p>}
+            {errors.nombre && <p className="mt-1 text-xs text-danger">{errors.nombre.message}</p>}
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-neutral-400 mb-1">Rol</label>
+              <label className="block text-sm font-medium text-muted mb-1">Rol</label>
               <select
                 {...register('rol')}
-                className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer"
+                className="w-full px-4 py-2.5 bg-subtle border border-border rounded-xl text-foreground focus:ring-2 focus:ring-accent outline-none appearance-none cursor-pointer"
               >
                 <option value="Operativo">Operativo</option>
                 <option value="Admin">Administrador</option>
@@ -107,10 +107,10 @@ export function UserEditModal({ user, onSuccess, onCancel }: UserEditModalProps)
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-neutral-400 mb-1">Estado</label>
+              <label className="block text-sm font-medium text-muted mb-1">Estado</label>
               <select
                 {...register('estado')}
-                className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer"
+                className="w-full px-4 py-2.5 bg-subtle border border-border rounded-xl text-foreground focus:ring-2 focus:ring-accent outline-none appearance-none cursor-pointer"
               >
                 <option value="activo">Activo</option>
                 <option value="inactivo">Inactivo</option>
@@ -119,15 +119,15 @@ export function UserEditModal({ user, onSuccess, onCancel }: UserEditModalProps)
           </div>
 
           <div className="pt-2">
-            <label className="block text-sm font-bold text-neutral-400 mb-3 uppercase tracking-wider">Módulos de Acceso</label>
+            <label className="block text-sm font-bold text-muted mb-3 uppercase tracking-wider">Módulos de Acceso</label>
             <div className="grid grid-cols-1 gap-2">
               {['despachos', 'mensajeros', 'vehiculos'].map((module) => (
                 <label
                   key={module}
                   className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer ${
                     allowedModules.includes(module)
-                      ? 'bg-blue-600/10 border-blue-500/50 text-white'
-                      : 'bg-neutral-950 border-neutral-800 text-neutral-500 hover:border-neutral-700'
+                      ? 'bg-accent-soft border-accent/50 text-foreground'
+                      : 'bg-subtle border-border text-muted hover:border-border-strong'
                     }`}
                 >
                   <span className="capitalize text-sm font-medium">{module}</span>
@@ -135,7 +135,7 @@ export function UserEditModal({ user, onSuccess, onCancel }: UserEditModalProps)
                     type="checkbox"
                     checked={allowedModules.includes(module)}
                     onChange={() => toggleModule(module)}
-                    className="w-4 h-4 rounded border-neutral-800 bg-neutral-900 text-blue-600 focus:ring-blue-500"
+                    className="w-4 h-4 rounded border-border bg-surface text-accent-foreground focus:ring-accent"
                   />
                 </label>
               ))}
@@ -143,20 +143,20 @@ export function UserEditModal({ user, onSuccess, onCancel }: UserEditModalProps)
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
+            <div className="flex items-center gap-2 p-3 bg-danger-soft border border-danger/20 rounded-xl text-danger text-sm">
               <AlertCircle className="w-4 h-4" />
               <p>{error}</p>
             </div>
           )}
 
           <div className="flex gap-3 mt-6">
-            <button type="button" onClick={onCancel} className="flex-1 px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-white rounded-xl font-medium transition-all">
+            <button type="button" onClick={onCancel} className="flex-1 px-4 py-2.5 bg-subtle hover:bg-hover text-foreground rounded-xl font-medium transition-all">
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-xl font-medium transition-all shadow-lg shadow-blue-600/20"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-accent hover:bg-accent-hover disabled:opacity-50 text-on-accent rounded-xl font-medium transition-all shadow-none"
             >
               {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
               Guardar Cambios

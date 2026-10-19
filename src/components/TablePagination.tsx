@@ -33,16 +33,16 @@ export function TablePagination({ currentPage, totalPages, totalItems, pageSize,
   }
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-4 border-t border-neutral-800 bg-neutral-950/30">
-      <span className="text-xs text-neutral-500 font-medium">
-        Mostrando <span className="text-neutral-300 font-bold">{startItem}</span> - <span className="text-neutral-300 font-bold">{endItem}</span> de <span className="text-neutral-300 font-bold">{totalItems}</span>
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-4 border-t border-border bg-subtle">
+      <span className="text-xs text-muted font-medium">
+        Mostrando <span className="text-secondary font-bold">{startItem}</span> - <span className="text-secondary font-bold">{endItem}</span> de <span className="text-secondary font-bold">{totalItems}</span>
       </span>
 
       <div className="flex items-center gap-1">
         <button
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
-          className="p-1.5 rounded-lg text-neutral-500 hover:text-white hover:bg-neutral-800 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+          className="icon-button disabled:opacity-30 disabled:cursor-not-allowed"
           title="Primera página"
         >
           <ChevronsLeft className="w-4 h-4" />
@@ -50,7 +50,7 @@ export function TablePagination({ currentPage, totalPages, totalItems, pageSize,
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="p-1.5 rounded-lg text-neutral-500 hover:text-white hover:bg-neutral-800 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+          className="icon-button disabled:opacity-30 disabled:cursor-not-allowed"
           title="Anterior"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -59,11 +59,13 @@ export function TablePagination({ currentPage, totalPages, totalItems, pageSize,
         {getVisiblePages().map((page) => (
           <button
             key={page}
+            aria-label={`Página ${page}`}
+            aria-current={currentPage === page ? 'page' : undefined}
             onClick={() => onPageChange(page)}
-            className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
+            className={`min-w-9 h-10 rounded-lg text-xs font-medium transition-colors ${
               currentPage === page
-                ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
-                : 'text-neutral-500 hover:text-white hover:bg-neutral-800'
+                ? 'bg-active text-foreground'
+                : 'text-muted hover:text-foreground hover:bg-hover'
             }`}
           >
             {page}
@@ -73,7 +75,7 @@ export function TablePagination({ currentPage, totalPages, totalItems, pageSize,
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="p-1.5 rounded-lg text-neutral-500 hover:text-white hover:bg-neutral-800 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+          className="icon-button disabled:opacity-30 disabled:cursor-not-allowed"
           title="Siguiente"
         >
           <ChevronRight className="w-4 h-4" />
@@ -81,7 +83,7 @@ export function TablePagination({ currentPage, totalPages, totalItems, pageSize,
         <button
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
-          className="p-1.5 rounded-lg text-neutral-500 hover:text-white hover:bg-neutral-800 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+          className="icon-button disabled:opacity-30 disabled:cursor-not-allowed"
           title="Última página"
         >
           <ChevronsRight className="w-4 h-4" />
@@ -109,3 +111,4 @@ export function usePagination<T>(data: T[], pageSize = 15) {
     }
   }
 }
+  

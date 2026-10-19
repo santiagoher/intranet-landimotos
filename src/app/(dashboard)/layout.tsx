@@ -32,17 +32,13 @@ export default async function DashboardLayout({
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen bg-neutral-950 text-neutral-50 selection:bg-blue-500/30">
-        <Sidebar rol={rol} modulosPermitidos={modulosPermitidos} />
+      <div className="min-h-dvh bg-background text-foreground">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-surface focus:p-3">Saltar al contenido</a>
+        <Sidebar rol={rol} modulosPermitidos={modulosPermitidos} userName={nombre} email={user.email} />
 
-        <div className="p-4 lg:ml-64 relative min-h-screen flex flex-col min-w-0 overflow-x-hidden">
-          {/* Main bg glow decorative */}
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/5 rounded-full mix-blend-screen filter blur-[120px] opacity-70 pointer-events-none z-0"></div>
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-600/5 rounded-full mix-blend-screen filter blur-[120px] opacity-70 pointer-events-none z-0"></div>
-
-          <Navbar userName={nombre} rol={rol} />
-
-          <main className="flex-1 mt-6 relative z-10">
+        <div id="dashboard-content" className="min-w-0 px-4 py-4 sm:px-6 lg:ml-64 lg:px-8 lg:py-8 xl:px-10">
+          <Navbar />
+          <main id="main-content" tabIndex={-1} className="mx-auto min-w-0 max-w-[1600px]">
             {children}
           </main>
         </div>

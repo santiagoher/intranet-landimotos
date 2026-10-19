@@ -1,5 +1,9 @@
 'use client'
 
+import { Modal } from '@/components/Modal'
+
+import { useChartColors } from '@/components/theme/useTheme'
+
 import { useState, useEffect } from 'react'
 import {
   Chart as ChartJS,
@@ -40,8 +44,10 @@ ChartJS.register(
 const MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
 
 export function DespachosAdminStats() {
+  const chartColors = useChartColors()
   const [stats, setStats] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState<string | null>(null)
   const [dateFilter, setDateFilter] = useState(new Date().toISOString().split('T')[0])
   const [puntoFilter, setPuntoFilter] = useState<'Principal' | 'Sucursal' | 'Todos'>('Todos')
   const [revisorPuntoFilter, setRevisorPuntoFilter] = useState<'Principal' | 'Sucursal' | 'Todos'>('Todos')
@@ -60,6 +66,7 @@ export function DespachosAdminStats() {
 
   const fetchStats = async () => {
     setLoading(true)
+    setLoadError(null)
     try {
       let startISO = ''
       let endISO = ''
@@ -85,6 +92,7 @@ export function DespachosAdminStats() {
       setStats(data)
     } catch (error) {
       console.error('Error fetching stats:', error)
+      setLoadError('No se pudieron cargar las estadísticas de despachos.')
     } finally {
       setLoading(false)
     }
@@ -149,9 +157,18 @@ export function DespachosAdminStats() {
     }
   }
 
+  if (loadError && !loading) {
+    return <div className="space-y-4">
+      <h1 className="page-title">Análisis de Operaciones</h1>
+      <div role="alert" className="rounded-lg border border-warning/20 bg-warning-soft p-4 text-sm text-warning">
+        {loadError} <button onClick={() => void fetchStats()} className="ml-2 underline">Reintentar</button>
+      </div>
+    </div>
+  }
+
   if (loading || !stats) {
     return (
-      <div className="flex items-center justify-center p-20 text-neutral-500">
+      <div className="flex items-center justify-center p-20 text-muted">
         <Clock className="w-6 h-6 animate-spin mr-2" />
         Generando inteligencia de datos...
       </div>
@@ -298,7 +315,11 @@ export function DespachosAdminStats() {
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: '#171717',
+        backgroundColor: chartColors.surface,
+        titleColor: chartColors.text,
+        bodyColor: chartColors.text,
+        borderColor: chartColors.border,
+        borderWidth: 1,
         titleFont: { size: 14, weight: 'bold' },
         bodyFont: { size: 13 },
         padding: 12,
@@ -308,12 +329,12 @@ export function DespachosAdminStats() {
     },
     scales: {
       y: {
-        grid: { color: 'rgba(255, 255, 255, 0.05)' },
-        ticks: { color: '#737373', font: { size: 10 } }
+        grid: { color: chartColors.border },
+        ticks: { color: chartColors.muted, font: { size: 10 } }
       },
       x: {
         grid: { display: false },
-        ticks: { color: '#737373', font: { size: 10 } }
+        ticks: { color: chartColors.muted, font: { size: 10 } }
       }
     }
   }
@@ -324,18 +345,18 @@ export function DespachosAdminStats() {
     plugins: {
       legend: {
         position: 'bottom',
-        labels: { color: '#737373', font: { size: 10 }, usePointStyle: true }
+        labels: { color: chartColors.muted, font: { size: 10 }, usePointStyle: true }
       }
     },
     scales: {
       r: {
-        grid: { color: 'rgba(255, 255, 255, 0.05)' },
-        angleLines: { color: 'rgba(255, 255, 255, 0.05)' },
+        grid: { color: chartColors.border },
+        angleLines: { color: chartColors.border },
         pointLabels: {
           display: true,
           centerPointLabels: true,
           font: { size: 9 },
-          color: '#a3a3a3'
+          color: chartColors.muted
         },
         ticks: { display: false }
       }
@@ -346,12 +367,12 @@ export function DespachosAdminStats() {
     <div className="space-y-8 animate-in fade-in duration-700">
       
       {/* Header de Stats */}
-      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 bg-neutral-900/50 p-4 sm:p-6 rounded-3xl border border-neutral-800">
+      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 bg-surface p-4 sm:p-6 rounded-xl border border-border">
         <div className="w-full xl:w-auto">
-          <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground flex items-center gap-2">
             Análisis de Operaciones
           </h1>
-          <p className="text-neutral-400 text-xs sm:text-sm mt-1">Métricas de rendimiento y flujos de despacho.</p>
+          <p className="text-muted text-xs sm:text-sm mt-1">Métricas de rendimiento y flujos de despacho.</p>
         </div>
         
           <div className="flex flex-wrap items-center gap-3 w-full xl:w-auto">
@@ -362,34 +383,34 @@ export function DespachosAdminStats() {
                 placeholder="Buscar factura..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-neutral-950 border border-neutral-800 text-white text-sm px-10 py-2.5 rounded-2xl outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all w-full sm:w-[200px]"
+                className="bg-subtle border border-border text-foreground text-sm px-10 py-2.5 rounded-2xl outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/20 transition-all w-full sm:w-[200px]"
               />
-              <Search className="w-4 h-4 text-neutral-500 absolute left-4 top-1/2 -translate-y-1/2 group-focus-within:text-blue-500 transition-colors" />
+              <Search className="w-4 h-4 text-muted absolute left-4 top-1/2 -translate-y-1/2 group-focus-within:text-accent-foreground transition-colors" />
               {isSearching && (
                 <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                   <Clock className="w-3 h-3 text-blue-500 animate-spin" />
+                   <Clock className="w-3 h-3 text-accent-foreground animate-spin" />
                 </div>
               )}
             </form>
 
             {isRangeMode ? (
-              <div className="flex items-center gap-2 bg-purple-500/10 p-1 px-2 rounded-2xl border border-purple-500/20">
-                 <CalendarRange className="w-4 h-4 text-purple-500" />
-                 <span className="text-white text-xs font-bold">{startDate} al {endDate}</span>
+              <div className="flex items-center gap-2 bg-info-soft p-1 px-2 rounded-2xl border border-info/20">
+                 <CalendarRange className="w-4 h-4 text-info" />
+                 <span className="text-foreground text-xs font-bold">{startDate} al {endDate}</span>
                  <button 
                    onClick={() => {
                       setIsRangeMode(false)
                       setDateFilter(new Date().toISOString().split('T')[0])
                    }} 
-                   className="ml-2 hover:bg-purple-500/20 p-1 rounded-full transition-colors"
+                   className="ml-2 hover:bg-info-soft p-1 rounded-full transition-colors"
                  >
-                   <X className="w-3 h-3 text-purple-400" />
+                   <X className="w-3 h-3 text-info" />
                  </button>
               </div>
             ) : (
-              <div className="flex items-center gap-3 bg-neutral-950 p-2 px-4 rounded-2xl border border-neutral-800">
-                <Calendar className="w-4 h-4 text-neutral-500" />
-                <span className="text-white text-sm font-medium">
+              <div className="flex items-center gap-3 bg-subtle p-2 px-4 rounded-2xl border border-border">
+                <Calendar className="w-4 h-4 text-muted" />
+                <span className="text-foreground text-sm font-medium">
                   {new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
                 </span>
               </div>
@@ -397,7 +418,7 @@ export function DespachosAdminStats() {
 
             <button 
               onClick={() => setShowReportModal(true)}
-              className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-2xl text-sm font-medium transition-all shadow-lg shadow-blue-600/20 active:scale-[0.98] flex-1 sm:flex-none"
+              className="flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-on-accent px-4 py-2.5 rounded-2xl text-sm font-medium transition-all shadow-none active:scale-[0.98] flex-1 sm:flex-none"
             >
               <FileDown className="w-4 h-4" />
               <span>Filtros y Reportes</span>
@@ -407,16 +428,16 @@ export function DespachosAdminStats() {
 
       {/* Modal de Reportes */}
       {showReportModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="bg-neutral-900 border border-neutral-800 w-full max-w-md rounded-3xl p-8 shadow-2xl animate-in zoom-in-95 duration-300">
+        <Modal onClose={() => setShowReportModal(false)} titleId="despachos-report-title" size="small">
+          <div className="p-5 sm:p-6">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                <FileDown className="w-5 h-5 text-purple-500" />
+              <h2 id="despachos-report-title" className="text-lg font-semibold text-foreground">
                 Generar Reporte
               </h2>
               <button 
+                aria-label="Cerrar reportes"
                 onClick={() => setShowReportModal(false)}
-                className="text-neutral-500 hover:text-white transition-colors"
+                className="text-muted hover:text-foreground transition-colors"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -425,7 +446,7 @@ export function DespachosAdminStats() {
             <div className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-xs text-neutral-500 font-bold uppercase tracking-wider">Fecha Inicio</label>
+                  <label className="text-xs text-muted font-bold uppercase tracking-wider">Fecha Inicio</label>
                   <div 
                     onClick={(e) => {
                       const input = e.currentTarget.querySelector('input');
@@ -433,19 +454,19 @@ export function DespachosAdminStats() {
                         try { input.showPicker(); } catch (err) {}
                       }
                     }}
-                    className="bg-neutral-950 border border-neutral-800 p-3 rounded-2xl flex items-center gap-2 relative cursor-pointer"
+                    className="bg-subtle border border-border p-3 rounded-2xl flex items-center gap-2 relative cursor-pointer"
                   >
-                    <Calendar className="w-4 h-4 text-white/70 pointer-events-none" />
+                    <Calendar className="w-4 h-4 text-foreground pointer-events-none" />
                     <input 
                       type="date" 
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
-                      className="bg-transparent text-white text-sm outline-none w-full [color-scheme:dark] cursor-pointer"
+                      className="bg-transparent text-foreground text-sm outline-none w-full [color-scheme:inherit] cursor-pointer"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs text-neutral-500 font-bold uppercase tracking-wider">Fecha Fin</label>
+                  <label className="text-xs text-muted font-bold uppercase tracking-wider">Fecha Fin</label>
                   <div 
                     onClick={(e) => {
                       const input = e.currentTarget.querySelector('input');
@@ -453,21 +474,21 @@ export function DespachosAdminStats() {
                         try { input.showPicker(); } catch (err) {}
                       }
                     }}
-                    className="bg-neutral-950 border border-neutral-800 p-3 rounded-2xl flex items-center gap-2 relative cursor-pointer"
+                    className="bg-subtle border border-border p-3 rounded-2xl flex items-center gap-2 relative cursor-pointer"
                   >
-                    <Calendar className="w-4 h-4 text-white/70 pointer-events-none" />
+                    <Calendar className="w-4 h-4 text-foreground pointer-events-none" />
                     <input 
                       type="date" 
                       value={endDate}
                       onChange={(e) => setEndDate(e.target.value)}
-                      className="bg-transparent text-white text-sm outline-none w-full [color-scheme:dark] cursor-pointer"
+                      className="bg-transparent text-foreground text-sm outline-none w-full [color-scheme:inherit] cursor-pointer"
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="p-4 bg-purple-500/5 border border-purple-500/10 rounded-2xl">
-                <p className="text-xs text-neutral-400">
+              <div className="p-4 bg-info-soft border border-info/10 rounded-2xl">
+                <p className="text-xs text-muted">
                   Este reporte incluirá todas las métricas de áreas, revisores y actividad horaria para el rango seleccionado, exportadas en formato CSV.
                 </p>
               </div>
@@ -478,14 +499,14 @@ export function DespachosAdminStats() {
                     setIsRangeMode(true)
                     setShowReportModal(false)
                   }}
-                  className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-white font-bold py-3 rounded-2xl transition-all active:scale-[0.98] text-sm"
+                  className="flex-1 bg-subtle hover:bg-hover text-foreground font-bold py-3 rounded-2xl transition-all active:scale-[0.98] text-sm"
                 >
                   Ver en Dashboard
                 </button>
                 <button 
                   onClick={handleExportCSV}
                   disabled={exporting}
-                  className="flex-1 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white font-bold py-3 rounded-2xl shadow-lg shadow-purple-600/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-sm"
+                  className="flex-1 bg-info-solid hover:bg-info-solid disabled:opacity-50 text-on-accent font-bold py-3 rounded-2xl shadow-none transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-sm"
                 >
                   {exporting ? <Clock className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
                   {exporting ? 'Generando...' : 'Descargar CSV'}
@@ -493,14 +514,14 @@ export function DespachosAdminStats() {
               </div>
             </div>
           </div>
-        </div>
+        </Modal>
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* 1. Pedidos del Año (Anual) */}
-        <div className="bg-neutral-900/40 border border-neutral-800 p-6 rounded-3xl space-y-4">
+        <div className="bg-surface border border-border p-6 rounded-xl space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
               Pedidos por Mes ({yearNum})
             </h3>
           </div>
@@ -510,9 +531,9 @@ export function DespachosAdminStats() {
         </div>
 
         {/* 2. Pedidos Diarios (Mes Actual) */}
-        <div className="bg-neutral-900/40 border border-neutral-800 p-6 rounded-3xl space-y-4">
+        <div className="bg-surface border border-border p-6 rounded-xl space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
               Registros {isRangeMode ? 'del Periodo' : `de ${monthName} ${yearNum}`}
             </h3>
           </div>
@@ -522,21 +543,21 @@ export function DespachosAdminStats() {
         </div>
 
         {/* 3. Ranking de Áreas (Polar Area) */}
-        <div className="bg-neutral-900/40 border border-neutral-800 p-6 rounded-3xl space-y-6">
+        <div className="bg-surface border border-border p-6 rounded-xl space-y-6">
           <div className="flex items-center justify-between gap-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
               Distribución por Áreas ({monthName})
             </h3>
             
-            <div className="flex bg-neutral-950 p-1 rounded-xl border border-neutral-800">
+            <div className="flex bg-subtle p-1 rounded-xl border border-border">
               {(['Todos', 'Principal', 'Sucursal'] as const).map((p) => (
                 <button
                   key={p}
                   onClick={() => setPuntoFilter(p)}
                   className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-all ${
                     puntoFilter === p 
-                      ? 'bg-amber-500 text-white shadow-lg' 
-                      : 'text-neutral-500 hover:text-white'
+                      ? 'bg-warning-solid text-on-accent shadow-sm'
+                      : 'text-muted hover:text-foreground'
                   }`}
                 >
                   {p}
@@ -548,7 +569,7 @@ export function DespachosAdminStats() {
              {sortedAreas.length > 0 ? (
                <PolarArea data={areaData} options={polarOptions} />
              ) : (
-               <div className="h-full flex flex-col items-center justify-center text-neutral-600 text-sm italic">
+               <div className="h-full flex flex-col items-center justify-center text-muted text-sm italic">
                   No hay registros {puntoFilter === 'Todos' ? '' : `en ${puntoFilter} `}para {monthName}
                </div>
              )}
@@ -556,21 +577,21 @@ export function DespachosAdminStats() {
         </div>
 
         {/* 4. Ranking de Revisores (Polar Area) */}
-        <div className="bg-neutral-900/40 border border-neutral-800 p-6 rounded-3xl space-y-6">
+        <div className="bg-surface border border-border p-6 rounded-xl space-y-6">
           <div className="flex items-center justify-between gap-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
               Desempeño de Revisores
             </h3>
             
-            <div className="flex bg-neutral-950 p-1 rounded-xl border border-neutral-800">
+            <div className="flex bg-subtle p-1 rounded-xl border border-border">
               {(['Todos', 'Principal', 'Sucursal'] as const).map((p) => (
                 <button
                   key={p}
                   onClick={() => setRevisorPuntoFilter(p)}
                   className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-all ${
                     revisorPuntoFilter === p 
-                      ? 'bg-purple-500 text-white shadow-lg' 
-                      : 'text-neutral-500 hover:text-white'
+                      ? 'bg-info-solid text-on-accent shadow-sm'
+                      : 'text-muted hover:text-foreground'
                   }`}
                 >
                   {p}
@@ -582,7 +603,7 @@ export function DespachosAdminStats() {
              {sortedRevisores.length > 0 ? (
                <PolarArea data={revisorData} options={polarOptions} />
              ) : (
-               <div className="h-full flex flex-col items-center justify-center text-neutral-600 text-sm italic">
+               <div className="h-full flex flex-col items-center justify-center text-muted text-sm italic">
                   No hay registros de revisores {revisorPuntoFilter === 'Todos' ? '' : `en ${revisorPuntoFilter} `}para {monthName}
                </div>
              )}
@@ -590,12 +611,12 @@ export function DespachosAdminStats() {
         </div>
 
         {/* 5. Pico de Hora (Dinámico con fecha) */}
-        <div className="lg:col-span-2 bg-neutral-900/40 border border-neutral-800 p-6 rounded-3xl space-y-4">
+        <div className="lg:col-span-2 bg-surface border border-border p-6 rounded-xl space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
               Picos de Hora - {isRangeMode ? 'Periodo Personalizado' : `${monthName} ${yearNum}`}
             </h3>
-            <span className="text-xs text-neutral-500">Distribución horaria acumulada (00:00 - 23:59)</span>
+            <span className="text-xs text-muted">Distribución horaria acumulada (00:00 - 23:59)</span>
           </div>
           <div className="h-[250px]">
             <Bar data={hourlyData} options={chartOptions as any} />

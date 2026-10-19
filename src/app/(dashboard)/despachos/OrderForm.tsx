@@ -1,3 +1,4 @@
+import { Modal } from '@/components/Modal'
 import { useState, useEffect } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -126,14 +127,14 @@ export function OrderForm({ onSuccess, onCancel }: OrderFormProps) {
   const currentOptions = punto === 'Sucursal' ? dynamicOptions.Sucursal : dynamicOptions.Principal
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
-      <div className="w-full max-w-2xl bg-neutral-900 border border-neutral-800 rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 my-8">
-        <div className="flex items-center justify-between p-6 border-b border-neutral-800 bg-neutral-900/50">
+    <Modal onClose={onCancel} titleId="order-form-title" size="large">
+      <div>
+        <div className="flex items-center justify-between p-6 border-b border-border bg-surface">
           <div>
-            <h3 className="text-xl font-bold text-white">Nuevo Registro Operativo</h3>
-            <p className="text-xs text-neutral-400 mt-1">Ingresa los datos del pedido y revisión.</p>
+            <h3 id="order-form-title" className="text-lg font-semibold text-foreground">Nuevo Registro Operativo</h3>
+            <p className="text-xs text-muted mt-1">Ingresa los datos del pedido y revisión.</p>
           </div>
-          <button onClick={onCancel} className="p-2 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-lg transition-colors">
+          <button aria-label="Cerrar ventana" onClick={onCancel} className="p-2 text-muted hover:text-foreground hover:bg-hover rounded-lg transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -142,15 +143,15 @@ export function OrderForm({ onSuccess, onCancel }: OrderFormProps) {
           
           {/* Selección de Punto */}
           <div className="grid grid-cols-2 gap-4">
-            <label className={`relative flex items-center justify-center gap-3 p-4 rounded-2xl border-2 cursor-pointer transition-all ${
-              punto === 'Principal' ? 'bg-blue-600/10 border-blue-500 text-white' : 'bg-neutral-950 border-neutral-800 text-neutral-500 hover:border-neutral-700'
+            <label className={`relative flex items-center justify-center gap-3 p-4 focus-within:ring-2 focus-within:ring-accent rounded-2xl border-2 cursor-pointer transition-all ${
+              punto === 'Principal' ? 'bg-accent-soft border-accent text-foreground' : 'bg-subtle border-border text-muted hover:border-border-strong'
             }`}>
               <input {...register('punto')} type="radio" value="Principal" className="sr-only" />
               <Building2 className="w-5 h-5" />
               <span className="font-bold uppercase tracking-wider text-xs">Punto Principal</span>
             </label>
-            <label className={`relative flex items-center justify-center gap-3 p-4 rounded-2xl border-2 cursor-pointer transition-all ${
-              punto === 'Sucursal' ? 'bg-blue-600/10 border-blue-500 text-white' : 'bg-neutral-950 border-neutral-800 text-neutral-500 hover:border-neutral-700'
+            <label className={`relative flex items-center justify-center gap-3 p-4 focus-within:ring-2 focus-within:ring-accent rounded-2xl border-2 cursor-pointer transition-all ${
+              punto === 'Sucursal' ? 'bg-accent-soft border-accent text-foreground' : 'bg-subtle border-border text-muted hover:border-border-strong'
             }`}>
               <input {...register('punto')} type="radio" value="Sucursal" className="sr-only" />
               <MapPin className="w-5 h-5" />
@@ -161,29 +162,31 @@ export function OrderForm({ onSuccess, onCancel }: OrderFormProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Facturas Dinámicas */}
             <div className="md:col-span-2">
-              <label className="flex items-center justify-between text-sm font-medium text-neutral-400 mb-2">
+              <div className="flex items-center justify-between text-sm font-medium text-muted mb-2">
                 Números de Factura
                 <button 
                   type="button" 
                   onClick={() => append({ numero: '' })}
-                  className="text-xs flex items-center gap-1 text-blue-400 hover:text-blue-300 transition-colors"
+                  className="text-xs flex items-center gap-1 text-accent-foreground hover:text-accent-foreground transition-colors"
                 >
                   <Plus className="w-3 h-3" /> Agregar otra
                 </button>
-              </label>
+              </div>
               <div className="space-y-3">
                 {fields.map((field, index) => (
                   <div key={field.id} className="flex gap-2">
                     <input
+                      aria-label={`Número de factura ${index + 1}`}
                       {...register(`facturas.${index}.numero` as const)}
-                      className="flex-1 px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                      className="flex-1 px-4 py-2.5 bg-surface border border-border-strong rounded-lg text-foreground focus:ring-2 focus:ring-accent outline-none transition-all"
                       placeholder={`Factura #${index + 1}`}
                     />
                     {fields.length > 1 && (
                       <button 
                         type="button" 
+                        aria-label={`Eliminar campo de factura ${index + 1}`}
                         onClick={() => remove(index)}
-                        className="p-2.5 text-neutral-500 hover:text-red-500 bg-neutral-950 border border-neutral-800 rounded-xl transition-all"
+                        className="p-2.5 text-muted hover:text-danger bg-subtle border border-border rounded-xl transition-all"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -191,48 +194,51 @@ export function OrderForm({ onSuccess, onCancel }: OrderFormProps) {
                   </div>
                 ))}
               </div>
-              {errors.facturas && <p className="mt-1 text-xs text-red-500">Ingrese al menos una factura válida</p>}
+              {errors.facturas && <p className="mt-1 text-xs text-danger">Ingrese al menos una factura válida</p>}
             </div>
 
             {/* Áreas (Dinámico) */}
             <div>
-              <label className="block text-sm font-medium text-neutral-400 mb-2">Área de Revisión</label>
+              <label htmlFor="order-area" className="block text-sm font-medium text-muted mb-2">Área de Revisión</label>
               <select
+                id="order-area"
                 {...register('area')}
                 disabled={loadingOptions}
-                className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none cursor-pointer disabled:opacity-50"
+                className="w-full px-4 py-3 bg-subtle border border-border rounded-xl text-foreground focus:ring-2 focus:ring-accent outline-none transition-all appearance-none cursor-pointer disabled:opacity-50"
               >
                 <option value="">{loadingOptions ? 'Cargando...' : 'Seleccionar área...'}</option>
                 {!loadingOptions && currentOptions.areas.map(opt => (
                   <option key={opt} value={opt}>{opt}</option>
                 ))}
               </select>
-              {errors.area && <p className="mt-1 text-xs text-red-500">{errors.area.message}</p>}
+              {errors.area && <p className="mt-1 text-xs text-danger">{errors.area.message}</p>}
             </div>
 
             {/* Revisado Por (Dinámico) */}
             <div>
-              <label className="block text-sm font-medium text-neutral-400 mb-2">Revisado por</label>
+              <label htmlFor="order-revisado_por" className="block text-sm font-medium text-muted mb-2">Revisado por</label>
               <select
+                id="order-revisado_por"
                 {...register('revisado_por')}
                 disabled={loadingOptions}
-                className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none cursor-pointer disabled:opacity-50"
+                className="w-full px-4 py-3 bg-subtle border border-border rounded-xl text-foreground focus:ring-2 focus:ring-accent outline-none transition-all appearance-none cursor-pointer disabled:opacity-50"
               >
                 <option value="">{loadingOptions ? 'Cargando...' : 'Seleccionar revisor...'}</option>
                 {!loadingOptions && currentOptions.revisadores.map(opt => (
                   <option key={opt} value={opt}>{opt}</option>
                 ))}
               </select>
-              {errors.revisado_por && <p className="mt-1 text-xs text-red-500">{errors.revisado_por.message}</p>}
+              {errors.revisado_por && <p className="mt-1 text-xs text-danger">{errors.revisado_por.message}</p>}
             </div>
 
             {/* Mesa */}
             <div>
-              <label className="block text-sm font-medium text-neutral-400 mb-2">Mesa</label>
+              <label htmlFor="order-mesa" className="block text-sm font-medium text-muted mb-2">Mesa</label>
               <select
+                id="order-mesa"
                 {...register('mesa')}
                 disabled={loadingOptions}
-                className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none cursor-pointer disabled:opacity-50"
+                className="w-full px-4 py-3 bg-subtle border border-border rounded-xl text-foreground focus:ring-2 focus:ring-accent outline-none transition-all appearance-none cursor-pointer disabled:opacity-50"
               >
                 {loadingOptions ? (
                   <option>Cargando...</option>
@@ -249,17 +255,18 @@ export function OrderForm({ onSuccess, onCancel }: OrderFormProps) {
 
             {/* Detalles Extra */}
             <div>
-              <label className="block text-sm font-medium text-neutral-400 mb-2">Observaciones (Opcional)</label>
+              <label htmlFor="order-detalles" className="block text-sm font-medium text-muted mb-2">Observaciones (Opcional)</label>
               <input
+                id="order-detalles"
                 {...register('detalles')}
-                className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                className="w-full px-4 py-3 bg-subtle border border-border rounded-xl text-foreground focus:ring-2 focus:ring-accent outline-none transition-all"
                 placeholder="Cualquier nota adicional..."
               />
             </div>
           </div>
 
           {serverError && (
-            <div className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 text-sm">
+            <div className="flex items-center gap-3 p-4 bg-danger-soft border border-danger/20 rounded-2xl text-danger text-sm">
               <AlertCircle className="w-5 h-5 flex-shrink-0" />
               <p>{serverError}</p>
             </div>
@@ -269,14 +276,14 @@ export function OrderForm({ onSuccess, onCancel }: OrderFormProps) {
             <button 
               type="button" 
               onClick={onCancel}
-              className="flex-1 px-6 py-3.5 bg-neutral-800 hover:bg-neutral-700 text-white rounded-2xl font-bold transition-all"
+              className="flex-1 px-4 py-2.5 border border-border bg-surface hover:bg-hover text-foreground rounded-lg text-sm font-medium transition-colors"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-[2] flex items-center justify-center gap-2 px-6 py-3.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-2xl font-bold transition-all shadow-xl shadow-blue-600/20 active:scale-[0.98]"
+              className="btn-primary flex-[2]"
             >
               {isSubmitting ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -288,6 +295,6 @@ export function OrderForm({ onSuccess, onCancel }: OrderFormProps) {
           </div>
         </form>
       </div>
-    </div>
+    </Modal>
   )
 }

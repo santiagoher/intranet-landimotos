@@ -1,6 +1,6 @@
 // Increment this version whenever offline.html changes.
 const CACHE_PREFIX = "landimotos-pwa-";
-const CACHE_NAME = `${CACHE_PREFIX}v1`;
+const CACHE_NAME = `${CACHE_PREFIX}v2`;
 const OFFLINE_URL = "/offline.html";
 
 self.addEventListener("install", (event) => {

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Archive, Plus, Search, Edit2, Trash2 } from 'lucide-react'
+import { Plus, Search, Edit2, Trash2 } from 'lucide-react'
 import { getContenedores, deleteContenedor } from './actions'
 import { ContainerForm } from './ContainerForm'
 import { useRole } from '@/hooks/useRole'
@@ -57,10 +57,10 @@ export default function InventariosPage() {
 
   const getStatusColor = (estado: string) => {
     switch (estado) {
-      case 'disponible': return 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20'
-      case 'en_uso': return 'text-blue-400 bg-blue-400/10 border-blue-400/20'
-      case 'mantenimiento': return 'text-amber-400 bg-amber-400/10 border-amber-400/20'
-      default: return 'text-neutral-400 bg-neutral-400/10 border-neutral-400/20'
+      case 'disponible': return 'text-success bg-success-soft border-success/20'
+      case 'en_uso': return 'text-accent-foreground bg-accent-soft border-accent/20'
+      case 'mantenimiento': return 'text-warning bg-warning-soft border-warning/20'
+      default: return 'text-muted bg-border-strong border-border-strong'
     }
   }
 
@@ -68,66 +68,65 @@ export default function InventariosPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Archive className="w-6 h-6 text-emerald-500" />
+          <h2 className="text-2xl font-semibold tracking-tight text-foreground flex items-center gap-2">
             Inventario de Contenedores
           </h2>
-          <p className="text-neutral-400 text-sm mt-1">Gestión y control de disponibilidad de contenedores.</p>
+          <p className="text-muted text-sm mt-1">Gestión y control de disponibilidad de contenedores.</p>
         </div>
         <button 
           onClick={() => {
             setEditingContainer(null)
             setShowForm(true)
           }}
-          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
+          className="flex items-center gap-2 bg-success-solid hover:bg-success-solid text-on-accent px-5 py-2.5 rounded-xl text-sm font-medium transition-all shadow-none active:scale-[0.98]"
         >
           <Plus className="w-4 h-4" />
           <span>Registrar Contenedor</span>
         </button>
       </div>
 
-      <div className="bg-neutral-900/50 backdrop-blur-md border border-neutral-800 rounded-2xl overflow-x-auto">
-        <div className="p-4 border-b border-neutral-800 flex flex-col sm:flex-row gap-4 justify-between bg-neutral-900/30">
+      <div className="bg-surface border border-border rounded-2xl overflow-x-auto">
+        <div className="p-4 border-b border-border flex flex-col sm:flex-row gap-4 justify-between bg-surface">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
             <input 
               type="text"
               placeholder="Buscar por código o descripción..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-sm text-white focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+              className="w-full pl-10 pr-4 py-2 bg-subtle border border-border rounded-xl text-sm text-foreground focus:ring-2 focus:ring-success outline-none transition-all"
             />
           </div>
         </div>
 
           <table className="w-full text-left border-collapse min-w-[600px]">
             <thead>
-              <tr className="bg-neutral-950/50">
-                <th className="px-6 py-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Código</th>
-                <th className="px-6 py-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Descripción</th>
-                <th className="px-6 py-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Estado</th>
-                <th className="px-6 py-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Actualizado</th>
+              <tr className="bg-subtle">
+                <th className="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider">Código</th>
+                <th className="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider">Descripción</th>
+                <th className="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider">Estado</th>
+                <th className="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider">Actualizado</th>
                 {isAdmin && <th className="px-6 py-4 text-right"></th>}
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-800">
+            <tbody className="divide-y divide-border">
               {loading || loadingRole ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-neutral-500">
+                  <td colSpan={5} className="px-6 py-12 text-center text-muted">
                     Cargando inventario...
                   </td>
                 </tr>
               ) : filteredContenedores.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-neutral-500">
+                  <td colSpan={5} className="px-6 py-12 text-center text-muted">
                     No se encontraron contenedores.
                   </td>
                 </tr>
               ) : (
                 paginatedContenedores.map((c) => (
-                  <tr key={c.id} className="hover:bg-neutral-800/30 transition-colors group">
-                    <td className="px-6 py-4 font-medium text-white">{c.codigo}</td>
-                    <td className="px-6 py-4 text-neutral-400 text-sm max-w-xs truncate">
+                  <tr key={c.id} className="hover:bg-hover transition-colors group">
+                    <td className="px-6 py-4 font-medium text-foreground">{c.codigo}</td>
+                    <td className="px-6 py-4 text-muted text-sm max-w-xs truncate">
                       {c.descripcion || '-'}
                     </td>
                     <td className="px-6 py-4">
@@ -135,7 +134,7 @@ export default function InventariosPage() {
                         {c.estado.replace('_', ' ')}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-neutral-500 text-sm">
+                    <td className="px-6 py-4 text-muted text-sm">
                       {new Date(c.updated_at).toLocaleDateString()}
                     </td>
                     {isAdmin && (
@@ -146,13 +145,13 @@ export default function InventariosPage() {
                               setEditingContainer(c)
                               setShowForm(true)
                             }}
-                            className="p-2 text-neutral-400 hover:text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-all"
+                            className="p-2 text-muted hover:text-success hover:bg-success-soft rounded-lg transition-all"
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
                           <button 
                             onClick={() => handleDelete(c.id)}
-                            className="p-2 text-neutral-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+                            className="p-2 text-muted hover:text-danger hover:bg-danger-soft rounded-lg transition-all"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>

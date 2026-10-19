@@ -1,5 +1,7 @@
 'use client'
 
+import { Modal } from '@/components/Modal'
+
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -67,59 +69,59 @@ export function ShipmentForm({ pedido, onSuccess, onCancel }: ShipmentFormProps)
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-        <div className="flex items-center justify-between p-6 border-b border-neutral-800 bg-neutral-900/50">
+    <Modal onClose={onCancel} titleId="shipment-title" size="small">
+      <div>
+        <div className="flex items-center justify-between p-6 border-b border-border bg-surface">
           <div>
-            <h3 className="text-xl font-bold text-white">Asignar Envío</h3>
-            <p className="text-xs text-neutral-400 mt-1">Pedido: {pedido.cliente}</p>
+            <h3 id="shipment-title" className="text-lg font-semibold text-foreground">Asignar Envío</h3>
+            <p className="text-xs text-muted mt-1">Pedido: {pedido.cliente}</p>
           </div>
-          <button onClick={onCancel} className="p-2 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-lg transition-colors">
+          <button aria-label="Cerrar ventana" onClick={onCancel} className="p-2 text-muted hover:text-foreground hover:bg-hover rounded-lg transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-neutral-400 mb-1">Dirección de Entrega</label>
+            <label className="block text-sm font-medium text-muted mb-1">Dirección de Entrega</label>
             <input
               {...register('direccion')}
-              className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+              className="w-full px-4 py-2.5 bg-surface border border-border-strong rounded-lg text-foreground focus:ring-2 focus:ring-accent outline-none transition-all"
               placeholder="Calle 123 #45-67, Ciudad"
             />
-            {errors.direccion && <p className="mt-1 text-xs text-red-500">{errors.direccion.message}</p>}
+            {errors.direccion && <p className="mt-1 text-xs text-danger">{errors.direccion.message}</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-400 mb-1">Seleccionar Mensajero</label>
+            <label className="block text-sm font-medium text-muted mb-1">Seleccionar Mensajero</label>
             <select
               {...register('mensajero_id')}
               disabled={loadingMensajeros}
-              className="w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none disabled:opacity-50"
+              className="w-full px-4 py-2.5 bg-subtle border border-border rounded-xl text-foreground focus:ring-2 focus:ring-accent outline-none transition-all appearance-none disabled:opacity-50"
             >
               <option value="">{loadingMensajeros ? 'Cargando...' : 'Seleccione un mensajero disponible'}</option>
               {mensajeros.map(m => (
-                <option key={m.id} value={m.id} className="bg-neutral-950">{m.nombre_conductor}</option>
+                <option key={m.id} value={m.id} className="bg-subtle">{m.nombre_conductor}</option>
               ))}
             </select>
-            {errors.mensajero_id && <p className="mt-1 text-xs text-red-500">{errors.mensajero_id.message}</p>}
+            {errors.mensajero_id && <p className="mt-1 text-xs text-danger">{errors.mensajero_id.message}</p>}
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
+            <div className="flex items-center gap-2 p-3 bg-danger-soft border border-danger/20 rounded-xl text-danger text-sm">
               <AlertCircle className="w-4 h-4" />
               <p>{error}</p>
             </div>
           )}
 
           <div className="flex gap-3 mt-6">
-            <button type="button" onClick={onCancel} className="flex-1 px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-white rounded-xl font-medium transition-all">
+            <button type="button" onClick={onCancel} className="flex-1 px-4 py-2.5 bg-subtle hover:bg-hover text-foreground rounded-xl font-medium transition-all">
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSubmitting || loadingMensajeros}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-xl font-medium transition-all shadow-lg shadow-blue-600/20"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-accent hover:bg-accent-hover disabled:opacity-50 text-on-accent rounded-xl font-medium transition-all shadow-none"
             >
               {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Truck className="w-4 h-4" />}
               Registrar Envío
@@ -127,6 +129,6 @@ export function ShipmentForm({ pedido, onSuccess, onCancel }: ShipmentFormProps)
           </div>
         </form>
       </div>
-    </div>
+    </Modal>
   )
 }

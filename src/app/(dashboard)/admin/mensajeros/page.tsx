@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Truck, Plus, Search, Edit2, Trash2, ShieldCheck, User2 } from 'lucide-react'
+import { Truck, Plus, Search, Edit2, Trash2, ShieldCheck } from 'lucide-react'
 import { getMensajeros, deleteMensajero } from '../../mensajeros/actions'
 import { MessengerForm } from '../../mensajeros/MessengerForm'
 import { useRole } from '@/hooks/useRole'
@@ -59,9 +59,9 @@ export default function AdminMensajerosPage() {
   if (!isAdmin && !loadingRole) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-6">
-        <ShieldCheck className="w-16 h-16 text-red-500 mb-4 opacity-20" />
-        <h2 className="text-2xl font-bold text-white mb-2">Acceso Restringido</h2>
-        <p className="text-neutral-400 max-w-sm">Lo sentimos, no tienes permisos de administrador para gestionar el personal de mensajeros.</p>
+        <ShieldCheck className="w-16 h-16 text-danger mb-4 opacity-20" />
+        <h2 className="text-2xl font-semibold tracking-tight text-foreground mb-2">Acceso Restringido</h2>
+        <p className="text-muted max-w-sm">Lo sentimos, no tienes permisos de administrador para gestionar el personal de mensajeros.</p>
       </div>
     )
   }
@@ -71,18 +71,17 @@ export default function AdminMensajerosPage() {
       {/* Header Administrativo */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <User2 className="w-6 h-6 text-blue-500" />
+          <h2 className="text-2xl font-semibold tracking-tight text-foreground flex items-center gap-2">
             Administración de Personal
           </h2>
-          <p className="text-neutral-400 text-sm mt-1">Control de flota, conductores y placas vehiculares.</p>
+          <p className="text-muted text-sm mt-1">Control de flota, conductores y placas vehiculares.</p>
         </div>
         <button
           onClick={() => {
             setEditingMessenger(null)
             setShowForm(true)
           }}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all shadow-lg shadow-blue-600/20 active:scale-[0.98]"
+          className="flex items-center gap-2 bg-accent hover:bg-accent-hover text-on-accent px-5 py-2.5 rounded-xl text-sm font-medium transition-all shadow-none active:scale-[0.98]"
         >
           <Plus className="w-4 h-4" />
           <span>Registrar Nuevo Conductor</span>
@@ -90,19 +89,19 @@ export default function AdminMensajerosPage() {
       </div>
 
       {/* Tabla de Gestión */}
-      <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-sm">
-        <div className="p-6 border-b border-neutral-800 bg-neutral-900/30 flex flex-col sm:flex-row gap-4 justify-between items-center">
+      <div className="bg-surface border border-border rounded-xl overflow-hidden shadow-sm">
+        <div className="p-6 border-b border-border bg-surface flex flex-col sm:flex-row gap-4 justify-between items-center">
           <div className="relative flex-1 max-w-md w-full">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
             <input
               type="text"
               placeholder="Buscar por nombre o placa..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-neutral-950 border border-neutral-800 rounded-2xl text-sm text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+              className="w-full pl-12 pr-4 py-3 bg-subtle border border-border rounded-2xl text-sm text-foreground focus:ring-2 focus:ring-accent outline-none transition-all"
             />
           </div>
-          <div className="text-sm text-neutral-500 font-medium whitespace-nowrap">
+          <div className="text-sm text-muted font-medium whitespace-nowrap">
             {filteredMensajeros.length} mensajeros registrados
           </div>
         </div>
@@ -110,37 +109,37 @@ export default function AdminMensajerosPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-neutral-950/30">
-                <th className="px-6 py-4 text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Perfil y Conductor</th>
-                <th className="px-6 py-4 text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Cédula</th>
-                <th className="px-6 py-4 text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Cargo</th>
-                <th className="px-6 py-4 text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Placa de Vehículo</th>
-                <th className="px-6 py-4 text-[10px] font-bold text-neutral-500 uppercase tracking-widest text-center">Estado</th>
-                <th className="px-6 py-4 text-[10px] font-bold text-neutral-500 uppercase tracking-widest text-right">Acciones</th>
+              <tr className="bg-subtle">
+                <th className="px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest">Perfil y Conductor</th>
+                <th className="px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest">Cédula</th>
+                <th className="px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest">Cargo</th>
+                <th className="px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest">Placa de Vehículo</th>
+                <th className="px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest text-center">Estado</th>
+                <th className="px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest text-right">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-800/50">
+            <tbody className="divide-y divide-border">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-8 py-20 text-center text-neutral-500">
+                  <td colSpan={6} className="px-8 py-20 text-center text-muted">
                     <div className="flex flex-col items-center gap-3">
-                      <span className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></span>
+                      <span className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin"></span>
                       Cargando personal...
                     </div>
                   </td>
                 </tr>
               ) : filteredMensajeros.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-8 py-20 text-center text-neutral-500 italic">
+                  <td colSpan={6} className="px-8 py-20 text-center text-muted italic">
                     No se encontraron mensajeros que coincidan con la búsqueda.
                   </td>
                 </tr>
               ) : (
                 paginatedMensajeros.map((m) => (
-                  <tr key={m.id} className="hover:bg-neutral-800/20 transition-colors group border-b border-neutral-800/50 last:border-0">
+                  <tr key={m.id} className="hover:bg-hover transition-colors group border-b border-border last:border-0">
                     <td className="px-6 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-neutral-800 flex items-center justify-center text-blue-500 font-bold border border-neutral-700 overflow-hidden shadow-sm">
+                        <div className="w-10 h-10 rounded-xl bg-subtle flex items-center justify-center text-accent-foreground font-bold border border-border-strong overflow-hidden shadow-sm">
                           {m.foto_url ? (
                             <img src={m.foto_url} alt={m.nombre_conductor} className="w-full h-full object-cover" />
                           ) : (
@@ -148,25 +147,25 @@ export default function AdminMensajerosPage() {
                           )}
                         </div>
                         <div>
-                          <p className="font-bold text-white text-sm">{m.nombre_conductor}</p>
-                          <p className="text-[10px] text-neutral-500 font-medium">ID: {m.id.substring(0, 8)}</p>
+                          <p className="font-bold text-foreground text-sm">{m.nombre_conductor}</p>
+                          <p className="text-[10px] text-muted font-medium">ID: {m.id.substring(0, 8)}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-3 text-neutral-350 text-sm">{m.cedula || '---'}</td>
+                    <td className="px-6 py-3 text-muted text-sm">{m.cedula || '---'}</td>
                     <td className="px-6 py-3">
                       <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${m.cargo === 'Conductor'
-                          ? 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20'
-                          : 'text-purple-400 bg-purple-400/10 border-purple-400/20'
+                          ? 'text-accent-foreground bg-accent-soft border-accent/20'
+                          : 'text-info bg-info-soft border-info/20'
                         }`}>
                         {m.cargo || 'Mensajero'}
                       </span>
                     </td>
-                    <td className="px-6 py-3 text-neutral-400 font-mono text-sm uppercase tracking-wider">{m.placa_conductor}</td>
+                    <td className="px-6 py-3 text-muted font-mono text-sm uppercase tracking-wider">{m.placa_conductor}</td>
                     <td className="px-6 py-3 text-center">
                       <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${m.estado !== 'inactivo'
-                          ? 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20'
-                          : 'text-red-400 bg-red-400/10 border-red-400/20'
+                          ? 'text-success bg-success-soft border-success/20'
+                          : 'text-danger bg-danger-soft border-danger/20'
                         }`}>
                         {m.estado !== 'inactivo' ? 'Activo' : 'Inactivo'}
                       </span>
@@ -178,13 +177,13 @@ export default function AdminMensajerosPage() {
                             setEditingMessenger(m)
                             setShowForm(true)
                            }}
-                          className="p-2 text-neutral-400 hover:text-blue-400 hover:bg-blue-400/10 rounded-lg transition-all"
+                          className="p-2 text-muted hover:text-accent-foreground hover:bg-accent-soft rounded-lg transition-all"
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(m.id)}
-                          className="p-2 text-neutral-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+                          className="p-2 text-muted hover:text-danger hover:bg-danger-soft rounded-lg transition-all"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>

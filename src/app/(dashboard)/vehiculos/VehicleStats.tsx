@@ -1,5 +1,7 @@
 'use client'
 
+import { useChartColors } from '@/components/theme/useTheme'
+
 import { useMemo } from 'react'
 import {
   Chart as ChartJS,
@@ -36,6 +38,7 @@ interface VehicleStatsProps {
 }
 
 export function VehicleStats({ vehiculos, checklists, alertas }: VehicleStatsProps) {
+  const chartColors = useChartColors()
   // KPI Metrics
   const stats = useMemo(() => {
     const total = vehiculos.length
@@ -58,7 +61,7 @@ export function VehicleStats({ vehiculos, checklists, alertas }: VehicleStatsPro
       legend: {
         position: 'bottom' as const,
         labels: {
-          color: 'rgba(255, 255, 255, 0.7)',
+          color: chartColors.muted,
           padding: 12,
           font: { size: 11 }
         }
@@ -125,90 +128,90 @@ export function VehicleStats({ vehiculos, checklists, alertas }: VehicleStatsPro
       {/* Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Vehicles */}
-        <div className="bg-neutral-900/50 backdrop-blur-md border border-neutral-800 rounded-2xl p-5 hover:border-neutral-700 transition-all group relative overflow-hidden">
+        <div className="bg-surface border border-border rounded-2xl p-5 hover:border-border-strong transition-all group relative overflow-hidden">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-xs text-neutral-400 font-semibold uppercase tracking-wider">Flota Total</p>
-              <h3 className="text-3xl font-extrabold text-white mt-1 group-hover:text-blue-400 transition-colors">{stats.total}</h3>
+              <p className="text-xs text-muted font-semibold uppercase tracking-wider">Flota Total</p>
+              <h3 className="text-3xl font-extrabold text-foreground mt-1 group-hover:text-accent-foreground transition-colors">{stats.total}</h3>
             </div>
-            <div className="p-3 bg-blue-500/10 text-blue-500 rounded-xl">
+            <div className="p-3 bg-accent-soft text-accent-foreground rounded-xl">
               <Truck className="w-5 h-5" />
             </div>
           </div>
-          <div className="absolute bottom-0 left-0 w-full h-[2px] bg-blue-500/30 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+          <div className="absolute bottom-0 left-0 w-full h-[2px] bg-accent-soft transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
         </div>
 
         {/* Active Vehicles */}
-        <div className="bg-neutral-900/50 backdrop-blur-md border border-neutral-800 rounded-2xl p-5 hover:border-neutral-700 transition-all group relative overflow-hidden">
+        <div className="bg-surface border border-border rounded-2xl p-5 hover:border-border-strong transition-all group relative overflow-hidden">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-xs text-neutral-400 font-semibold uppercase tracking-wider">Unidades Activas</p>
-              <h3 className="text-3xl font-extrabold text-white mt-1 group-hover:text-emerald-400 transition-colors">{stats.activos}</h3>
+              <p className="text-xs text-muted font-semibold uppercase tracking-wider">Unidades Activas</p>
+              <h3 className="text-3xl font-extrabold text-foreground mt-1 group-hover:text-success transition-colors">{stats.activos}</h3>
             </div>
-            <div className="p-3 bg-emerald-500/10 text-emerald-500 rounded-xl">
+            <div className="p-3 bg-success-soft text-success rounded-xl">
               <ShieldCheck className="w-5 h-5" />
             </div>
           </div>
-          <div className="absolute bottom-0 left-0 w-full h-[2px] bg-emerald-500/30 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+          <div className="absolute bottom-0 left-0 w-full h-[2px] bg-success-soft transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
         </div>
 
         {/* Maintenance */}
-        <div className="bg-neutral-900/50 backdrop-blur-md border border-neutral-800 rounded-2xl p-5 hover:border-neutral-700 transition-all group relative overflow-hidden">
+        <div className="bg-surface border border-border rounded-2xl p-5 hover:border-border-strong transition-all group relative overflow-hidden">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-xs text-neutral-400 font-semibold uppercase tracking-wider">En Taller / Manto.</p>
-              <h3 className="text-3xl font-extrabold text-white mt-1 group-hover:text-amber-400 transition-colors">{stats.mantenimiento}</h3>
+              <p className="text-xs text-muted font-semibold uppercase tracking-wider">En Taller / Manto.</p>
+              <h3 className="text-3xl font-extrabold text-foreground mt-1 group-hover:text-warning transition-colors">{stats.mantenimiento}</h3>
             </div>
-            <div className="p-3 bg-amber-500/10 text-amber-500 rounded-xl">
+            <div className="p-3 bg-warning-soft text-warning rounded-xl">
               <Wrench className="w-5 h-5" />
             </div>
           </div>
-          <div className="absolute bottom-0 left-0 w-full h-[2px] bg-amber-500/30 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+          <div className="absolute bottom-0 left-0 w-full h-[2px] bg-warning-soft transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
         </div>
 
         {/* Pending Alerts */}
-        <div className="bg-neutral-900/50 backdrop-blur-md border border-neutral-800 rounded-2xl p-5 hover:border-neutral-700 transition-all group relative overflow-hidden">
+        <div className="bg-surface border border-border rounded-2xl p-5 hover:border-border-strong transition-all group relative overflow-hidden">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-xs text-neutral-400 font-semibold uppercase tracking-wider">Novedades Pendientes</p>
-              <h3 className="text-3xl font-extrabold text-white mt-1 group-hover:text-red-400 transition-colors">{stats.pendientes}</h3>
+              <p className="text-xs text-muted font-semibold uppercase tracking-wider">Novedades Pendientes</p>
+              <h3 className="text-3xl font-extrabold text-foreground mt-1 group-hover:text-danger transition-colors">{stats.pendientes}</h3>
             </div>
-            <div className={`p-3 rounded-xl ${stats.pendientes > 0 ? 'bg-red-500/20 text-red-500 animate-pulse' : 'bg-neutral-800 text-neutral-500'}`}>
+            <div className={`p-3 rounded-xl ${stats.pendientes > 0 ? 'bg-danger-soft text-danger animate-pulse' : 'bg-subtle text-muted'}`}>
               <AlertCircle className="w-5 h-5" />
             </div>
           </div>
-          <div className="absolute bottom-0 left-0 w-full h-[2px] bg-red-500/30 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+          <div className="absolute bottom-0 left-0 w-full h-[2px] bg-danger-soft transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
         </div>
       </div>
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Fleet Distribution */}
-        <div className="bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 rounded-2xl p-6 flex flex-col min-h-[300px]">
+        <div className="bg-surface backdrop-blur-sm border border-border rounded-2xl p-6 flex flex-col min-h-[300px]">
           <div className="mb-4">
-            <h4 className="text-sm font-bold text-white uppercase tracking-wider">Distribución de Flota</h4>
-            <p className="text-xs text-neutral-500 mt-0.5">Vehículos según estado operativo</p>
+            <h4 className="text-sm font-bold text-foreground uppercase tracking-wider">Distribución de Flota</h4>
+            <p className="text-xs text-muted mt-0.5">Vehículos según estado operativo</p>
           </div>
           <div className="relative flex-1 flex items-center justify-center">
             {vehiculos.length > 0 ? (
               <Doughnut data={fleetChartData} options={chartOptions} />
             ) : (
-              <p className="text-neutral-500 italic text-sm text-center">Sin vehículos registrados</p>
+              <p className="text-muted italic text-sm text-center">Sin vehículos registrados</p>
             )}
           </div>
         </div>
 
         {/* Checklist Novelties */}
-        <div className="bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 rounded-2xl p-6 flex flex-col min-h-[300px]">
+        <div className="bg-surface backdrop-blur-sm border border-border rounded-2xl p-6 flex flex-col min-h-[300px]">
           <div className="mb-4">
-            <h4 className="text-sm font-bold text-white uppercase tracking-wider">Resultado de Reportes</h4>
-            <p className="text-xs text-neutral-500 mt-0.5">Relación de novedad en checklists del período</p>
+            <h4 className="text-sm font-bold text-foreground uppercase tracking-wider">Resultado de Reportes</h4>
+            <p className="text-xs text-muted mt-0.5">Relación de novedad en checklists del período</p>
           </div>
           <div className="relative flex-1 flex items-center justify-center">
             {checklists.length > 0 ? (
               <Doughnut data={checklistChartData} options={chartOptions} />
             ) : (
-              <p className="text-neutral-500 italic text-sm text-center">Sin reportes registrados en este período</p>
+              <p className="text-muted italic text-sm text-center">Sin reportes registrados en este período</p>
             )}
           </div>
         </div>

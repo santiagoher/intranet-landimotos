@@ -1,5 +1,7 @@
 'use client'
 
+import { useChartColors } from '@/components/theme/useTheme'
+
 import { useMemo } from 'react'
 import {
   Chart as ChartJS,
@@ -32,20 +34,21 @@ interface GlobalAdminStatsProps {
 }
 
 export function GlobalAdminStats({ pedidos }: GlobalAdminStatsProps) {
+  const chartColors = useChartColors()
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { labels: { color: 'rgba(255, 255, 255, 0.7)' } }
+      legend: { labels: { color: chartColors.muted } }
     },
     scales: {
       x: {
-        ticks: { color: 'rgba(255, 255, 255, 0.5)', maxTicksLimit: 10 },
-        grid: { color: 'rgba(255, 255, 255, 0.05)' }
+        ticks: { color: chartColors.muted, maxTicksLimit: 10 },
+        grid: { color: chartColors.border }
       },
       y: {
-        ticks: { color: 'rgba(255, 255, 255, 0.5)' },
-        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+        ticks: { color: chartColors.muted },
+        grid: { color: chartColors.border },
         beginAtZero: true
       }
     }
@@ -57,7 +60,7 @@ export function GlobalAdminStats({ pedidos }: GlobalAdminStatsProps) {
     plugins: {
       legend: {
         position: 'bottom' as const,
-        labels: { color: 'rgba(255, 255, 255, 0.7)', padding: 16 }
+        labels: { color: chartColors.muted, padding: 16 }
       }
     },
     cutout: '70%'
@@ -130,10 +133,10 @@ export function GlobalAdminStats({ pedidos }: GlobalAdminStatsProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Línea — Rendimiento diario */}
-      <div className="lg:col-span-2 bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 rounded-2xl p-6 flex flex-col">
+      <div className="lg:col-span-2 bg-surface backdrop-blur-sm border border-border rounded-2xl p-6 flex flex-col">
         <div className="mb-4">
-          <h3 className="text-lg font-bold text-white">Rendimiento Operativo del Mes</h3>
-          <p className="text-xs text-neutral-500 mt-0.5">Pedidos registrados por día</p>
+          <h3 className="text-lg font-bold text-foreground">Rendimiento Operativo del Mes</h3>
+          <p className="text-xs text-muted mt-0.5">Pedidos registrados por día</p>
         </div>
         <div className="relative flex-1 min-h-[280px]">
           <Line data={lineChartData} options={chartOptions} />
@@ -141,16 +144,16 @@ export function GlobalAdminStats({ pedidos }: GlobalAdminStatsProps) {
       </div>
 
       {/* Dona — Distribución de estados */}
-      <div className="bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 rounded-2xl p-6 flex flex-col">
+      <div className="bg-surface backdrop-blur-sm border border-border rounded-2xl p-6 flex flex-col">
         <div className="mb-4">
-          <h3 className="text-lg font-bold text-white">Distribución de Estados</h3>
-          <p className="text-xs text-neutral-500 mt-0.5">Pedidos del mes actual</p>
+          <h3 className="text-lg font-bold text-foreground">Distribución de Estados</h3>
+          <p className="text-xs text-muted mt-0.5">Pedidos del mes actual</p>
         </div>
         <div className="relative flex-1 min-h-[240px] flex items-center justify-center">
           {pedidos.length > 0 ? (
             <Doughnut data={doughnutData} options={doughnutOptions} />
           ) : (
-            <p className="text-neutral-500 italic text-sm text-center">
+            <p className="text-muted italic text-sm text-center">
               Sin datos este mes
             </p>
           )}

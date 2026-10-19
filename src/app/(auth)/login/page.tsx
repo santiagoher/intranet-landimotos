@@ -40,27 +40,24 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-neutral-900 items-center justify-center p-4 relative overflow-hidden">
-      {/* Elementos decorativos (Glassmorphism) */}
-      <div className="absolute top-1/4 left-1/4 w-48 h-48 sm:w-96 sm:h-96 bg-blue-500/20 rounded-full mix-blend-screen filter blur-[80px] sm:blur-[128px] opacity-50 pointer-events-none"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-48 h-48 sm:w-96 sm:h-96 bg-emerald-500/20 rounded-full mix-blend-screen filter blur-[80px] sm:blur-[128px] opacity-50 pointer-events-none"></div>
+    <div className="flex min-h-dvh bg-subtle items-center justify-center p-4 relative">
 
       <div className="relative w-full max-w-md z-10">
-        <div className="bg-neutral-800/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-neutral-700 p-5 sm:p-8">
+        <div className="bg-surface rounded-xl shadow-sm border border-border p-5 sm:p-8">
           
           <div className="flex flex-col items-center mb-6 sm:mb-8">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 shadow-lg shadow-blue-500/30">
-              <Package className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-accent rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 shadow-none">
+              <Package className="w-6 h-6 sm:w-8 sm:h-8 text-on-accent" />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Portal Logístico</h1>
-            <p className="text-neutral-400 mt-1.5 text-xs sm:text-sm text-center">
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">Portal Logístico</h1>
+            <p className="text-muted mt-1.5 text-xs sm:text-sm text-center">
               Ingresa tus credenciales para acceder a tu panel de control.
             </p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-5">
             <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-1" htmlFor="email">
+              <label className="block text-sm font-medium text-secondary mb-1" htmlFor="email">
                 Correo Electrónico
               </label>
               <input
@@ -68,17 +65,17 @@ export default function LoginPage() {
                 type="email"
                 autoComplete="email"
                 placeholder="ejemplo@empresa.com"
-                className="w-full px-4 py-3 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-neutral-600"
+                className="w-full px-4 py-3 bg-surface border border-border-strong rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all placeholder:text-muted"
                 {...register('email')}
               />
               {errors.email && (
-                <p className="text-red-400 text-xs mt-1">{errors.email.message}</p>
+                <p className="text-danger text-xs mt-1">{errors.email.message}</p>
               )}
             </div>
 
             <div>
               <div className="flex justify-between items-center mb-1">
-                <label className="block text-sm font-medium text-neutral-300" htmlFor="password">
+                <label className="block text-sm font-medium text-secondary" htmlFor="password">
                   Contraseña
                 </label>
               </div>
@@ -87,16 +84,16 @@ export default function LoginPage() {
                 type="password"
                 autoComplete="current-password"
                 placeholder="••••••••"
-                className="w-full px-4 py-3 bg-neutral-900 border border-neutral-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-neutral-600"
+                className="w-full px-4 py-3 bg-surface border border-border-strong rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all placeholder:text-muted"
                 {...register('password')}
               />
               {errors.password && (
-                <p className="text-red-400 text-xs mt-1">{errors.password.message}</p>
+                <p className="text-danger text-xs mt-1">{errors.password.message}</p>
               )}
             </div>
 
             {serverError && (
-              <div className="flex flex-row items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
+              <div className="flex flex-row items-center gap-2 p-3 bg-danger-soft border border-danger/20 rounded-xl text-danger text-sm">
                 <AlertCircle className="w-5 h-5 flex-shrink-0" />
                 <p>{serverError}</p>
               </div>
@@ -105,7 +102,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full flex items-center justify-center py-3 px-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-medium transition-all shadow-lg shadow-blue-500/25 active:scale-[0.98] disabled:opacity-70 disabled:pointer-events-none"
+              className="w-full flex items-center justify-center py-3 px-4 bg-accent hover:bg-accent-hover text-on-accent rounded-xl font-medium transition-all shadow-none active:scale-[0.98] disabled:opacity-70 disabled:pointer-events-none"
             >
               {isSubmitting ? (
                 <>

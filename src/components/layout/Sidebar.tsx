@@ -1,42 +1,31 @@
 'use client'
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { 
-  Package, 
-  Users, 
-  Truck, 
-  Archive, 
-  X,
-  LogOut,
-  ClipboardCheck,
-  MessageSquare
-} from 'lucide-react'
+import { usePathname, useRouter } from 'next/navigation'
+import { useEffect, useRef } from 'react'
+import { Package, Users, Truck, Archive, X, ClipboardCheck, MessageSquare } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client'
-import { useRouter } from 'next/navigation'
 import { useSidebar } from './SidebarContext'
+import { UserMenu } from './UserMenu'
+import { SidebarNavigation } from './SidebarNavigation'
 
 interface SidebarProps {
   rol: 'Admin' | 'Operativo'
   modulosPermitidos?: string[]
+  userName?: string
+  email?: string
 }
 
-export function Sidebar({ rol, modulosPermitidos = [] }: SidebarProps) {
+export function Sidebar({ rol, modulosPermitidos = [], userName, email }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
   const { isOpen, close } = useSidebar()
+  const sidebarRef = useRef<HTMLElement>(null)
 
   const links = [
     { id: 'despachos', name: 'Despachos', href: '/despachos', icon: Package, roles: ['Admin', 'Operativo'] },
     { id: 'mensajeros', name: 'Mensajeros', href: '/mensajeros', icon: Truck, roles: ['Admin', 'Operativo'] },
-    { 
-      id: 'vehiculos', 
-      name: rol === 'Admin' ? 'Inspecciones Preoperacionales' : 'Inspecciones Preoperacionales', 
-      href: '/vehiculos', 
-      icon: ClipboardCheck, 
-      roles: ['Admin', 'Operativo'] 
-    },
+    { id: 'vehiculos', name: 'Inspecciones Preoperacionales', href: '/vehiculos', icon: ClipboardCheck, roles: ['Admin', 'Operativo'] },
     { id: 'atencion', name: 'Atención al Cliente', href: '/admin/atencion', icon: MessageSquare, roles: ['Admin'] },
     { id: 'admin-mensajeros', name: 'Conductores', href: '/admin/mensajeros', icon: Truck, roles: ['Admin'] },
     { id: 'usuarios', name: 'Usuarios', href: '/admin/usuarios', icon: Users, roles: ['Admin'] },
@@ -56,89 +45,63 @@ export function Sidebar({ rol, modulosPermitidos = [] }: SidebarProps) {
     router.refresh()
   }
 
-  const handleLinkClick = () => {
-    // Cierra el sidebar en móvil/tablet al navegar
-    close()
-  }
+  useEffect(() => {
+    if (!isOpen) return
+    const desktop = window.matchMedia('(min-width: 1024px)')
+    if (desktop.matches) return
+    const previousFocus = document.activeElement as HTMLElement | null
+    const content = document.getElementById('dashboard-content')
+    const previousOverflow = document.body.style.overflow
+    if (content) content.inert = true
+    document.body.style.overflow = 'hidden'
+    sidebarRef.current?.querySelector<HTMLButtonElement>('button')?.focus()
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape' && !event.defaultPrevented) { event.preventDefault(); close() }
+      if (event.key !== 'Tab') return
+      const elements = Array.from(sidebarRef.current?.querySelectorAll<HTMLElement>('a[href], button:not(:disabled), [tabindex="0"]') ?? []).filter(el => el.getClientRects().length > 0 && !el.closest('[inert]'))
+      const first = elements[0], last = elements[elements.length - 1]
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus() }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus() }
+    }
+    function onResize() { if (desktop.matches) close() }
+    document.addEventListener('keydown', onKeyDown)
+    desktop.addEventListener('change', onResize)
+    return () => {
+      if (content) content.inert = false
+      document.body.style.overflow = previousOverflow
+      document.removeEventListener('keydown', onKeyDown)
+      desktop.removeEventListener('change', onResize)
+      if (!desktop.matches) previousFocus?.focus()
+    }
+  }, [isOpen, close])
 
   return (
     <>
-      {/* Overlay — solo visible en móvil/tablet cuando el sidebar está abierto */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm lg:hidden"
-          onClick={close}
-          aria-hidden="true"
-        />
-      )}
-
+      {isOpen && <div className="fixed inset-0 z-30 bg-black/35 lg:hidden" onClick={close} aria-hidden="true" />}
       <aside
-        className={`fixed left-0 top-0 z-40 w-64 h-screen transition-transform duration-300 ease-in-out
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-          lg:translate-x-0`}
+        id="app-sidebar"
+        ref={sidebarRef}
+        aria-label="Navegación de Landimotos"
+        className={`fixed inset-y-0 left-0 z-40 flex h-dvh w-64 flex-col border-r border-border bg-sidebar transition-[transform,visibility] duration-200 ${isOpen ? 'visible translate-x-0' : 'invisible -translate-x-full'} lg:visible lg:translate-x-0`}
       >
-        <div className="h-full px-4 py-8 overflow-y-auto bg-neutral-900 border-r border-neutral-800 flex flex-col">
-          
-          {/* Logo Area */}
-          <div className="flex items-center justify-between gap-3 mb-12 px-2">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-                <Package className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold text-white tracking-tight">Landimotos</h2>
-                <p className="text-[10px] text-neutral-400 font-medium tracking-wider uppercase">{rol}</p>
-              </div>
-            </div>
-
-            {/* Botón cerrar — solo en móvil/tablet */}
-            <button
-              onClick={close}
-              className="lg:hidden p-1.5 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-lg transition-colors"
-              aria-label="Cerrar menú"
-            >
-              <X className="w-5 h-5" />
-            </button>
+        <div className="flex shrink-0 items-center gap-3 px-5 py-6">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent text-on-accent">
+            <Package className="size-5" strokeWidth={1.7} aria-hidden="true" />
           </div>
-
-          {/* Navigation */}
-          <ul className="space-y-2 font-medium flex-1">
-            {filteredLinks.map((link) => {
-              const Icon = link.icon
-              const isActive = pathname === link.href || (pathname.startsWith(link.href) && link.href !== '/')
-              
-              return (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    onClick={handleLinkClick}
-                    className={`flex items-center p-3 rounded-xl transition-all group ${
-                      isActive 
-                        ? 'bg-blue-600/10 text-blue-500' 
-                        : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'
-                    }`}
-                  >
-                    <Icon className={`w-5 h-5 flex-shrink-0 transition-colors ${
-                      isActive ? 'text-blue-500' : 'text-neutral-500 group-hover:text-white'
-                    }`} />
-                    <span className="ms-3">{link.name}</span>
-                  </Link>
-                </li>
-              )
-            })}
-          </ul>
-
-          {/* Bottom Actions */}
-          <div className="mt-auto pt-4 border-t border-neutral-800">
-            <button 
-              onClick={handleLogout}
-              className="flex items-center w-full p-3 text-neutral-400 rounded-xl hover:bg-red-500/10 hover:text-red-500 transition-all group cursor-pointer"
-            >
-              <LogOut className="w-5 h-5 flex-shrink-0 text-neutral-500 group-hover:text-red-500 transition-colors" />
-              <span className="ms-3">Cerrar Sesión</span>
-              
-            </button>
+          <div className="min-w-0 flex-1">
+            <p className="text-[15px] font-semibold tracking-tight">Landimotos</p>
+            <p className="mt-0.5 text-xs text-muted">Operativo</p>
           </div>
+          <button onClick={close} className="icon-button lg:hidden" aria-label="Cerrar menú">
+            <X className="size-5" />
+          </button>
+        </div>
+
+        <SidebarNavigation links={filteredLinks} isAdmin={rol?.toLowerCase() === 'admin'} pathname={pathname} onNavigate={close} />
+
+        <div className="shrink-0 border-t border-border p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+          <UserMenu userName={userName} email={email} rol={rol} onLogout={handleLogout} />
         </div>
       </aside>
     </>
