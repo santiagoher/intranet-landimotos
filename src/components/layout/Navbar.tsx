@@ -45,3 +45,4 @@ export function Navbar({ userName, rol }: NavbarProps) {
     </nav>
   )
 }
+

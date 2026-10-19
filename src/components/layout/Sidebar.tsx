@@ -136,6 +136,7 @@ export function Sidebar({ rol, modulosPermitidos = [] }: SidebarProps) {
             >
               <LogOut className="w-5 h-5 flex-shrink-0 text-neutral-500 group-hover:text-red-500 transition-colors" />
               <span className="ms-3">Cerrar Sesión</span>
+              
             </button>
           </div>
         </div>

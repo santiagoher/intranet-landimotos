@@ -2,6 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { ApiError } from 'next/dist/server/api-utils'
 
 // =========================================================================
 // 1. GESTIÓN DE ASESORES

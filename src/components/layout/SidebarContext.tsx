@@ -30,3 +30,4 @@ export function useSidebar() {
   if (!ctx) throw new Error('useSidebar must be used inside SidebarProvider')
   return ctx
 }
+

@@ -159,3 +159,4 @@ export function GlobalAdminStats({ pedidos }: GlobalAdminStatsProps) {
     </div>
   )
 }
+
