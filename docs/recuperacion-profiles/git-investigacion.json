@@ -1,0 +1,310 @@
+{
+  "reachableCommits": 27,
+  "unreachableObjects": 557,
+  "unreachableBlobs": 209,
+  "unreachableCommits": 0,
+  "hits": [
+    {
+      "oid": "65a1bb96d9d58de73efad1dced418dae2da64ead",
+      "bytes": 20323,
+      "profiles": false,
+      "ddl": true,
+      "rows": true,
+      "matchingLines": [],
+      "firstLines": [
+        "const fs = require('node:fs')",
+        "const path = require('node:path')",
+        "const assert = require('node:assert/strict')"
+      ],
+      "isolatedTest": true,
+      "schemaLines": [
+        "    create table public.perfiles(id uuid primary key references auth.users(id),nombre text,rol text,estado text,modulos_permitidos text[]);"
+      ],
+      "insertLines": [
+        "    await q(\"insert into perfiles values($1,$2,'Operativo','activo',array['inventarios'])\",[id(n),`TEST ${n}`])"
+      ]
+    },
+    {
+      "oid": "1a836e819710719fb69dec3437468191ee3c3d15",
+      "bytes": 8479,
+      "profiles": true,
+      "ddl": true,
+      "rows": true,
+      "matchingLines": [
+        "// Entirely isolated PostgreSQL WASM. No env loading, network or real profiles."
+      ],
+      "firstLines": [
+        "// Entirely isolated PostgreSQL WASM. No env loading, network or real profiles.",
+        "const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict')",
+        "const {createRequire}=require('node:module')"
+      ],
+      "isolatedTest": true,
+      "schemaLines": [
+        " create table perfiles(id uuid primary key references auth.users,nombre text,rol text,estado text,modulos_permitidos text[]);"
+      ],
+      "insertLines": [
+        " for(let n=1;n<=5;n++){await q('insert into auth.users values($1)',[id(n)]);await q(\"insert into perfiles values($1,$2,'Operativo','activo',array['inventarios'])\",[id(n),`DEMO USER ${n}`])}"
+      ]
+    },
+    {
+      "oid": "77c34c9c0b1170f314797d87812df24d7c3a805a",
+      "bytes": 6349,
+      "profiles": false,
+      "ddl": true,
+      "rows": true,
+      "matchingLines": [],
+      "firstLines": [
+        "const fs = require('node:fs')",
+        "const path = require('node:path')",
+        "const assert = require('node:assert/strict')"
+      ],
+      "isolatedTest": true,
+      "schemaLines": [
+        "    create table public.perfiles(id uuid primary key references auth.users(id),nombre text,rol text,estado text,modulos_permitidos text[]);"
+      ],
+      "insertLines": [
+        "    await q(\"insert into perfiles values($1,$2,'Operativo','activo',array['inventarios'])\",[id(n),`TEST ${n}`])"
+      ]
+    },
+    {
+      "oid": "5b0470b4cceab1e59eaf42b5c2fc6eb4b899e4f4",
+      "bytes": 33266,
+      "profiles": false,
+      "ddl": true,
+      "rows": true,
+      "matchingLines": [],
+      "firstLines": [
+        "const fs = require('node:fs')",
+        "const path = require('node:path')",
+        "const assert = require('node:assert/strict')"
+      ],
+      "isolatedTest": true,
+      "schemaLines": [
+        "    create table public.perfiles(id uuid primary key references auth.users(id),nombre text,rol text,estado text,modulos_permitidos text[]);"
+      ],
+      "insertLines": [
+        "    await q(\"insert into perfiles values($1,$2,'Operativo','activo',array['inventarios'])\",[id(n),`TEST ${n}`])"
+      ]
+    },
+    {
+      "oid": "2336f44d8162d64ab40c245a6fc225249d35e3e0",
+      "bytes": 22349,
+      "profiles": false,
+      "ddl": true,
+      "rows": true,
+      "matchingLines": [],
+      "firstLines": [
+        "const fs = require('node:fs')",
+        "const path = require('node:path')",
+        "const assert = require('node:assert/strict')"
+      ],
+      "isolatedTest": true,
+      "schemaLines": [
+        "    create table public.perfiles(id uuid primary key references auth.users(id),nombre text,rol text,estado text,modulos_permitidos text[]);"
+      ],
+      "insertLines": [
+        "    await q(\"insert into perfiles values($1,$2,'Operativo','activo',array['inventarios'])\",[id(n),`TEST ${n}`])"
+      ]
+    },
+    {
+      "oid": "9527be4fec42aff1d5fbed2c9bac75e495373a3b",
+      "bytes": 30391,
+      "profiles": false,
+      "ddl": true,
+      "rows": true,
+      "matchingLines": [],
+      "firstLines": [
+        "const fs = require('node:fs')",
+        "const path = require('node:path')",
+        "const assert = require('node:assert/strict')"
+      ],
+      "isolatedTest": true,
+      "schemaLines": [
+        "    create table public.perfiles(id uuid primary key references auth.users(id),nombre text,rol text,estado text,modulos_permitidos text[]);"
+      ],
+      "insertLines": [
+        "    await q(\"insert into perfiles values($1,$2,'Operativo','activo',array['inventarios'])\",[id(n),`TEST ${n}`])"
+      ]
+    },
+    {
+      "oid": "8aa892d75997aee6ec226a078f4ffa9abeb1408d",
+      "bytes": 18800,
+      "profiles": false,
+      "ddl": true,
+      "rows": true,
+      "matchingLines": [],
+      "firstLines": [
+        "const fs = require('node:fs')",
+        "const path = require('node:path')",
+        "const assert = require('node:assert/strict')"
+      ],
+      "isolatedTest": true,
+      "schemaLines": [
+        "    create table public.perfiles(id uuid primary key references auth.users(id),nombre text,rol text,estado text,modulos_permitidos text[]);"
+      ],
+      "insertLines": [
+        "    await q(\"insert into perfiles values($1,$2,'Operativo','activo',array['inventarios'])\",[id(n),`TEST ${n}`])"
+      ]
+    },
+    {
+      "oid": "4b9aa4accbe58dca4b93e1f4f586365da14bc8d5",
+      "bytes": 13639,
+      "profiles": true,
+      "ddl": true,
+      "rows": true,
+      "matchingLines": [
+        "// Entirely isolated PostgreSQL WASM. No env loading, network or real profiles."
+      ],
+      "firstLines": [
+        "// Entirely isolated PostgreSQL WASM. No env loading, network or real profiles.",
+        "const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict')",
+        "const {createRequire}=require('node:module')"
+      ],
+      "isolatedTest": true,
+      "schemaLines": [
+        " create table perfiles(id uuid primary key references auth.users,nombre text,rol text,estado text,modulos_permitidos text[]);"
+      ],
+      "insertLines": [
+        " for(let n=1;n<=5;n++){await q('insert into auth.users values($1)',[id(n)]);await q(\"insert into perfiles values($1,$2,'Operativo','activo',array['inventarios'])\",[id(n),`DEMO USER ${n}`])}"
+      ]
+    },
+    {
+      "oid": "674a95635369072d00303b35de3898803fc2d57d",
+      "bytes": 38329,
+      "profiles": false,
+      "ddl": true,
+      "rows": true,
+      "matchingLines": [],
+      "firstLines": [
+        "const fs = require('node:fs')",
+        "const path = require('node:path')",
+        "const assert = require('node:assert/strict')"
+      ],
+      "isolatedTest": true,
+      "schemaLines": [
+        "    create table public.perfiles(id uuid primary key references auth.users(id),nombre text,rol text,estado text,modulos_permitidos text[]);"
+      ],
+      "insertLines": [
+        "    await q(\"insert into perfiles values($1,$2,'Operativo','activo',array['inventarios'])\",[id(n),`TEST ${n}`])"
+      ]
+    },
+    {
+      "oid": "f69a00ec5ad4d00995584312666b5b0fbecdcd2c",
+      "bytes": 11571,
+      "profiles": true,
+      "ddl": true,
+      "rows": true,
+      "matchingLines": [
+        "// Entirely isolated PostgreSQL WASM. No env loading, network or real profiles."
+      ],
+      "firstLines": [
+        "// Entirely isolated PostgreSQL WASM. No env loading, network or real profiles.",
+        "const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict')",
+        "const {createRequire}=require('node:module')"
+      ],
+      "isolatedTest": true,
+      "schemaLines": [
+        " create table perfiles(id uuid primary key references auth.users,nombre text,rol text,estado text,modulos_permitidos text[]);"
+      ],
+      "insertLines": [
+        " for(let n=1;n<=5;n++){await q('insert into auth.users values($1)',[id(n)]);await q(\"insert into perfiles values($1,$2,'Operativo','activo',array['inventarios'])\",[id(n),`DEMO USER ${n}`])}"
+      ]
+    },
+    {
+      "oid": "323b5aa20c8ae7c1fc0a513bdc6cc0ffa205b9ae",
+      "bytes": 14182,
+      "profiles": false,
+      "ddl": true,
+      "rows": true,
+      "matchingLines": [],
+      "firstLines": [
+        "const fs = require('node:fs')",
+        "const path = require('node:path')",
+        "const assert = require('node:assert/strict')"
+      ],
+      "isolatedTest": true,
+      "schemaLines": [
+        "    create table public.perfiles(id uuid primary key references auth.users(id),nombre text,rol text,estado text,modulos_permitidos text[]);"
+      ],
+      "insertLines": [
+        "    await q(\"insert into perfiles values($1,$2,'Operativo','activo',array['inventarios'])\",[id(n),`TEST ${n}`])"
+      ]
+    },
+    {
+      "oid": "fedbc44f07cd069456431681df8f108223260b36",
+      "bytes": 26045,
+      "profiles": false,
+      "ddl": true,
+      "rows": true,
+      "matchingLines": [],
+      "firstLines": [
+        "const fs = require('node:fs')",
+        "const path = require('node:path')",
+        "const assert = require('node:assert/strict')"
+      ],
+      "isolatedTest": true,
+      "schemaLines": [
+        "    create table public.perfiles(id uuid primary key references auth.users(id),nombre text,rol text,estado text,modulos_permitidos text[]);"
+      ],
+      "insertLines": [
+        "    await q(\"insert into perfiles values($1,$2,'Operativo','activo',array['inventarios'])\",[id(n),`TEST ${n}`])"
+      ]
+    },
+    {
+      "oid": "9a1cc39c75cfbc5cbb59525f0acbd2a941054f60",
+      "bytes": 10689,
+      "profiles": true,
+      "ddl": true,
+      "rows": true,
+      "matchingLines": [
+        "// Entirely isolated PostgreSQL WASM. No env loading, network or real profiles."
+      ],
+      "firstLines": [
+        "// Entirely isolated PostgreSQL WASM. No env loading, network or real profiles.",
+        "const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict')",
+        "const {createRequire}=require('node:module')"
+      ],
+      "isolatedTest": true,
+      "schemaLines": [
+        " create table perfiles(id uuid primary key references auth.users,nombre text,rol text,estado text,modulos_permitidos text[]);"
+      ],
+      "insertLines": [
+        " for(let n=1;n<=5;n++){await q('insert into auth.users values($1)',[id(n)]);await q(\"insert into perfiles values($1,$2,'Operativo','activo',array['inventarios'])\",[id(n),`DEMO USER ${n}`])}"
+      ]
+    },
+    {
+      "oid": "b37eef7cf108546586ff2a8aed02801fa85ca98d",
+      "bytes": 10192,
+      "profiles": false,
+      "ddl": true,
+      "rows": true,
+      "matchingLines": [],
+      "firstLines": [
+        "const fs = require('node:fs')",
+        "const path = require('node:path')",
+        "const assert = require('node:assert/strict')"
+      ],
+      "isolatedTest": true,
+      "schemaLines": [
+        "    create table public.perfiles(id uuid primary key references auth.users(id),nombre text,rol text,estado text,modulos_permitidos text[]);"
+      ],
+      "insertLines": [
+        "    await q(\"insert into perfiles values($1,$2,'Operativo','activo',array['inventarios'])\",[id(n),`TEST ${n}`])"
+      ]
+    }
+  ],
+  "schemaVersions": [
+    {
+      "commit": "62c6a5595018d0f047d61104aa15c1075c1dfacc",
+      "bytes": 16816,
+      "profiles": false,
+      "perfilesDefinition": false
+    },
+    {
+      "commit": "a4a0b3ba439e9eafa77218cc502dccf94bbb0aec",
+      "bytes": 16813,
+      "profiles": false,
+      "perfilesDefinition": false
+    }
+  ]
+}

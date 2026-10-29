@@ -276,7 +276,7 @@ export async function getLunchHistory() {
 
   if (error) {
     console.error('Error fetching lunch history:', error)
-    return []
+    throw new Error('No se pudo consultar el historial de almuerzos.')
   }
   return data
 }

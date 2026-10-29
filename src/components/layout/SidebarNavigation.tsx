@@ -17,7 +17,7 @@ interface NavigationItem extends NavigationLink {
 }
 
 // Receive the already-filtered links: grouping never grants additional access.
-export function getNavigationSections(links: NavigationLink[], isAdmin: boolean) {
+export function getNavigationSections(links: NavigationLink[], isAdmin: boolean, inventoryReports = false) {
   const operations: NavigationItem[] = []
   const administrative: NavigationLink[] = []
 
@@ -39,6 +39,18 @@ export function getNavigationSections(links: NavigationLink[], isAdmin: boolean)
           ...(isAdmin ? [
             { id: 'mensajeros-reports', name: 'Reportes', href: `${link.href}#reportes` },
           ] : []),
+        ],
+      })
+    } else if (link.id === 'inventarios') {
+      operations.push({
+        ...link,
+        children: inventoryReports ? [
+          { id: 'inventarios-overview', name: 'Vista general', href: '/inventarios' },
+          { id: 'inventarios-records', name: 'Tareas de inventario', href: '/inventarios/registros' },
+          { id: 'inventarios-reports', name: 'Reportes', href: '/inventarios/reportes' },
+        ] : [
+          { id: 'inventarios-records', name: 'Mis inventarios', href: '/inventarios/registros' },
+          { id: 'inventarios-new', name: 'Nuevo inventario', href: '/inventarios' },
         ],
       })
     } else if (link.id === 'vehiculos') {
@@ -69,7 +81,8 @@ function NavigationGroup({ item, pathname, hash, onNavigate }: {
 }) {
   const children = item.children ?? []
   const activeChild = children.find(child => child.href === `${pathname}${hash}`)
-    ?? children.find(child => matchesPath(child.href, pathname))
+    ?? [...children].sort((a,b)=>b.href.length-a.href.length).find(child => matchesPath(child.href, pathname))
+    ?? (item.id === 'inventarios' && matchesPath(item.href, pathname) ? children[0] : undefined)
   const location = `${pathname}${hash}`
   const [disclosure, setDisclosure] = useState({ location, expanded: Boolean(activeChild) })
   // A new destination inside the group always reveals the active item. Manual
@@ -110,15 +123,16 @@ function NavigationGroup({ item, pathname, hash, onNavigate }: {
   </li>
 }
 
-export function SidebarNavigation({ links, isAdmin, pathname, onNavigate }: {
+export function SidebarNavigation({ links, isAdmin, pathname, onNavigate, inventoryReports = false }: {
   links: NavigationLink[]
   isAdmin: boolean
   pathname: string
   onNavigate: () => void
+  inventoryReports?: boolean
 }) {
   const hash = useNavigationHash()
   return <nav aria-label="Navegación principal" className="min-h-0 flex-1 space-y-6 overflow-y-auto px-3 pb-5 pt-2">
-    {getNavigationSections(links, isAdmin).map(section => <section key={section.id} aria-labelledby={`sidebar-${section.id}`}>
+    {getNavigationSections(links, isAdmin, inventoryReports).map(section => <section key={section.id} aria-labelledby={`sidebar-${section.id}`}>
       <h2 id={`sidebar-${section.id}`} className="mb-2 px-3 text-[10px] font-medium uppercase tracking-[0.08em] text-muted">{section.name}</h2>
       <ul className="space-y-1">
         {section.items.map(item => {

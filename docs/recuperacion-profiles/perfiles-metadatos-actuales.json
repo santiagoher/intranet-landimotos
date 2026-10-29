@@ -1,0 +1,234 @@
+{
+  "notice": "Metadatos actuales de public.perfiles. NO son evidencia de la estructura de public.profiles ni un respaldo de filas.",
+  "project": "loajbvlgpsxrkfzyxbui",
+  "checked": "2026-10-22",
+  "rowCount": 4,
+  "rowsHash": "380d2a3d2a8ae0f8ec8cf23652d4807b",
+  "metadata": {
+    "table": {
+      "acl": [
+        "postgres=arwdDxtm/postgres",
+        "anon=arwdDxtm/postgres",
+        "authenticated=arwdDxtm/postgres",
+        "service_role=arwdDxtm/postgres"
+      ],
+      "rls": true,
+      "owner": "postgres",
+      "force_rls": false
+    },
+    "columns": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "default": null,
+        "not_null": true
+      },
+      {
+        "name": "email",
+        "type": "text",
+        "default": null,
+        "not_null": true
+      },
+      {
+        "name": "nombre",
+        "type": "text",
+        "default": null,
+        "not_null": false
+      },
+      {
+        "name": "rol",
+        "type": "text",
+        "default": "'Operativo'::text",
+        "not_null": false
+      },
+      {
+        "name": "estado",
+        "type": "text",
+        "default": "'activo'::text",
+        "not_null": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "default": "now()",
+        "not_null": false
+      },
+      {
+        "name": "modulos_permitidos",
+        "type": "text[]",
+        "default": "'{}'::text[]",
+        "not_null": false
+      }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX perfiles_pkey ON public.perfiles USING btree (id)",
+      "CREATE UNIQUE INDEX perfiles_email_key ON public.perfiles USING btree (email)"
+    ],
+    "policies": [
+      {
+        "cmd": "ALL",
+        "qual": "es_admin()",
+        "roles": [
+          "public"
+        ],
+        "tablename": "perfiles",
+        "permissive": "PERMISSIVE",
+        "policyname": "Admins ven todos los perfiles",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(auth.uid() = id)",
+        "roles": [
+          "public"
+        ],
+        "tablename": "perfiles",
+        "permissive": "PERMISSIVE",
+        "policyname": "Usuarios pueden ver su propio perfil",
+        "schemaname": "public",
+        "with_check": null
+      }
+    ],
+    "triggers": [
+      "CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION handle_new_user()"
+    ],
+    "constraints": [
+      {
+        "name": "perfiles_id_fkey",
+        "table": "perfiles",
+        "definition": "FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE"
+      },
+      {
+        "name": "atencion_estados_whatsapp_usuario_id_fkey",
+        "table": "atencion_estados_whatsapp",
+        "definition": "FOREIGN KEY (usuario_id) REFERENCES perfiles(id) ON DELETE SET NULL"
+      },
+      {
+        "name": "inventario_usuarios_bodegas_perfil_id_fkey",
+        "table": "inventario_usuarios_bodegas",
+        "definition": "FOREIGN KEY (perfil_id) REFERENCES perfiles(id) ON DELETE CASCADE"
+      },
+      {
+        "name": "inventario_parametros_modificado_por_fkey",
+        "table": "inventario_parametros",
+        "definition": "FOREIGN KEY (modificado_por) REFERENCES perfiles(id) ON DELETE SET NULL"
+      },
+      {
+        "name": "perfiles_rol_check",
+        "table": "perfiles",
+        "definition": "CHECK ((rol = ANY (ARRAY['Admin'::text, 'Operativo'::text])))"
+      },
+      {
+        "name": "perfiles_estado_check",
+        "table": "perfiles",
+        "definition": "CHECK ((estado = ANY (ARRAY['activo'::text, 'inactivo'::text])))"
+      },
+      {
+        "name": "perfiles_pkey",
+        "table": "perfiles",
+        "definition": "PRIMARY KEY (id)"
+      },
+      {
+        "name": "perfiles_email_key",
+        "table": "perfiles",
+        "definition": "UNIQUE (email)"
+      },
+      {
+        "name": "vehiculo_checklists_usuario_id_fkey",
+        "table": "vehiculo_checklists",
+        "definition": "FOREIGN KEY (usuario_id) REFERENCES perfiles(id) ON DELETE SET NULL"
+      },
+      {
+        "name": "vehiculo_alertas_usuario_id_fkey",
+        "table": "vehiculo_alertas",
+        "definition": "FOREIGN KEY (usuario_id) REFERENCES perfiles(id) ON DELETE SET NULL"
+      },
+      {
+        "name": "atencion_diaria_usuario_id_fkey",
+        "table": "atencion_diaria",
+        "definition": "FOREIGN KEY (usuario_id) REFERENCES perfiles(id) ON DELETE SET NULL"
+      },
+      {
+        "name": "inventario_sesiones_creada_por_fkey",
+        "table": "inventario_sesiones",
+        "definition": "FOREIGN KEY (creada_por) REFERENCES perfiles(id) ON DELETE SET NULL"
+      },
+      {
+        "name": "inventario_tickets_asignado_a_fkey",
+        "table": "inventario_tickets",
+        "definition": "FOREIGN KEY (asignado_a) REFERENCES perfiles(id) ON DELETE SET NULL"
+      },
+      {
+        "name": "inventario_tickets_asignado_por_fkey",
+        "table": "inventario_tickets",
+        "definition": "FOREIGN KEY (asignado_por) REFERENCES perfiles(id) ON DELETE SET NULL"
+      },
+      {
+        "name": "inventario_conteos_contado_por_fkey",
+        "table": "inventario_conteos",
+        "definition": "FOREIGN KEY (contado_por) REFERENCES perfiles(id) ON DELETE SET NULL"
+      },
+      {
+        "name": "inventario_verificaciones_verificado_por_fkey",
+        "table": "inventario_verificaciones",
+        "definition": "FOREIGN KEY (verificado_por) REFERENCES perfiles(id) ON DELETE SET NULL"
+      },
+      {
+        "name": "inventario_ajustes_propuesto_por_fkey",
+        "table": "inventario_ajustes",
+        "definition": "FOREIGN KEY (propuesto_por) REFERENCES perfiles(id) ON DELETE SET NULL"
+      },
+      {
+        "name": "inventario_ajustes_aprobado_por_fkey",
+        "table": "inventario_ajustes",
+        "definition": "FOREIGN KEY (aprobado_por) REFERENCES perfiles(id) ON DELETE SET NULL"
+      },
+      {
+        "name": "inventario_notificaciones_destinatario_id_fkey",
+        "table": "inventario_notificaciones",
+        "definition": "FOREIGN KEY (destinatario_id) REFERENCES perfiles(id) ON DELETE SET NULL"
+      },
+      {
+        "name": "inventario_auditoria_actor_id_fkey",
+        "table": "inventario_auditoria",
+        "definition": "FOREIGN KEY (actor_id) REFERENCES perfiles(id) ON DELETE SET NULL"
+      },
+      {
+        "name": "operaciones_actor_id_fkey",
+        "table": "inventario_private.operaciones",
+        "definition": "FOREIGN KEY (actor_id) REFERENCES perfiles(id) ON DELETE SET NULL"
+      },
+      {
+        "name": "inventario_administradores_perfil_id_fkey",
+        "table": "inventario_administradores",
+        "definition": "FOREIGN KEY (perfil_id) REFERENCES perfiles(id) ON DELETE CASCADE"
+      },
+      {
+        "name": "inventario_tickets_lider_id_fkey",
+        "table": "inventario_tickets",
+        "definition": "FOREIGN KEY (lider_id) REFERENCES perfiles(id) ON DELETE SET NULL"
+      },
+      {
+        "name": "inventario_tarea_productos_contado_por_fkey",
+        "table": "inventario_tarea_productos",
+        "definition": "FOREIGN KEY (contado_por) REFERENCES perfiles(id) ON DELETE SET NULL"
+      },
+      {
+        "name": "inventario_evidencias_usuario_id_fkey",
+        "table": "inventario_evidencias",
+        "definition": "FOREIGN KEY (usuario_id) REFERENCES perfiles(id) ON DELETE RESTRICT"
+      },
+      {
+        "name": "inventario_observaciones_conteo_usuario_id_fkey",
+        "table": "inventario_observaciones_conteo",
+        "definition": "FOREIGN KEY (usuario_id) REFERENCES perfiles(id) ON DELETE RESTRICT"
+      },
+      {
+        "name": "inventario_tickets_creado_por_fkey",
+        "table": "inventario_tickets",
+        "definition": "FOREIGN KEY (creado_por) REFERENCES perfiles(id) ON DELETE SET NULL"
+      }
+    ]
+  }
+}

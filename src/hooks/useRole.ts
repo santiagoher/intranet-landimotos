@@ -1,33 +1,8 @@
 'use client'
+import { useServerRole } from '@/components/layout/RoleProvider'
 
-import { useEffect, useState } from 'react'
-import { createClient } from '@/utils/supabase/client'
-
+// UI only. Server Actions and RLS still enforce every operation.
 export function useRole() {
-  const [rol, setRol] = useState<'Admin' | 'Operativo' | null>(null)
-  const [modulosPermitidos, setModulosPermitidos] = useState<string[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    async function getRole() {
-      const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
-
-      if (user) {
-        const { data: perfil } = await supabase
-          .from('perfiles')
-          .select('rol, modulos_permitidos')
-          .eq('id', user.id)
-          .single()
-        
-        setRol(perfil?.rol || 'Operativo')
-        setModulosPermitidos(perfil?.modulos_permitidos || [])
-      }
-      setLoading(false)
-    }
-
-    getRole()
-  }, [])
-
-  return { rol, isAdmin: rol === 'Admin', modulosPermitidos, loading }
+  const profile=useServerRole()
+  return {rol:profile?.rol??null,isAdmin:profile?.rol==='Admin',modulosPermitidos:profile?.modulosPermitidos??[],loading:false}
 }

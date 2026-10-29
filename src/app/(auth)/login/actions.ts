@@ -27,7 +27,6 @@ export async function login(formData: FormData) {
     password,
   })
 
-
   if (error) {
     // Retornamos el mensaje real para debug
     return { error: error.message }
@@ -36,4 +35,3 @@ export async function login(formData: FormData) {
   revalidatePath('/', 'layout')
   redirect('/')
 }
-

@@ -13,3 +13,4 @@ export function NavigationSection({ id, children, ...props }: ComponentProps<'se
   }, [hash, id])
   return <section {...props} id={id} ref={ref} tabIndex={-1}>{children}</section>
 }
+

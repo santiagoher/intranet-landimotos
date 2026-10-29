@@ -10,6 +10,7 @@ function applyTheme(theme: Theme) {
   document.documentElement.style.colorScheme = theme
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#0e0f11' : '#ffffff')
 }
+  
 
 function subscribe(callback: () => void) {
   function syncStorage(event: StorageEvent) {

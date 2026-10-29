@@ -169,6 +169,8 @@ export interface G21ReadAdapter {
   listCategories(warehouseId: ErpIdentifier, page: G21PageRequest): Promise<G21Result<G21Page<G21Category>>>
   listProducts(scope: G21StockScope, page: G21PageRequest): Promise<G21Result<G21Page<G21Product>>>
   listBarcodes(productIds: readonly ErpIdentifier[], page: G21PageRequest): Promise<G21Result<G21Page<G21Barcode>>>
+  /** Scope a scan to its warehouse; ambiguous codes must not silently pick a product. */
+  resolveBarcode(warehouseId: ErpIdentifier, barcode: string): Promise<G21Result<readonly G21Product[]>>
   captureStockSnapshot(scope: G21StockScope): Promise<G21Result<G21StockSnapshot>>
   listMovements(request: G21MovementRequest, page: G21PageRequest): Promise<G21Result<G21MovementPage>>
 }

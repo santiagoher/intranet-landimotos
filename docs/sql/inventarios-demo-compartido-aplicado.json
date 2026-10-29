@@ -1,0 +1,624 @@
+{
+  "project": "loajbvlgpsxrkfzyxbui",
+  "before": {
+    "pt409": [
+      {
+        "hash": "35e27482e26263f787d0b1e0d7faec4b",
+        "name": "inventario_private.actualizar_tarea(uuid,integer,text,integer,text)"
+      },
+      {
+        "hash": "17f972828f74744499f71dd4841e796c",
+        "name": "inventario_private.contar_producto(uuid,integer,text)"
+      },
+      {
+        "hash": "1c6f7846c810a299289d81390a7aadce",
+        "name": "inventario_private.observacion_guardar(uuid,text,integer)"
+      },
+      {
+        "hash": "d5527c8af45305d21d767e1e5372bf89",
+        "name": "inventario_private.revisar_conteo(uuid,integer,text,text)"
+      }
+    ],
+    "policies": [
+      {
+        "cmd": "SELECT",
+        "qual": "(perfil_id = ( SELECT auth.uid() AS uid))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_administradores",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_admin_propio",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text]))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_ajustes",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_ajustes_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "((inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['lider'::text, 'administrador'::text])) AND ((ticket_id IS NULL) OR inventario_private.puede_leer_ticket(ticket_id)))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_auditoria",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_audit_operacion",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(inventario_private.rol_bodega(bodega_id) = 'administrador'::text)",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_auditoria",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_auditoria_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(inventario_private.rol_bodega(id) IS NOT NULL)",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_bodegas",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_bodegas_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(EXISTS ( SELECT 1\n   FROM inventario_tickets t\n  WHERE ((t.categoria_id = inventario_categorias.id) AND inventario_private.puede_leer_ticket(t.id))))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_categorias",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_catalogo_operativo",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "((inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text])) OR (EXISTS ( SELECT 1\n   FROM inventario_sesiones s\n  WHERE ((s.categoria_id = inventario_categorias.id) AND inventario_private.puede_leer_sesion(s.id)))))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_categorias",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_categorias_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "((inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text])) OR (EXISTS ( SELECT 1\n   FROM inventario_sesion_items i\n  WHERE ((i.producto_id = inventario_codigos_barras.producto_id) AND inventario_private.puede_leer_sesion(i.sesion_id)))))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_codigos_barras",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_codigos_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "((inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text])) OR ((contado_por = ( SELECT auth.uid() AS uid)) AND inventario_private.puede_leer_ticket(ticket_id)))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_conteos",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_conteos_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text]))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_diferencias",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_diferencias_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(inventario_private.puede_leer_ticket(ticket_id) AND (estado <> 'eliminado'::text) AND ((tipo_evidencia = 'conteo_operador'::text) OR (EXISTS ( SELECT 1\n   FROM inventario_tickets t\n  WHERE ((t.id = inventario_evidencias.ticket_id) AND (inventario_private.rol_bodega(t.bodega_id) = ANY (ARRAY['lider'::text, 'administrador'::text])))))))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_evidencias",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_evidencias_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "((destinatario_id = ( SELECT auth.uid() AS uid)) AND inventario_private.puede_leer_ticket(ticket_id) AND ((tipo <> ALL (ARRAY['diferencias_confirmadas'::text, 'aprobacion_pendiente'::text])) OR (inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text]))))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_notificaciones",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_notificaciones_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "inventario_private.puede_leer_ticket(ticket_id)",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_observaciones_conteo",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_observaciones_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text]))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_parametros",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_parametros_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "((inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text])) OR (EXISTS ( SELECT 1\n   FROM inventario_sesion_items i\n  WHERE ((i.producto_id = inventario_productos.id) AND inventario_private.puede_leer_sesion(i.sesion_id)))))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_productos",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_productos_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text]))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_saldos_base",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_saldos_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "inventario_private.puede_leer_sesion(sesion_id)",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_sesion_items",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_items_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "inventario_private.puede_leer_sesion(id)",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_sesiones",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_sesiones_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(inventario_private.rol_bodega(bodega_id) = 'administrador'::text)",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_sincronizaciones",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_sync_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "inventario_private.puede_leer_ticket(ticket_id)",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_tarea_productos",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_tarea_productos_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "inventario_private.puede_leer_ticket(id)",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_tickets",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_tickets_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "((inventario_private.rol_bodega(bodega_id) IS NOT NULL) AND ((perfil_id = ( SELECT auth.uid() AS uid)) OR (inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text]))))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_usuarios_bodegas",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_miembros_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text]))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_verificaciones",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_verificaciones_lectura",
+        "schemaname": "public",
+        "with_check": null
+      }
+    ],
+    "categories": 793,
+    "checked_at": "2026-10-22T17:43:42.324434+00:00",
+    "items_hash": "09405570248519c22e02fead09b7afde",
+    "audit_count": 65,
+    "tickets_hash": "bb43cccb77b29cee6b9c884c3a804ac6",
+    "profiles_hash": "380d2a3d2a8ae0f8ec8cf23652d4807b",
+    "tickets_count": 8,
+    "demo_installed": false
+  },
+  "after": {
+    "pt409": [
+      {
+        "hash": "35e27482e26263f787d0b1e0d7faec4b",
+        "name": "inventario_private.actualizar_tarea(uuid,integer,text,integer,text)"
+      },
+      {
+        "hash": "17f972828f74744499f71dd4841e796c",
+        "name": "inventario_private.contar_producto(uuid,integer,text)"
+      },
+      {
+        "hash": "1c6f7846c810a299289d81390a7aadce",
+        "name": "inventario_private.observacion_guardar(uuid,text,integer)"
+      },
+      {
+        "hash": "d5527c8af45305d21d767e1e5372bf89",
+        "name": "inventario_private.revisar_conteo(uuid,integer,text,text)"
+      }
+    ],
+    "policies": [
+      {
+        "cmd": "SELECT",
+        "qual": "(perfil_id = ( SELECT auth.uid() AS uid))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_administradores",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_admin_propio",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text]))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_ajustes",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_ajustes_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "((inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['lider'::text, 'administrador'::text])) AND ((ticket_id IS NULL) OR inventario_private.puede_leer_ticket(ticket_id)))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_auditoria",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_audit_operacion",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(inventario_private.rol_bodega(bodega_id) = 'administrador'::text)",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_auditoria",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_auditoria_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(inventario_private.rol_bodega(id) IS NOT NULL)",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_bodegas",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_bodegas_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(EXISTS ( SELECT 1\n   FROM inventario_tickets t\n  WHERE ((t.categoria_id = inventario_categorias.id) AND inventario_private.puede_leer_ticket(t.id))))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_categorias",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_catalogo_operativo",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "((inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text])) OR (EXISTS ( SELECT 1\n   FROM inventario_sesiones s\n  WHERE ((s.categoria_id = inventario_categorias.id) AND inventario_private.puede_leer_sesion(s.id)))))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_categorias",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_categorias_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "((inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text])) OR (EXISTS ( SELECT 1\n   FROM inventario_sesion_items i\n  WHERE ((i.producto_id = inventario_codigos_barras.producto_id) AND inventario_private.puede_leer_sesion(i.sesion_id)))))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_codigos_barras",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_codigos_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "((inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text])) OR ((contado_por = ( SELECT auth.uid() AS uid)) AND inventario_private.puede_leer_ticket(ticket_id)))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_conteos",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_conteos_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text]))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_diferencias",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_diferencias_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(inventario_private.puede_leer_ticket(ticket_id) AND (estado <> 'eliminado'::text) AND ((tipo_evidencia = 'conteo_operador'::text) OR (EXISTS ( SELECT 1\n   FROM inventario_tickets t\n  WHERE ((t.id = inventario_evidencias.ticket_id) AND (inventario_private.rol_bodega(t.bodega_id) = ANY (ARRAY['lider'::text, 'administrador'::text])))))))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_evidencias",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_evidencias_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "((destinatario_id = ( SELECT auth.uid() AS uid)) AND inventario_private.puede_leer_ticket(ticket_id) AND ((tipo <> ALL (ARRAY['diferencias_confirmadas'::text, 'aprobacion_pendiente'::text])) OR (inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text]))))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_notificaciones",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_notificaciones_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "inventario_private.puede_leer_ticket(ticket_id)",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_observaciones_conteo",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_observaciones_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text]))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_parametros",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_parametros_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "((inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text])) OR (EXISTS ( SELECT 1\n   FROM inventario_sesion_items i\n  WHERE ((i.producto_id = inventario_productos.id) AND inventario_private.puede_leer_sesion(i.sesion_id)))))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_productos",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_productos_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text]))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_saldos_base",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_saldos_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "inventario_private.puede_leer_sesion(sesion_id)",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_sesion_items",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_items_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "inventario_private.puede_leer_sesion(id)",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_sesiones",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_sesiones_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(inventario_private.rol_bodega(bodega_id) = 'administrador'::text)",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_sincronizaciones",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_sync_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "inventario_private.puede_leer_ticket(ticket_id)",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_tarea_productos",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_tarea_productos_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "inventario_private.puede_leer_ticket(id)",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_tickets",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_tickets_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "((inventario_private.rol_bodega(bodega_id) IS NOT NULL) AND ((perfil_id = ( SELECT auth.uid() AS uid)) OR (inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text]))))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_usuarios_bodegas",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_miembros_lectura",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(inventario_private.rol_bodega(bodega_id) = ANY (ARRAY['administrador'::text, 'lider'::text]))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "inventario_verificaciones",
+        "permissive": "PERMISSIVE",
+        "policyname": "inventario_verificaciones_lectura",
+        "schemaname": "public",
+        "with_check": null
+      }
+    ],
+    "categories": 823,
+    "checked_at": "2026-10-22T17:52:03.604505+00:00",
+    "items_hash": "09405570248519c22e02fead09b7afde",
+    "audit_count": 65,
+    "tickets_hash": "bb43cccb77b29cee6b9c884c3a804ac6",
+    "profiles_hash": "380d2a3d2a8ae0f8ec8cf23652d4807b",
+    "tickets_count": 8,
+    "demo_installed": true
+  },
+  "preserved": {
+    "tickets_count": true,
+    "tickets_hash": true,
+    "items_hash": true,
+    "audit_count": true,
+    "profiles_hash": true,
+    "policies": true,
+    "pt409": true
+  }
+}

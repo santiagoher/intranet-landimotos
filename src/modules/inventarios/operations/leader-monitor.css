@@ -1,0 +1,134 @@
+.inventory-monitor { color: var(--foreground); display: grid; gap: 20px; padding-bottom: 24px; min-width: 0; container-type: inline-size; }
+.inventory-monitor [data-tone=neutral] { --monitor-tone: var(--secondary-foreground); --monitor-soft: var(--subtle); }
+.inventory-monitor [data-tone=info] { --monitor-tone: var(--accent-foreground); --monitor-soft: var(--accent-soft); }
+.inventory-monitor [data-tone=success] { --monitor-tone: var(--success); --monitor-soft: var(--success-soft); }
+.inventory-monitor [data-tone=warning] { --monitor-tone: var(--warning); --monitor-soft: var(--warning-soft); }
+.inventory-monitor [data-tone=danger] { --monitor-tone: var(--danger); --monitor-soft: var(--danger-soft); }
+.inventory-monitor :is(button,input,select,summary):focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.inventory-monitor .monitor-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+.inventory-monitor .monitor-eyebrow { color: var(--muted-foreground); font-size: 10px; font-weight: 650; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 6px; }
+.inventory-monitor .monitor-subtitle { color: var(--muted-foreground); font-size: 13px; margin-top: 6px; }
+.inventory-monitor .monitor-header-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.inventory-monitor .monitor-header-actions button { font-size: 12px; min-height: 40px; }
+.inventory-monitor .monitor-stats { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 10px; }
+.inventory-monitor .monitor-stat { border: 1px solid var(--border); border-radius: 12px; background: var(--surface); padding: 13px 14px; box-shadow: 0 2px 6px #00000004; }
+.inventory-monitor .monitor-stat dt { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; color: var(--secondary-foreground); font-size: 11px; font-weight: 500; line-height: 1.45; min-height: 32px; }
+.inventory-monitor .monitor-stat-icon { color: var(--monitor-tone); background: var(--monitor-soft); display: grid; place-items: center; width: 29px; height: 29px; border-radius: 8px; flex-shrink: 0; }
+.inventory-monitor .monitor-stat dd { font-size: 27px; letter-spacing: -.04em; font-weight: 650; font-variant-numeric: tabular-nums; line-height: 1.2; margin-top: 5px; }
+.inventory-monitor .monitor-toolbar { padding: 12px; border: 1px solid var(--border); background: var(--surface); border-radius: 12px; display: grid; gap: 10px; }
+.inventory-monitor .monitor-search-row { display: flex; gap: 10px; }
+.inventory-monitor .monitor-search { flex: 1; display: flex; align-items: center; gap: 9px; padding: 0 12px; min-width: 0; background: var(--subtle); border: 1px solid var(--border-strong); border-radius: 8px; color: var(--muted-foreground); }
+.inventory-monitor .monitor-search input { width: 100%; min-width: 0; min-height: 40px; font-size: 13px; background: transparent; border: 0; color: var(--foreground); }
+.inventory-monitor .monitor-search input::placeholder { color: var(--muted-foreground); opacity: 1; }
+.inventory-monitor .monitor-search button { display: grid; place-items: center; min-width: 32px; height: 32px; border-radius: 6px; }
+.inventory-monitor .monitor-sort { display: flex; align-items: center; gap: 5px; color: var(--muted-foreground); }
+.inventory-monitor select { width: 100%; min-width: 0; min-height: 40px; padding: 8px 28px 8px 10px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--secondary-foreground); border-radius: 8px; font-size: 12px; text-overflow: ellipsis; }
+.inventory-monitor .monitor-filters { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)) auto; gap: 8px; }
+.inventory-monitor .monitor-mobile-filter { display: none; }
+.inventory-monitor .monitor-clear { display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 0 8px; color: var(--secondary-foreground); font-size: 12px; min-height: 40px; border-radius: 8px; }
+.inventory-monitor .monitor-clear:hover, .inventory-monitor .monitor-search button:hover { background: var(--hover); }
+.inventory-monitor .monitor-signals { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; color: var(--secondary-foreground); font-size: 12px; margin-top: -6px; }
+.inventory-monitor .monitor-signals > span { display: inline-flex; align-items: center; gap: 6px; }
+.inventory-monitor .monitor-live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-foreground); }
+.inventory-monitor .monitor-signals .monitor-refresh { margin-left: auto; color: var(--muted-foreground); font-size: 11px; }
+.inventory-monitor .monitor-signals .monitor-overdue { color: var(--danger); }
+.inventory-monitor .monitor-attention { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); margin-top: -6px; }
+.inventory-monitor summary { list-style: none; cursor: pointer; }
+.inventory-monitor summary::-webkit-details-marker { display: none; }
+.inventory-monitor .monitor-attention summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 14px; font-size: 12px; font-weight: 550; color: var(--secondary-foreground); }
+.inventory-monitor .monitor-attention summary > span { display: flex; align-items: center; gap: 8px; }
+.inventory-monitor .monitor-attention-body { border-top: 1px solid var(--border); padding: 14px; display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,280px),1fr)); gap: 20px; }
+.inventory-monitor .monitor-attention h2 { font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+.inventory-monitor .monitor-attention ul { list-style: none; padding: 0; }
+.inventory-monitor .monitor-attention li button { display: grid; width: 100%; grid-template-columns: minmax(0,1fr) auto; gap: 3px 10px; text-align: left; padding: 9px 0; border-top: 1px solid var(--border); }
+.inventory-monitor .monitor-attention li button:hover strong { color: var(--accent-foreground); }
+.inventory-monitor .monitor-attention li strong { font-size: 11px; font-weight: 600; }
+.inventory-monitor .monitor-attention li span { grid-column: 1; font-size: 11px; color: var(--muted-foreground); }
+.inventory-monitor .monitor-attention li svg { grid-column: 2; grid-row: 1 / 3; align-self: center; color: var(--muted-foreground); }
+.inventory-monitor .monitor-attention-body p { font-size: 11px; color: var(--muted-foreground); }
+.inventory-monitor .monitor-viewbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.inventory-monitor .monitor-viewbar > p { color: var(--muted-foreground); font-size: 12px; }
+.inventory-monitor .monitor-views { display: inline-flex; padding: 3px; border: 1px solid var(--border); background: var(--subtle); border-radius: 10px; gap: 3px; }
+.inventory-monitor .monitor-views button { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 36px; padding: 7px 12px; border: 1px solid transparent; border-radius: 7px; font-size: 12px; color: var(--muted-foreground); transition: color 150ms,background 150ms,border-color 150ms; }
+.inventory-monitor .monitor-views button:hover { color: var(--foreground); }
+.inventory-monitor .monitor-views button[aria-pressed=true] { background: var(--surface); color: var(--foreground); border-color: var(--border-strong); box-shadow: 0 1px 3px #00000009; }
+.inventory-monitor .monitor-groups { display: grid; gap: 14px; align-items: start; }
+.inventory-monitor .monitor-group { border: 1px solid var(--border); background: var(--subtle); border-radius: 12px; min-width: 0; }
+.inventory-monitor .monitor-group > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 15px; }
+.inventory-monitor .monitor-group-heading { display: flex; align-items: center; min-width: 0; gap: 9px; }
+.inventory-monitor .monitor-group h2 { font-size: 13px; font-weight: 600; overflow-wrap: anywhere; }
+.inventory-monitor .monitor-state-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--monitor-tone); flex-shrink: 0; }
+.inventory-monitor .monitor-count { font-size: 11px; line-height: 20px; min-width: 22px; padding: 0 5px; border-radius: 5px; background: var(--active); color: var(--secondary-foreground); text-align: center; font-variant-numeric: tabular-nums; }
+.inventory-monitor .monitor-group-icon { color: var(--accent-foreground); display: flex; }
+.inventory-monitor .monitor-group-meta { display: flex; align-items: center; gap: 12px; color: var(--muted-foreground); font-size: 11px; flex-shrink: 0; }
+.inventory-monitor .monitor-group-meta svg, .inventory-monitor .monitor-attention summary > svg { transition: transform 160ms; transform: rotate(-90deg); }
+.inventory-monitor details[open] > summary .monitor-group-meta svg, .inventory-monitor .monitor-attention[open] summary > svg { transform: rotate(0); }
+.inventory-monitor .monitor-group-body { padding: 0 12px 12px; }
+.inventory-monitor .monitor-card-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,250px),1fr)); gap: 10px; align-items: stretch; }
+.inventory-monitor .monitor-card { display: grid; gap: 12px; min-width: 0; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 10px; padding: 14px; box-shadow: 0 2px 5px #00000003; transition: border-color 160ms,box-shadow 160ms,transform 160ms; }
+.inventory-monitor .monitor-card:hover { border-color: color-mix(in srgb,var(--accent-foreground) 65%,var(--border)); box-shadow: 0 4px 12px #0000000c; transform: translateY(-1px); }
+.inventory-monitor .monitor-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.inventory-monitor .monitor-ticket { color: var(--muted-foreground); font-size: 11px; font-weight: 550; letter-spacing: .02em; }
+.inventory-monitor .monitor-card h3 { font-size: 13px; line-height: 1.5; font-weight: 650; overflow-wrap: anywhere; }
+.inventory-monitor .monitor-warehouse { display: flex; align-items: center; gap: 5px; color: var(--muted-foreground); font-size: 11px; margin-top: 3px; }
+.inventory-monitor .monitor-tags { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.inventory-monitor .monitor-badge, .inventory-monitor .inv-badge { display: inline-flex; gap: 5px; align-items: center; padding: 3px 7px; border: 1px solid color-mix(in srgb,var(--monitor-tone) 20%,transparent); border-radius: 6px; font-size: 10px; font-weight: 550; line-height: 1.5; background: var(--monitor-soft); color: var(--monitor-tone); white-space: normal; }
+.inventory-monitor .monitor-trial { font-size: 10px; color: var(--muted-foreground); border: 1px solid var(--border); border-radius: 5px; padding: 2px 6px; }
+.inventory-monitor .monitor-people { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+.inventory-monitor .monitor-people dt { color: var(--muted-foreground); font-size: 11px; margin-bottom: 4px; }
+.inventory-monitor .monitor-people dd { font-size: 11px; color: var(--secondary-foreground); overflow-wrap: anywhere; }
+.inventory-monitor .inv-author { gap: 6px; }
+.inventory-monitor .inv-author > span:last-child { font-size: 11px; line-height: 1.4; }
+.inventory-monitor .inv-avatar { width: 24px; height: 24px; background: var(--accent-soft); color: var(--accent-foreground); font-size: 9px; }
+.inventory-monitor .inv-progress-label { color: var(--secondary-foreground); font-size: 11px; }
+.inventory-monitor .inv-progress-percent { color: var(--foreground); font-size: 11px; font-weight: 600; }
+.inventory-monitor .inv-progress-track { background: var(--active); height: 5px; }
+.inventory-monitor .monitor-card-bottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; padding-top: 10px; border-top: 1px solid var(--border); }
+.inventory-monitor .monitor-dates { display: grid; gap: 4px; }
+.inventory-monitor .monitor-dates > div { display: flex; flex-wrap: wrap; column-gap: 7px; }
+.inventory-monitor .monitor-dates dt { color: var(--muted-foreground); font-size: 11px; }
+.inventory-monitor .monitor-dates dd { font-size: 11px; color: var(--secondary-foreground); font-variant-numeric: tabular-nums; }
+.inventory-monitor .monitor-detail { display: grid; place-items: center; min-width: 38px; min-height: 38px; border-radius: 8px; border: 1px solid var(--border-strong); color: var(--accent-foreground); background: var(--accent-soft); transition: border-color 150ms,background 150ms; }
+.inventory-monitor .monitor-detail:hover { border-color: var(--accent-foreground); }
+.inventory-monitor .monitor-more { display: block; margin: 12px auto 0; min-height: 36px; padding: 6px 14px; font-size: 12px; color: var(--accent-foreground); border-radius: 8px; }
+.inventory-monitor .monitor-more:hover { background: var(--accent-soft); }
+.inventory-monitor .monitor-empty { display: grid; justify-items: center; gap: 10px; padding: 40px 20px; border: 1px dashed var(--border-strong); border-radius: 12px; text-align: center; color: var(--muted-foreground); }
+.inventory-monitor .monitor-empty h2 { color: var(--foreground); font-size: 14px; font-weight: 600; }
+.inventory-monitor .monitor-empty p { font-size: 13px; }
+.inventory-monitor .monitor-table { min-width: 0; }
+.inventory-monitor .monitor-footnote { font-size: 11px; line-height: 1.5; color: var(--muted-foreground); }
+.inventory-monitor .monitor-content { min-width: 0; animation: monitor-enter 170ms ease-out both; }
+@keyframes monitor-enter { from { opacity: .5; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@container (min-width: 640px) {
+  .inventory-monitor .monitor-groups { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .inventory-monitor .monitor-group { grid-column: span 2; }
+  .inventory-monitor .monitor-group[data-size=small] { grid-column: span 1; }
+}
+@container (min-width: 1000px) {
+  .inventory-monitor .monitor-groups { grid-template-columns: repeat(6,minmax(0,1fr)); }
+  .inventory-monitor .monitor-group { grid-column: span 6; }
+  .inventory-monitor .monitor-group[data-size=medium] { grid-column: span 4; }
+  .inventory-monitor .monitor-group[data-size=small] { grid-column: span 2; }
+}
+@media (max-width: 1199px) { .inventory-monitor .monitor-stats { grid-template-columns: repeat(3,minmax(0,1fr)); } .inventory-monitor .monitor-filters { grid-template-columns: repeat(3,minmax(0,1fr)); } }
+@media (max-width: 639px) {
+  .inventory-monitor { gap: 16px; }
+  .inventory-monitor .monitor-stats { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+  .inventory-monitor .monitor-stat { padding: 10px 12px; }
+  .inventory-monitor .monitor-stat dd { font-size: 24px; }
+  .inventory-monitor .monitor-search-row { flex-direction: column; }
+  .inventory-monitor .monitor-sort { width: 100%; }
+  .inventory-monitor .monitor-filters { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .inventory-monitor .monitor-filters[data-expanded=false] { display: none; }
+  .inventory-monitor .monitor-mobile-filter { display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 6px 10px; border: 1px solid var(--border-strong); border-radius: 8px; color: var(--secondary-foreground); font-size: 12px; }
+  .inventory-monitor .monitor-mobile-filter > svg:last-child { margin-left: auto; }
+  .inventory-monitor select, .inventory-monitor .monitor-search input, .inventory-monitor .monitor-views button { min-height: 44px; }
+  .inventory-monitor .monitor-signals { gap: 8px 14px; font-size: 11px; }
+  .inventory-monitor .monitor-signals .monitor-refresh { margin-left: 0; }
+  .inventory-monitor .monitor-viewbar { flex-direction: column-reverse; align-items: stretch; }
+  .inventory-monitor .monitor-views button { flex: 1; padding: 6px; font-size: 11px; }
+  .inventory-monitor .monitor-group > summary { padding: 12px; }
+  .inventory-monitor .monitor-card { padding: 12px; }
+  .inventory-monitor .monitor-detail { min-width: 44px; min-height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) { .inventory-monitor *, .inventory-monitor *::before, .inventory-monitor *::after { animation: none !important; transition: none !important; } .inventory-monitor .monitor-card:hover { transform: none; } }

@@ -1,0 +1,87 @@
+[
+  {
+    "checked_at": "2026-10-22 20:56:27.995828+00",
+    "name": "inventario_asignar_con_saldos",
+    "present": true
+  },
+  {
+    "checked_at": "2026-10-22 20:56:27.995828+00",
+    "name": "inventario_asignar_reporte",
+    "present": true
+  },
+  {
+    "checked_at": "2026-10-22 20:56:27.995828+00",
+    "name": "inventario_asignar",
+    "present": true
+  },
+  {
+    "checked_at": "2026-10-22 20:56:27.995828+00",
+    "name": "inventario_contexto",
+    "present": true
+  },
+  {
+    "checked_at": "2026-10-22 20:56:27.995828+00",
+    "name": "inventario_comparacion_tarea",
+    "present": true
+  },
+  {
+    "checked_at": "2026-10-22 20:56:27.995828+00",
+    "name": "inventario_contar_producto",
+    "present": true
+  },
+  {
+    "checked_at": "2026-10-22 20:56:27.995828+00",
+    "name": "inventario_productos_tarea",
+    "present": true
+  },
+  {
+    "checked_at": "2026-10-22 20:56:27.995828+00",
+    "name": "inventario_revisar_conteo",
+    "present": true
+  },
+  {
+    "checked_at": "2026-10-22 20:56:27.995828+00",
+    "name": "inventario_actualizar",
+    "present": true
+  },
+  {
+    "checked_at": "2026-10-22 20:56:27.995828+00",
+    "name": "inventario_demo_contexto",
+    "present": true
+  },
+  {
+    "checked_at": "2026-10-22 20:56:27.995828+00",
+    "name": "inventario_demo_catalogo",
+    "present": true
+  },
+  {
+    "checked_at": "2026-10-22 20:56:27.995828+00",
+    "name": "inventario_demo_autoiniciar_filtrado",
+    "present": true
+  },
+  {
+    "checked_at": "2026-10-22 20:56:27.995828+00",
+    "name": "inventario_demo_autoiniciar",
+    "present": true
+  },
+  {
+    "checked_at": "2026-10-22 20:56:27.995828+00",
+    "name": "inventario_evidencia_editar",
+    "present": true
+  },
+  {
+    "checked_at": "2026-10-22 20:56:27.995828+00",
+    "name": "inventario_evidencia_confirmar",
+    "present": true
+  },
+  {
+    "checked_at": "2026-10-22 20:56:27.995828+00",
+    "name": "inventario_observacion_guardar",
+    "present": true
+  },
+  {
+    "checked_at": "2026-10-22 20:56:27.995828+00",
+    "name": "inventario_resumen_conciliacion",
+    "present": true
+  }
+]

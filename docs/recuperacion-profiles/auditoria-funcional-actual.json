@@ -1,0 +1,374 @@
+{
+  "tables": [
+    {
+      "name": "perfiles",
+      "exists": true
+    },
+    {
+      "name": "pedidos",
+      "exists": true
+    },
+    {
+      "name": "envios",
+      "exists": true
+    },
+    {
+      "name": "mensajeros",
+      "exists": true
+    },
+    {
+      "name": "mensajeros_rutas",
+      "exists": true
+    },
+    {
+      "name": "mensajeros_almuerzos",
+      "exists": true
+    },
+    {
+      "name": "inventario_usuarios_bodegas",
+      "exists": true
+    },
+    {
+      "name": "inventario_administradores",
+      "exists": true
+    },
+    {
+      "name": "inventario_tickets",
+      "exists": true
+    },
+    {
+      "name": "inventario_auditoria",
+      "exists": true
+    },
+    {
+      "name": "inventario_evidencias",
+      "exists": true
+    },
+    {
+      "name": "inventario_observaciones_conteo",
+      "exists": true
+    },
+    {
+      "name": "inventario_categorias",
+      "exists": true
+    },
+    {
+      "name": "inventario_notificaciones",
+      "exists": true
+    },
+    {
+      "name": "vehiculos",
+      "exists": true
+    },
+    {
+      "name": "vehiculo_checklists",
+      "exists": true
+    },
+    {
+      "name": "vehiculo_alertas",
+      "exists": true
+    },
+    {
+      "name": "atencion_asesores",
+      "exists": true
+    },
+    {
+      "name": "atencion_etiquetas",
+      "exists": true
+    },
+    {
+      "name": "atencion_diaria",
+      "exists": true
+    },
+    {
+      "name": "atencion_estados_whatsapp",
+      "exists": true
+    },
+    {
+      "name": "configuracion_campos",
+      "exists": true
+    },
+    {
+      "name": "contenedores",
+      "exists": true
+    }
+  ],
+  "perfiles": 4,
+  "policies": [
+    {
+      "cmd": "INSERT",
+      "qual": null,
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "envios",
+      "permissive": "PERMISSIVE",
+      "policyname": "Permitir crear envios a todos",
+      "schemaname": "public",
+      "with_check": "true"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "true",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "envios",
+      "permissive": "PERMISSIVE",
+      "policyname": "Permitir ver envios a todos",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "ALL",
+      "qual": "(( SELECT perfiles.rol\n   FROM perfiles\n  WHERE (perfiles.id = auth.uid())) = 'Admin'::text)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "envios",
+      "permissive": "PERMISSIVE",
+      "policyname": "Solo admin puede borrar/editar envios",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "ALL",
+      "qual": "es_admin()",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "mensajeros",
+      "permissive": "PERMISSIVE",
+      "policyname": "Admins CRUD mensajeros",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "INSERT",
+      "qual": null,
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "mensajeros",
+      "permissive": "PERMISSIVE",
+      "policyname": "Operativos pueden insertar mensajeros",
+      "schemaname": "public",
+      "with_check": "es_operativo()"
+    },
+    {
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM perfiles\n  WHERE ((perfiles.id = auth.uid()) AND (perfiles.rol = 'Admin'::text))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "mensajeros",
+      "permissive": "PERMISSIVE",
+      "policyname": "Permitir gestion de mensajeros para administradores",
+      "schemaname": "public",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM perfiles\n  WHERE ((perfiles.id = auth.uid()) AND (perfiles.rol = 'Admin'::text))))"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "true",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "mensajeros",
+      "permissive": "PERMISSIVE",
+      "policyname": "Permitir lectura de mensajeros a autenticados",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "ALL",
+      "qual": "true",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "mensajeros",
+      "permissive": "PERMISSIVE",
+      "policyname": "Permitir todo a usuarios autenticados en mensajeros",
+      "schemaname": "public",
+      "with_check": "true"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "true",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "mensajeros",
+      "permissive": "PERMISSIVE",
+      "policyname": "Todos pueden ver mensajeros",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "true",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "mensajeros",
+      "permissive": "PERMISSIVE",
+      "policyname": "Ver mensajeros",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "true",
+      "roles": [
+        "public"
+      ],
+      "tablename": "mensajeros_almuerzos",
+      "permissive": "PERMISSIVE",
+      "policyname": "Public read access",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "UPDATE",
+      "qual": "true",
+      "roles": [
+        "public"
+      ],
+      "tablename": "mensajeros_almuerzos",
+      "permissive": "PERMISSIVE",
+      "policyname": "Public update access",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "INSERT",
+      "qual": null,
+      "roles": [
+        "public"
+      ],
+      "tablename": "mensajeros_almuerzos",
+      "permissive": "PERMISSIVE",
+      "policyname": "Public write access",
+      "schemaname": "public",
+      "with_check": "true"
+    },
+    {
+      "cmd": "ALL",
+      "qual": "true",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "mensajeros_rutas",
+      "permissive": "PERMISSIVE",
+      "policyname": "Permitir todo a usuarios autenticados en mensajeros_rutas",
+      "schemaname": "public",
+      "with_check": "true"
+    },
+    {
+      "cmd": "INSERT",
+      "qual": null,
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "pedidos",
+      "permissive": "PERMISSIVE",
+      "policyname": "Permitir crear pedidos a todos",
+      "schemaname": "public",
+      "with_check": "true"
+    },
+    {
+      "cmd": "ALL",
+      "qual": "true",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "pedidos",
+      "permissive": "PERMISSIVE",
+      "policyname": "Permitir todo a usuarios autenticados en pedidos",
+      "schemaname": "public",
+      "with_check": "true"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "true",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "pedidos",
+      "permissive": "PERMISSIVE",
+      "policyname": "Permitir ver pedidos a todos",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "ALL",
+      "qual": "(( SELECT perfiles.rol\n   FROM perfiles\n  WHERE (perfiles.id = auth.uid())) = 'Admin'::text)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "pedidos",
+      "permissive": "PERMISSIVE",
+      "policyname": "Solo admin puede editar o borrar pedidos",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "ALL",
+      "qual": "es_admin()",
+      "roles": [
+        "public"
+      ],
+      "tablename": "perfiles",
+      "permissive": "PERMISSIVE",
+      "policyname": "Admins ven todos los perfiles",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(auth.uid() = id)",
+      "roles": [
+        "public"
+      ],
+      "tablename": "perfiles",
+      "permissive": "PERMISSIVE",
+      "policyname": "Usuarios pueden ver su propio perfil",
+      "schemaname": "public",
+      "with_check": null
+    }
+  ],
+  "triggers": [
+    {
+      "name": "on_auth_user_created",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION handle_new_user()"
+    }
+  ],
+  "auth_users": 4,
+  "checked_at": "2026-10-22T20:52:54.571496+00:00",
+  "profile_hash": "380d2a3d2a8ae0f8ec8cf23652d4807b",
+  "orphan_profiles": 0,
+  "join_constraints": [
+    {
+      "name": "envios_mensajero_id_fkey",
+      "table": "envios",
+      "definition": "FOREIGN KEY (mensajero_id) REFERENCES mensajeros(id) ON DELETE SET NULL"
+    },
+    {
+      "name": "envios_pedido_id_fkey",
+      "table": "envios",
+      "definition": "FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE SET NULL"
+    },
+    {
+      "name": "mensajeros_rutas_mensajero_id_fkey",
+      "table": "mensajeros_rutas",
+      "definition": "FOREIGN KEY (mensajero_id) REFERENCES mensajeros(id) ON DELETE SET NULL"
+    },
+    {
+      "name": "mensajeros_almuerzos_mensajero_id_fkey",
+      "table": "mensajeros_almuerzos",
+      "definition": "FOREIGN KEY (mensajero_id) REFERENCES mensajeros(id) ON DELETE CASCADE"
+    }
+  ],
+  "missing_profiles": 0,
+  "views_mentioning_profiles": []
+}

@@ -13,6 +13,8 @@ interface UserMenuProps {
 
 export function UserMenu({ userName, email, rol, onLogout }: UserMenuProps) {
   const [open, setOpen] = useState(false)
+  const [loggingOut,setLoggingOut] = useState(false)
+  const [logoutError,setLogoutError] = useState('')
   const containerRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const { theme, setTheme } = useTheme()
@@ -69,9 +71,10 @@ export function UserMenu({ userName, email, rol, onLogout }: UserMenuProps) {
             </div>
           </div>
           <div className="border-t border-border pt-1.5">
-            <button onClick={onLogout} className="flex min-h-10 w-full items-center gap-2 rounded-lg px-3 text-xs text-danger hover:bg-danger-soft">
-              <LogOut className="size-4" aria-hidden="true" />Cerrar sesión
+            <button disabled={loggingOut} onClick={async()=>{setLoggingOut(true);setLogoutError('');try{await onLogout()}catch{setLogoutError('No se pudo cerrar la sesión. Intenta nuevamente.')}finally{setLoggingOut(false)}}} className="flex min-h-10 w-full items-center gap-2 rounded-lg px-3 text-xs text-danger hover:bg-danger-soft">
+              <LogOut className="size-4" aria-hidden="true" />{loggingOut?'Cerrando…':'Cerrar sesión'}
             </button>
+            {logoutError&&<p role="alert" className="px-3 py-2 text-xs text-danger">{logoutError}</p>}
           </div>
         </section>
       )}

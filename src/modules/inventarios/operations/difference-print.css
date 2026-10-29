@@ -1,0 +1,55 @@
+.difference-preview { color-scheme: light; min-height: 100vh; background: #e9ebed; color: #171717; padding: 24px 16px 40px; font-family: Arial, Helvetica, sans-serif; }
+.difference-toolbar { max-width: 900px; margin: 0 auto 24px; display: flex; align-items: center; flex-wrap: wrap; gap: 14px; font-size: 13px; }
+.difference-toolbar p { margin: 4px 0 0; font-size: 12px; color: #484848; }
+.difference-controls { display: flex; align-items: end; flex-wrap: wrap; gap: 8px; }
+.difference-controls label { display: grid; gap: 4px; font-size: 11px; }
+.difference-controls button, .difference-controls select { min-height: 38px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid #bbb; border-radius: 6px; background: #fff; color: #171717; padding: 7px 10px; font-size: 12px; cursor: pointer; }
+.difference-controls button:hover { background: #f5f5f5; }
+.difference-controls :focus-visible { outline: 2px solid #333; outline-offset: 2px; }
+.difference-print-tip { flex-basis: 100%; }
+.difference-sheet { box-sizing: border-box; width: 148mm; max-width: 100%; margin: auto; padding: 9mm; background: #fff; color: #171717; box-shadow: 0 2px 16px #00000016; font-size: 9pt; line-height: 1.3; overflow-wrap: anywhere; color-scheme: light; }
+.difference-preview[data-paper="A4"] .difference-sheet { width: 210mm; padding: 10mm; }
+.difference-heading { display: grid; grid-template-columns: 1fr auto; gap: 4mm; border-bottom: 1.5px solid #222; padding-bottom: 3mm; }
+.difference-brand strong { display: block; font-size: 15pt; font-weight: 800; letter-spacing: .5pt; }
+.difference-brand span { font-size: 7.5pt; letter-spacing: .7pt; }
+.difference-ticket { font-size: 9pt; font-weight: bold; align-self: center; max-width: 48mm; text-align: right; }
+.difference-heading h1 { grid-column: 1 / -1; font-size: 11pt; font-weight: bold; margin: 0; letter-spacing: .4pt; }
+.difference-demo { border: 1px solid #555; padding: 2mm; font-size: 8pt; font-weight: bold; margin: 3mm 0; }
+.difference-demo span { font-size: 7.5pt; font-weight: normal; }
+.difference-metadata { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5mm 4mm; margin: 4mm 0; }
+.difference-metadata dt { font-size: 7.5pt; color: #444; }
+.difference-metadata dd { margin: .6mm 0 0; font-weight: 600; font-size: 8.5pt; }
+.difference-notice, .difference-empty { font-size: 8.5pt; padding: 2.5mm 0; margin: 2mm 0; border-top: 1px solid #999; border-bottom: 1px solid #999; }
+.difference-table { width: 100%; table-layout: fixed; border-collapse: collapse; margin: 4mm 0; font-size: 8pt; }
+.difference-table .difference-col-code { width: 17%; }
+.difference-table .difference-col-name { width: 31%; }
+.difference-table th, .difference-table td { border: .2mm solid #b5b5b5; padding: 2mm 1.2mm; vertical-align: top; text-align: left; white-space: normal; overflow-wrap: anywhere; word-break: normal; }
+.difference-table th { color: #111; background: #fff; font-size: 7.5pt; font-weight: bold; }
+.difference-table .difference-number { text-align: right; font-variant-numeric: tabular-nums; }
+.difference-table th:nth-child(n+3):nth-child(-n+5) { text-align: right; }
+.difference-code { font-size: 7.8pt; }
+.difference-unit, .difference-value small { display: block; font-size: 6.8pt; margin-top: 1mm; font-weight: normal; color: #444; }
+.difference-value { font-weight: bold; }
+.difference-table .difference-verified { min-width: 13mm; }
+.difference-bottom { break-inside: avoid; }
+.difference-totals { display: flex; gap: 3mm; justify-content: space-between; border-top: 1px solid #333; padding-top: 3mm; margin: 4mm 0; }
+.difference-totals div { flex: 1; }
+.difference-totals dt { font-size: 7.5pt; }
+.difference-totals dd { margin: 1mm 0 0; font-size: 11pt; font-weight: bold; }
+.difference-bottom h2 { font-size: 8.5pt; font-weight: bold; margin: 3mm 0 0; }
+.difference-note-lines div { height: 6mm; border-bottom: .2mm solid #aaa; }
+.difference-bottom footer { margin-top: 3mm; color: #444; font-size: 7pt; }
+@page inventory-a5 { size: A5 portrait; margin: 9mm; }
+@page inventory-a4 { size: A4 portrait; margin: 10mm; }
+@media print {
+  html, body { display: block !important; height: auto !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; background: #fff !important; color: #171717 !important; color-scheme: light !important; }
+  body > :not(.difference-preview) { display: none !important; }
+  .difference-preview { page: inventory-a5; display: block; min-height: 0; padding: 0; background: #fff; }
+  .difference-preview[data-paper="A4"] { page: inventory-a4; }
+  .difference-toolbar { display: none !important; }
+  .difference-preview[data-paper] .difference-sheet { width: 100%; max-width: none; margin: 0; padding: 0; box-shadow: none; font-family: Arial, Helvetica, sans-serif; }
+  .difference-table thead { display: table-header-group; }
+  .difference-table tr { break-inside: avoid; page-break-inside: avoid; }
+  .difference-heading, .difference-metadata, .difference-demo { break-inside: avoid; }
+  .difference-heading, .difference-metadata { break-after: avoid; }
+}

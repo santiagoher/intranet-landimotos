@@ -1,0 +1,59 @@
+{
+  "project": "loajbvlgpsxrkfzyxbui",
+  "migration": {
+    "version": "20261022210543",
+    "name": "perfiles_alta_segura_revision"
+  },
+  "before_at": "2026-10-22T21:05:10.753+00:00",
+  "after_at": "2026-10-22T21:05:57.314959+00:00",
+  "unchanged": {
+    "auth_count": true,
+    "profiles_count": true,
+    "missing_profiles": true,
+    "orphan_profiles": true,
+    "profiles": true,
+    "memberships": true,
+    "admins": true,
+    "trigger": true,
+    "constraints": true,
+    "indexes": true,
+    "policies": true,
+    "table_security": true
+  },
+  "counts": {
+    "auth": 4,
+    "perfiles": 4,
+    "memberships": 12,
+    "inventory_admins": 1
+  },
+  "function_before": {
+    "acl": [
+      "=X/postgres",
+      "postgres=X/postgres",
+      "anon=X/postgres",
+      "authenticated=X/postgres",
+      "service_role=X/postgres"
+    ],
+    "owner": "postgres",
+    "config": null,
+    "definition": "CREATE OR REPLACE FUNCTION public.handle_new_user()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\r\nBEGIN\r\n  INSERT INTO public.perfiles (id, email, nombre, rol, estado)\r\n  VALUES (\r\n    new.id, \r\n    new.email, \r\n    new.raw_user_meta_data->>'nombre',\r\n    COALESCE(new.raw_user_meta_data->>'rol', 'Operativo'),\r\n    'activo'\r\n  );\r\n  RETURN new;\r\nEND;\r\n$function$\n"
+  },
+  "function_after": {
+    "acl": [
+      "postgres=X/postgres"
+    ],
+    "owner": "postgres",
+    "config": [
+      "search_path=\"\""
+    ],
+    "definition": "CREATE OR REPLACE FUNCTION public.handle_new_user()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\nbegin\n -- A display name may come from metadata; authorization never does.\n -- New accounts receive no modules. An existing authorized administrator must\n -- assign any role/module through the established administration workflow.\n insert into public.perfiles(id,email,nombre,rol,estado,modulos_permitidos)\n values(new.id,new.email,new.raw_user_meta_data->>'nombre','Operativo','activo','{}'::text[])\n on conflict(id) do nothing;\n return new;\nend $function$\n"
+  },
+  "trigger": [
+    {
+      "enabled": "O",
+      "definition": "CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION handle_new_user()"
+    }
+  ],
+  "backup": ".local-backups/perfiles-antes-alta-segura-20261022.json",
+  "application_deployed": false
+}
