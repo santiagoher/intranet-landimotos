@@ -17,7 +17,7 @@ interface NavigationItem extends NavigationLink {
 }
 
 // Receive the already-filtered links: grouping never grants additional access.
-export function getNavigationSections(links: NavigationLink[], isAdmin: boolean, inventoryReports = false) {
+export function getNavigationSections(links: NavigationLink[], isAdmin: boolean, inventoryReports = false, comprasAdmin = isAdmin) {
   const operations: NavigationItem[] = []
   const administrative: NavigationLink[] = []
 
@@ -53,6 +53,11 @@ export function getNavigationSections(links: NavigationLink[], isAdmin: boolean,
           { id: 'inventarios-new', name: 'Nuevo inventario', href: '/inventarios' },
         ],
       })
+    } else if (link.id === 'compras') {
+      operations.push({ ...link, children: [
+        { id: 'compras-records', name: 'Registros', href: '/compras/registros' },
+        ...(comprasAdmin || isAdmin ? [{ id: 'compras-reports', name: 'Reportes', href: '/compras/reportes' }] : []),
+      ] })
     } else if (link.id === 'vehiculos') {
       operations.push(link)
     } else {
@@ -123,16 +128,17 @@ function NavigationGroup({ item, pathname, hash, onNavigate }: {
   </li>
 }
 
-export function SidebarNavigation({ links, isAdmin, pathname, onNavigate, inventoryReports = false }: {
+export function SidebarNavigation({ links, isAdmin, pathname, onNavigate, inventoryReports = false, comprasAdmin = false }: {
   links: NavigationLink[]
   isAdmin: boolean
   pathname: string
   onNavigate: () => void
   inventoryReports?: boolean
+  comprasAdmin?: boolean
 }) {
   const hash = useNavigationHash()
   return <nav aria-label="Navegación principal" className="min-h-0 flex-1 space-y-6 overflow-y-auto px-3 pb-5 pt-2">
-    {getNavigationSections(links, isAdmin, inventoryReports).map(section => <section key={section.id} aria-labelledby={`sidebar-${section.id}`}>
+    {getNavigationSections(links, isAdmin, inventoryReports, comprasAdmin).map(section => <section key={section.id} aria-labelledby={`sidebar-${section.id}`}>
       <h2 id={`sidebar-${section.id}`} className="mb-2 px-3 text-[10px] font-medium uppercase tracking-[0.08em] text-muted">{section.name}</h2>
       <ul className="space-y-1">
         {section.items.map(item => {

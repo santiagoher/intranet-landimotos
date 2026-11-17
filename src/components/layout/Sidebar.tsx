@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useRef } from 'react'
-import { Package, Users, Truck, Archive, X, ClipboardCheck, MessageSquare, Warehouse, SlidersHorizontal, PanelLeftClose } from 'lucide-react'
+import { Package, Users, Truck, Archive, X, ClipboardCheck, MessageSquare, Warehouse, SlidersHorizontal, PanelLeftClose, ShoppingCart } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client'
 import { useSidebar } from './SidebarContext'
 import { UserMenu } from './UserMenu'
@@ -14,9 +14,10 @@ interface SidebarProps {
   userName?: string
   email?: string
   inventoryNavigation?: { records: boolean; reports: boolean; configuration: boolean }
+  comprasAdmin?: boolean
 }
 
-export function Sidebar({ rol, modulosPermitidos = [], userName, email, inventoryNavigation }: SidebarProps) {
+export function Sidebar({ rol, modulosPermitidos = [], userName, email, inventoryNavigation, comprasAdmin = false }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
@@ -27,6 +28,8 @@ export function Sidebar({ rol, modulosPermitidos = [], userName, email, inventor
     { id: 'despachos', name: 'Despachos', href: '/despachos', icon: Package, roles: ['Admin', 'Operativo'] },
     { id: 'mensajeros', name: 'Mensajeros', href: '/mensajeros', icon: Truck, roles: ['Admin', 'Operativo'] },
     { id: 'inventarios', name: 'Inventarios', href: '/inventarios', icon: Warehouse, roles: ['Admin', 'Operativo'] },
+    { id: 'compras', name: 'Compras', href: '/compras', icon: ShoppingCart, roles: ['Admin', 'Operativo'] },
+    { id: 'compras-equipo', name: 'Equipo y mesas de Compras', href: '/compras/equipo', icon: Users, roles: ['Admin', 'Operativo'] },
     { id: 'vehiculos', name: 'Inspecciones Preoperacionales', href: '/vehiculos', icon: ClipboardCheck, roles: ['Admin', 'Operativo'] },
     { id: 'atencion', name: 'Atención al Cliente', href: '/admin/atencion', icon: MessageSquare, roles: ['Admin'] },
     { id: 'admin-mensajeros', name: 'Conductores', href: '/admin/mensajeros', icon: Truck, roles: ['Admin'] },
@@ -36,6 +39,7 @@ export function Sidebar({ rol, modulosPermitidos = [], userName, email, inventor
   ]
 
   const filteredLinks = links.filter(link => {
+    if (link.id === 'compras-equipo') return comprasAdmin || rol === 'Admin'
     if (link.id === 'inventarios') return inventoryNavigation?.records === true
     if (link.id === 'inventario-configuracion') return inventoryNavigation?.configuration === true
     const userRole = rol?.toLowerCase()
@@ -107,7 +111,7 @@ export function Sidebar({ rol, modulosPermitidos = [], userName, email, inventor
         </div>
 
         <SidebarNavigation links={filteredLinks} isAdmin={rol?.toLowerCase() === 'admin'} pathname={pathname} onNavigate={close}
-          inventoryReports={inventoryNavigation?.reports === true} />
+          inventoryReports={inventoryNavigation?.reports === true} comprasAdmin={comprasAdmin} />
 
         <div className="shrink-0 border-t border-border p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
           <UserMenu userName={userName} email={email} rol={rol} onLogout={handleLogout} />

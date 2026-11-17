@@ -5,6 +5,7 @@ import { Navbar } from '@/components/layout/Navbar'
 import { SidebarProvider, DashboardContent } from '@/components/layout/SidebarContext'
 import { getInventoryAccess } from '@/modules/inventarios/access.server'
 import { RoleProvider } from '@/components/layout/RoleProvider'
+import { requireCompras } from '@/modules/compras/service.server'
 
 export default async function DashboardLayout({
   children,
@@ -19,12 +20,13 @@ export default async function DashboardLayout({
   const nombre = perfil?.nombre || user.email
   const modulosPermitidos = perfil?.modulos_permitidos || []
   const inventoryAccess = await getInventoryAccess()
+  const comprasAdmin = rol === 'Admin' || (modulosPermitidos.includes('compras') && await requireCompras().then(access=>access.admin).catch(()=>false))
 
   return (
     <RoleProvider value={{rol,modulosPermitidos}}><SidebarProvider>
       <div className="min-h-dvh bg-background text-foreground">
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-surface focus:p-3">Saltar al contenido</a>
-        <Sidebar rol={rol} modulosPermitidos={modulosPermitidos} userName={nombre} email={user.email}
+        <Sidebar rol={rol} modulosPermitidos={modulosPermitidos} userName={nombre} email={user.email} comprasAdmin={comprasAdmin}
           inventoryNavigation={{ records: inventoryAccess.canEnter, reports: inventoryAccess.canViewReports, configuration: inventoryAccess.canConfigure }} />
 
         <DashboardContent>

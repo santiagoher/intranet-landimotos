@@ -1,0 +1,2 @@
+'use client'
+export default function ErrorPage({reset}:{reset:()=>void}){return <div role="alert" className="rounded-xl border border-border p-8"><h2 className="font-semibold">No se pudo cargar Compras</h2><p className="my-3 text-sm text-muted">Intenta nuevamente. Si acabas de guardar un cambio, comprueba el registro antes de repetirlo.</p><button className="btn-primary" onClick={reset}>Reintentar</button></div>}

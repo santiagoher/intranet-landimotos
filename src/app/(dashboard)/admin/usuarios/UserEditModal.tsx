@@ -49,6 +49,7 @@ export function UserEditModal({ user, onSuccess, onCancel }: UserEditModalProps)
   })
 
   const allowedModules = watch('modulos_permitidos')
+  const isAdmin = watch('rol') === 'Admin'
 
   const toggleModule = (module: string) => {
     const updated = allowedModules.includes(module)
@@ -119,13 +120,18 @@ export function UserEditModal({ user, onSuccess, onCancel }: UserEditModalProps)
           </div>
 
           <div className="pt-2">
+            <p className="mb-3 text-sm text-muted">
+              {isAdmin
+                ? 'Los administradores tienen acceso a todos los módulos por su rol.'
+                : 'Selecciona los módulos a los que puede acceder este usuario. Solo un administrador puede modificar estos permisos.'}
+            </p>
             <label className="block text-sm font-bold text-muted mb-3 uppercase tracking-wider">Módulos de Acceso</label>
             <div className="grid grid-cols-1 gap-2">
-              {['despachos', 'mensajeros', 'vehiculos'].map((module) => (
+              {['despachos', 'mensajeros', 'inventarios', 'compras', 'vehiculos'].map((module) => (
                 <label
                   key={module}
                   className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer ${
-                    allowedModules.includes(module)
+                    isAdmin || allowedModules.includes(module)
                       ? 'bg-accent-soft border-accent/50 text-foreground'
                       : 'bg-subtle border-border text-muted hover:border-border-strong'
                     }`}
@@ -133,7 +139,8 @@ export function UserEditModal({ user, onSuccess, onCancel }: UserEditModalProps)
                   <span className="capitalize text-sm font-medium">{module}</span>
                   <input
                     type="checkbox"
-                    checked={allowedModules.includes(module)}
+                    checked={isAdmin || allowedModules.includes(module)}
+                    disabled={isAdmin}
                     onChange={() => toggleModule(module)}
                     className="w-4 h-4 rounded border-border bg-surface text-accent-foreground focus:ring-accent"
                   />

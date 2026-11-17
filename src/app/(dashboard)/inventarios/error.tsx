@@ -7,3 +7,4 @@ export default function InventoryError({ reset }: { reset: () => void }) {
     <button type="button" onClick={reset} className="btn-secondary">Reintentar</button>
   </div>
 }
+

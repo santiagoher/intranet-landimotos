@@ -1,0 +1,22 @@
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { z } from 'zod'
+import { requireCompras, detalleCompras, catalogosCompras, ComprasError } from '@/modules/compras/service.server'
+import { ComprasMessage, EstadoBadge } from '@/modules/compras/components'
+import { AccionesRevision } from '@/modules/compras/Forms'
+import { estados, eventos, fecha } from '@/modules/compras/types'
+export default async function Page({params}:{params:Promise<{id:string}>}) {
+  const {id}=await params;if(!z.string().uuid().safeParse(id).success)notFound()
+  try{
+    const access=await requireCompras();const [data,catalogos]=await Promise.all([detalleCompras(id),catalogosCompras()])
+    if(!data)notFound();const r=data.registro
+    return <div className="space-y-5"><Link href={`/compras/registros${access.admin?'':`?mesa_id=${r.mesa_id}`}`} className="text-sm text-accent-foreground hover:underline">← Volver a registros</Link>
+      <section className="rounded-xl border border-border bg-surface p-5 sm:p-6"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-xs uppercase tracking-wider text-muted">Factura</p><h2 className="mt-1 break-all text-2xl font-semibold">{r.factura}</h2><p className="mt-2 text-muted">{r.proveedor_nombre}</p></div><EstadoBadge estado={r.estado}/></div><dl className="mt-6 grid gap-4 border-t border-border pt-5 text-sm sm:grid-cols-2 lg:grid-cols-4">{[
+        ['Número de artículos',r.numero_articulos===null?'Sin registrar':String(r.numero_articulos)],['Mesa',`Mesa ${r.mesa_id}`],['Encargado',r.encargado_nombre],['Asignado por',r.asignador_nombre],['Fecha de asignación',fecha(r.creado_at)],['Inicio de revisión',fecha(r.iniciado_at)],['Finalización',fecha(r.finalizado_at)],['Cierre',fecha(r.cerrado_at)],['Número CPM',r.cpm??'Pendiente'],['Cerrado por',r.cerrador_nombre??'—'],['Tiempo laboral',`${Math.round(r.segundos_laborales/60)} min acumulados`],['Jornadas laborales',`${r.jornadas_laborales.toFixed(2)} de 2`],['Plazo',r.vencida?'Vencida (puede finalizar)':'Dentro del plazo'],
+      ].map(([label,value])=><div key={label}><dt className="text-xs text-muted">{label}</dt><dd className="mt-1 break-words font-medium">{value}</dd></div>)}</dl></section>
+      <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(300px,380px)]"><div className="space-y-5"><section className="rounded-xl border border-border bg-surface p-5"><h2 className="mb-4 font-semibold">Observaciones <span className="text-muted">({data.observaciones.length})</span></h2>{!data.observaciones.length&&<p className="text-sm text-muted">Todavía no hay observaciones registradas.</p>}<div className="space-y-3">{data.observaciones.map(o=><article key={o.id} className="rounded-lg bg-subtle p-4"><p className="whitespace-pre-wrap break-words text-sm">{o.contenido}</p><p className="mt-3 text-xs text-muted">{o.autor_nombre} · {fecha(o.creado_at)}</p></article>)}</div></section>
+      <section className="rounded-xl border border-border bg-surface p-5"><h2 className="mb-5 font-semibold">Historial de movimientos</h2><ol className="ml-2 border-l border-border">{data.historial.map(h=><li key={h.id} className="relative pb-6 pl-5 last:pb-0"><span className="absolute -left-1 top-1 size-2 rounded-full bg-accent"/><p className="text-sm font-medium">{eventos[h.evento]??h.evento}</p><p className="mt-1 text-xs text-muted">{h.actor_nombre} · {fecha(h.creado_at)}</p><p className="mt-1 text-xs text-muted">{h.estado_anterior?`${estados[h.estado_anterior]} → `:''}{estados[h.estado_nuevo]} · Mesa {h.datos.mesa_id} · {h.datos.encargado_nombre}</p>{h.detalle&&<p className="mt-2 whitespace-pre-wrap break-words text-sm">{h.detalle}</p>}{h.datos.cpm&&<p className="mt-1 text-sm font-medium">CPM: {h.datos.cpm}</p>}{h.datos.notificados.length>0&&<p className="mt-1 text-xs text-muted">Notificación registrada para {h.datos.notificados.length} destinatario(s).</p>}</li>)}</ol></section></div>
+      <AccionesRevision registro={r} admin={access.admin} userId={access.userId} catalogos={catalogos}/></div></div>
+  }catch(error){if(error instanceof ComprasError)return <ComprasMessage message={error.message}/>;throw error}
+}
+

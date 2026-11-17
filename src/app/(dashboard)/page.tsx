@@ -21,6 +21,8 @@ export default async function DashboardPage() {
     redirect('/mensajeros')
   } else if (modulosPermitidos.includes('inventarios') && !modulosPermitidos.includes('vehiculos')) {
     redirect('/inventarios/registros')
+  } else if (modulosPermitidos.includes('compras')) {
+    redirect('/compras/registros')
   } else {
     // Si no tiene despachos ni mensajeros, redirige a vehículos (módulo general para operativos)
     redirect('/vehiculos')
