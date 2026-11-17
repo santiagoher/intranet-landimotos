@@ -47,9 +47,15 @@ export function AccionesRevision({registro:r,admin,userId,catalogos}:{registro:R
   const [contenido,setContenido]=useState('')
   function run(data:Mutacion,confirm?:string){
     if(confirm&&!window.confirm(confirm))return
-    setError('');setSuccess('');start(async()=>{const result=await guardar(data)
+    setError('');setSuccess('');start(async()=>{let actionData:Mutacion=data
+      if(data.accion==='finalizar'&&contenido.trim()){
+        const nota=await guardar({accion:'observar',...base,contenido})
+        if(nota.error){setError(nota.error);return}
+        actionData={...data,version:data.version+1};setContenido('')
+      }
+      const result=await guardar(actionData)
       if(result.error)setError(result.error)
-      else{setSuccess('Cambio guardado correctamente.');if(data.accion==='observar')setContenido('');router.refresh()}
+      else{setSuccess('Cambio guardado correctamente.');if(data.accion==='observar'||data.accion==='finalizar')setContenido('');router.refresh()}
     })
   }
   const base={id:r.id,version:r.version};const owner=r.encargado_id===userId
