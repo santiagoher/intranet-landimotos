@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Warehouse, Download } from 'lucide-react'
+import { Warehouse, ArrowRight, Download } from 'lucide-react'
 import { catalogosCompras, consultarCompras, requireCompras } from './service.server'
 import { filtersSchema } from './validation'
 import { ComprasMessage, Distribucion, FiltrosCompras, Indicadores, TablaCompras } from './components'
